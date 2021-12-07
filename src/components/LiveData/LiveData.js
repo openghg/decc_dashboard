@@ -12,16 +12,14 @@ import ScatterMap from "../ScatterMap/ScatterMap";
 
 class LiveData extends React.Component {
   createMapExplainer() {
-    const header = "Observations";
-    const explainer = `• Greenhouse gas concentrations are monitored from a network of sites across the city.\n
-    • Measurements are made of carbon dioxide and methane, the most important greenhouse gases.\n
-    • Scientists are using these observations to learn more about the UK's methane emissions.\n
-    Start exploring the measurements by selecting a site from the map`;
+    const header = "Atmospheric Monitoring & Verification of the UK’s GHG Inventory";
+    const explainer = `The UK DECC (Deriving Emissions linked to Climate Change) Network consists of four sites in the UK and Ireland measuring 
+    greenhouse and ozone depleting gases from tall telecommunication towers.`;
     return <ExplanationBox header={header} explain={explainer} split={true} />;
   }
 
   createIntro() {
-    const explanation = `Welcome to the COP 26 greenhouse gas data dashboard, where you can view atmospheric greenhouse gas measurements made in Glasgow before and during the COP 26 event.`;
+    const explanation = `Welcome to the DECC network data dashboard where you can view the latest measurements from sensors across the UK.`;
     return <ExplanationBox nogap={true} explain={explanation} />;
   }
 

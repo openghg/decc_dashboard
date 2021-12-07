@@ -1,7 +1,7 @@
 import React from "react";
 import { Switch, Route, Link, HashRouter } from "react-router-dom";
 // import { schemeTableau10, schemeSet3, schemeDark2, schemeAccent } from "d3-scale-chromatic";
-import { cloneDeep, has, set } from "lodash";
+import { cloneDeep, has, set, uniqueId } from "lodash";
 
 import ControlPanel from "./components/ControlPanel/ControlPanel";
 import OverlayContainer from "./components/OverlayContainer/OverlayContainer";
@@ -12,12 +12,14 @@ import FAQ from "./components/FAQ/FAQ";
 import LiveData from "./components/LiveData/LiveData";
 import Explainer from "./components/Explainer/Explainer";
 
+import chroma from "chroma-js";
+
 import { importSiteImages } from "./util/helpers";
 import styles from "./Dashboard.module.css";
 
 // Site description information
 import siteInfoJSON from "./data/siteInfo.json";
-import chroma from "chroma-js";
+import bsdInlets from "./data/bsd_inlets.json";
 
 class Dashboard extends React.Component {
   constructor(props) {
@@ -39,8 +41,6 @@ class Dashboard extends React.Component {
       layoutMode: "dashboard",
       colours: {},
     };
-
-
 
     // Build the site info for the overlays
     this.buildSiteInfo();
@@ -78,7 +78,7 @@ class Dashboard extends React.Component {
   }
 
   siteSelector(selectedSite) {
-    // const siteLower = String(selectedSite).toLowerCase();
+    // This controls the selection of the data sources
     let selectedSiteSet = new Set();
 
     if (selectedSite instanceof Set) {
@@ -173,57 +173,57 @@ class Dashboard extends React.Component {
     let processedData = {};
     let metadata = {};
 
-    let defaultNetwork = Object.keys(rawData).sort()[0]
-    let defaultSpecies = Object.keys(rawData[defaultNetwork]).sort()[0]
-    let defaultSite = Object.keys(rawData[defaultNetwork][defaultSpecies]).sort()[0]
+    let defaultNetwork = Object.keys(rawData).sort()[0];
+    let defaultSpecies = Object.keys(rawData[defaultNetwork]).sort()[0];
+    let defaultSite = Object.keys(rawData[defaultNetwork][defaultSpecies]).sort()[0];
 
-    try {
-      if("gst" in rawData["npl_picarro"]["co2"]) {
-        defaultSite = "gst"
-        defaultSpecies = "co2"
-        defaultNetwork = "npl_picarro"
-      }
-    } catch(error) {
-      console.warn("Couldn't load default scicence tower data")
-    }
-
-    let uniqueSites = {};
+    // site, inlet, instrument
+    let colourMapping = {};
+    let nColoursNeeded = 0;
 
     try {
       for (const [network, networkData] of Object.entries(rawData)) {
-        uniqueSites[network] = {};
         for (const [species, speciesData] of Object.entries(networkData)) {
-          for (const [site, gasData] of Object.entries(speciesData)) {
-            uniqueSites[network][site] = null;
-            // We want all values from this site to be true
+          for (const [site, siteData] of Object.entries(speciesData)) {
+            set(uniqueId, `${network}.${site}`, null);
             const defaultValue = site === defaultSite;
 
-            for (const [dataVar, data] of Object.entries(gasData)) {
-              // Save metadata separately
-              if (dataVar === "data") {
-                // This feels a bit complicated but means we can bring in
-                // error data at a later stage
-                const speciesLower = species.toLowerCase();
+            for (const [instrument, instrumentData] of Object.entries(siteData)) {
+              for (const [inlet, gasData] of Object.entries(instrumentData)) {
+                // Build the colourMapping object so we can create colours for each data source
 
-                // Here use lodash set to create the nested structure
-                set(dataKeys, `${species}.${network}.${site}.${speciesLower}`, defaultValue);
+                set(colourMapping, `${site}.${inlet}.${instrument}`, null);
+                nColoursNeeded++;
 
-                // We need to use speciesLower here as we've exported the variables
-                // from a pandas Dataframe and may want errors etc in the future
-                const timeseriesData = data[speciesLower];
-                const x_timestamps = Object.keys(timeseriesData);
-                const x_values = x_timestamps.map((d) => new Date(parseInt(d)));
-                // Measurement values
-                const y_values = Object.values(timeseriesData);
+                for (const [dataVar, data] of Object.entries(gasData)) {
+                  if (dataVar === "data") {
+                    const speciesLower = species.toLowerCase();
 
-                const graphData = {
-                  x_values: x_values,
-                  y_values: y_values,
-                };
+                    // Use lodash set to create the nested structure
+                    set(dataKeys, `${species}.${network}.${site}.${inlet}.${instrument}.${speciesLower}`, defaultValue);
 
-                set(processedData, `${species}.${network}.${site}.${speciesLower}`, graphData);
-              } else if (dataVar === "metadata") {
-                set(metadata, `${species}.${network}.${site}`, data);
+                    // We need to use speciesLower here as we've exported the variables
+                    // from a pandas Dataframe and may want errors etc in the future
+                    const timeseriesData = data[speciesLower];
+                    const x_timestamps = Object.keys(timeseriesData);
+                    const x_values = x_timestamps.map((d) => new Date(parseInt(d)));
+                    // Measurement values
+                    const y_values = Object.values(timeseriesData);
+
+                    const graphData = {
+                      x_values: x_values,
+                      y_values: y_values,
+                    };
+
+                    set(
+                      processedData,
+                      `${species}.${network}.${site}.${inlet}.${instrument}.${speciesLower}`,
+                      graphData
+                    );
+                  } else if (dataVar === "metadata") {
+                    set(metadata, `${species}.${network}.${site}`, data);
+                  }
+                }
               }
             }
           }
@@ -256,20 +256,28 @@ class Dashboard extends React.Component {
     let networkIndex = 0;
     let siteColours = {};
 
-    for (const [network, localSiteData] of Object.entries(uniqueSites)) {
-      const nSites = Object.keys(localSiteData).length;
-      const start_end = colour_start_end[networkIndex];
-      const colorMap = chroma.scale(start_end).mode("lch").colors(nSites);
-      for (const site of Object.keys(localSiteData)) {
-        const colourCode = colorMap[siteIndex];
-        set(siteColours, `${network}.${site}`, colourCode);
-        siteIndex++;
+    for (const [site, siteData] of Object.entries(colourMapping)) {
+      for (const [inlet, inletData] of Object.entries(siteData)) {
+        for (const [instrument, val] of Object.entries(inletData)) {
+          // Let's say we get 8 good colours from a single range
+          siteColours[site][inlet][instrument] = "#fff";
+        }
       }
-      networkIndex++;
-      siteIndex = 0;
     }
 
-
+    // // Set colours for each of the inlets/instrument/site
+    // for (const [network, localSiteData] of Object.entries(processedData)) {
+    //   const nSites = Object.keys(localSiteData).length;
+    //   const start_end = colour_start_end[networkIndex];
+    //   const colorMap = chroma.scale(start_end).mode("lch").colors(nSites);
+    //   for (const site of Object.keys(localSiteData)) {
+    //     const colourCode = colorMap[siteIndex];
+    //     set(siteColours, `${network}.${site}`, colourCode);
+    //     siteIndex++;
+    //   }
+    //   networkIndex++;
+    //   siteIndex = 0;
+    // }
 
     // Disabled the no direct mutation rule here as this only gets called from the constructor
     /* eslint-disable react/no-direct-mutation-state */
@@ -291,23 +299,25 @@ class Dashboard extends React.Component {
   }
 
   componentDidMount() {
-    const apiURL = "https://raw.githubusercontent.com/openghg/dashboard_data/main/combined_data.json";
-    fetch(apiURL)
-      .then((res) => res.json())
-      .then(
-        (result) => {
-          this.processData(result);
-          this.setState({
-            isLoaded: true,
-          });
-        },
-        (error) => {
-          this.setState({
-            isLoaded: true,
-            error,
-          });
-        }
-      );
+    this.processData(bsdInlets);
+    this.setState({ isLoaded: true });
+    // const apiURL = "https://raw.githubusercontent.com/openghg/dashboard_data/main/combined_data.json";
+    // fetch(apiURL)
+    //   .then((res) => res.json())
+    //   .then(
+    //     (result) => {
+    //       this.processData(result);
+    //       this.setState({
+    //         isLoaded: true,
+    //       });
+    //     },
+    //     (error) => {
+    //       this.setState({
+    //         isLoaded: true,
+    //         error,
+    //       });
+    //     }
+    //   );
   }
 
   updateSites(selectedSpecies) {
