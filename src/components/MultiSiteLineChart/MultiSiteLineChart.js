@@ -11,7 +11,6 @@ class MultiSiteLineChart extends React.Component {
     let minY = Infinity;
 
     const data = this.props.data;
-    const selectedSpecies = this.props.selectedSpecies;
 
     for (const sourceData of Object.values(data)) {
       const metadata = sourceData["metadata"];
@@ -34,18 +33,21 @@ class MultiSiteLineChart extends React.Component {
       // Set the name for the legend
       let name = null;
       try {
-        name = toTitleCase(metadata["long_name"]);
+        const siteName = metadata["long_name"];
+        const inlet = metadata["inlet"];
+
+        name = `${toTitleCase(siteName)} - ${inlet}`;
       } catch (error) {
         console.error(`Error reading name for legend - ${error}`);
       }
 
-      const colour = sourceData["colour"]
-      const units = metadata["units"]
+      const colour = sourceData["colour"];
+      const units = metadata["units"];
 
       const trace = {
         x: xValues,
         y: yValues,
-        units: this.props.units,
+        units: units,
         mode: "lines",
         line: {
           width: 1,
@@ -56,53 +58,6 @@ class MultiSiteLineChart extends React.Component {
       };
 
       plotData.push(trace);
-    }
-
-    for (const [network, networkData] of Object.entries(data)) {
-      for (const [site, siteData] of Object.entries(networkData)) {
-        for (const sectorData of Object.values(siteData)) {
-          const metadata = this.props.siteMetadata[selectedSpecies][network][site];
-          const xValues = sectorData["x_values"];
-          const yValues = sectorData["y_values"];
-
-          const max = Math.max(...yValues);
-          const min = Math.min(...yValues);
-
-          if (max > maxY) {
-            maxY = max;
-          }
-
-          if (min < minY) {
-            minY = min;
-          }
-
-          // Set the name for the legend
-          let name = null;
-          try {
-            name = toTitleCase(metadata["long_name"]);
-          } catch (error) {
-            console.error(`Error reading name for legend - ${error}`);
-          }
-
-          const colour = this.props.colours[network][site];
-          const units = this.props.units;
-
-          const trace = {
-            x: xValues,
-            y: yValues,
-            units: this.props.units,
-            mode: "lines",
-            line: {
-              width: 1,
-              color: colour,
-            },
-            name: `<b>${name}</b>`,
-            hovertemplate: `<b>Date</b>: %{x} <br><b>Concentration: </b>: %{y:.2f} ${units}<br>`,
-          };
-
-          plotData.push(trace);
-        }
-      }
     }
 
     let dateMarkObject = null;

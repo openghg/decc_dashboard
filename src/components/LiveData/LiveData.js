@@ -23,8 +23,7 @@ class LiveData extends React.Component {
   }
 
   render() {
-    // Map centre lat/long
-    const mapCentre = [55.861, -4.248];
+    const mapCentre = [54.5168, -2.5645]; // lat / long
 
     return (
       <div className={styles.content}>
@@ -49,7 +48,7 @@ class LiveData extends React.Component {
             sourceSelector={this.props.sourceSelector}
             selectedSpecies={this.props.selectedSpecies}
             centre={mapCentre}
-            zoom={9}
+            zoom={5}
             processedData={this.props.processedData}
             siteInfoOverlay={this.props.setSiteOverlay}
           />

@@ -260,7 +260,7 @@ class Dashboard extends React.Component {
     this.state.defaultInlet = defaultInlet;
     this.state.defaultInstrument = defaultInstrument;
     this.state.defaultSourceKey = defaultSourceKey;
-    this.state.selectedSources = new Set([defaultSite]);
+    this.state.selectedSources = new Set([defaultSourceKey]);
     this.state.selectedSpecies = defaultSpecies;
     this.state.processedData = processedData;
     this.state.selectedKeys = dataKeys;

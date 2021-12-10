@@ -1,8 +1,5 @@
 import PropTypes from "prop-types";
 import React from "react";
-
-import { set } from "lodash";
-
 import GraphContainer from "../GraphContainer/GraphContainer";
 import MultiSiteLineChart from "../MultiSiteLineChart/MultiSiteLineChart";
 

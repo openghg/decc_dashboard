@@ -5,6 +5,7 @@ import { LayerGroup, MapContainer, ImageOverlay, TileLayer, CircleMarker, Popup 
 // import "./LeafletMapResponsive.css";
 
 import { toTitleCase } from "../../util/helpers";
+import TextButton from "../TextButton/TextButton";
 
 import styles from "./LeafletMap.module.css";
 
@@ -19,11 +20,13 @@ class LeafletMap extends React.Component {
     this.props.sourceSelector(e.target.options.data);
   }
 
-  processSites() {
+  createMarkers() {
     const processedData = this.props.processedData;
     const selectedSpecies = this.props.selectedSpecies;
 
     let markers = [];
+
+    let inletButtons = {};
 
     for (const [species, speciesData] of Object.entries(processedData)) {
       if (species !== selectedSpecies) {
@@ -32,6 +35,12 @@ class LeafletMap extends React.Component {
 
       for (const [key, sourceData] of Object.entries(speciesData)) {
         const metadata = sourceData["metadata"];
+
+        const site = metadata["site"]
+
+        if(!(site in inletButtons)) {
+            inletButtons[site] = [];
+        }
 
         let marker = null;
         try {
@@ -57,14 +66,17 @@ class LeafletMap extends React.Component {
 
           const colourHex = sourceData["colour"];
 
+          let buttons = [];
+          for 
+
           marker = (
             <CircleMarker
               key={locationStr}
               center={location}
               data={key}
-              eventHandlers={{
-                click: this.handleClick,
-              }}
+            //   eventHandlers={{
+            //     click: this.handleClick,
+            //   }}
               fillColor={colourHex}
               color={colourHex}
               fill={true}
@@ -75,6 +87,9 @@ class LeafletMap extends React.Component {
                 <div className={styles.marker}>
                   <div className={styles.markerBody}>
                     <div className={styles.markerTitle}>{toTitleCase(siteName)}</div>
+                    <div className={styles.markerButtons}>
+                        <TextButton></TextButton>
+                    </div>
                     <br />
                     {heightSection}
                     <br />
@@ -122,7 +137,7 @@ class LeafletMap extends React.Component {
       attribution = extraAttr + attrTiles;
     }
 
-    const markers = this.processSites();
+    const markers = this.createMarkers();
     const zoom = this.props.zoom ? this.props.zoom : 5;
 
     const style = { width: "90%" };
