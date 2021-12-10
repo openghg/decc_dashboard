@@ -27,16 +27,13 @@ class LiveData extends React.Component {
     return (
       <ObsBox
         dataSelector={this.props.dataSelector}
-        clearSelectedSites={this.props.clearSites}
+        clearSources={this.props.clearSources}
         speciesSelector={this.props.speciesSelector}
-        selectedKeys={this.props.selectedKeys}
+        selectedSources={this.props.selectedSources}
         processedData={this.props.processedData}
-        selectedSites={this.props.selectedSites}
+        selectedKeys={this.props.selectedKeys}
         selectedSpecies={this.props.selectedSpecies}
         defaultSpecies={this.props.defaultSpecies}
-        colours={this.props.colours}
-        metadata={this.props.metadata}
-        // sites={this.props.sites}
       />
     );
   }
@@ -56,12 +53,11 @@ class LiveData extends React.Component {
         </div>
         <div className={styles.siteMap}>
           <LeafletMap
-            siteSelector={this.props.siteSelector}
-            metadata={this.props.metadata}
+            sourceSelector={this.props.sourceSelector}
             selectedSpecies={this.props.selectedSpecies}
             centre={mapCentre}
             zoom={9}
-            colours={this.props.colours}
+            processedData={this.props.processedData}
             siteInfoOverlay={this.props.setSiteOverlay}
           />
         </div>

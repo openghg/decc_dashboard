@@ -1,7 +1,7 @@
 import React from "react";
 import { Switch, Route, Link, HashRouter } from "react-router-dom";
 // import { schemeTableau10, schemeSet3, schemeDark2, schemeAccent } from "d3-scale-chromatic";
-import { cloneDeep, has, set, uniqueId } from "lodash";
+import { cloneDeep, has, set, uniqueId, size } from "lodash";
 
 import ControlPanel from "./components/ControlPanel/ControlPanel";
 import OverlayContainer from "./components/OverlayContainer/OverlayContainer";
@@ -48,11 +48,11 @@ class Dashboard extends React.Component {
     // Select the data
     this.dataSelector = this.dataSelector.bind(this);
     // Selects the dates
-    this.siteSelector = this.siteSelector.bind(this);
+    this.sourceSelector = this.sourceSelector.bind(this);
     this.toggleOverlay = this.toggleOverlay.bind(this);
     this.setOverlay = this.setOverlay.bind(this);
     this.speciesSelector = this.speciesSelector.bind(this);
-    this.clearSites = this.clearSites.bind(this);
+    this.clearSources = this.clearSources.bind(this);
     this.toggleSidebar = this.toggleSidebar.bind(this);
     this.setSiteOverlay = this.setSiteOverlay.bind(this);
   }
@@ -77,55 +77,40 @@ class Dashboard extends React.Component {
     /* eslint-enable react/no-direct-mutation-state */
   }
 
-  siteSelector(selectedSite) {
-    // This controls the selection of the data sources
-    let selectedSiteSet = new Set();
+  sourceSelector(selection) {
+    let selectedSourcesSet = new Set();
 
-    if (selectedSite instanceof Set) {
-      selectedSiteSet = selectedSite;
+    if (selection instanceof Set) {
+      selectedSourcesSet = selection;
     } else {
-      selectedSiteSet.add(selectedSite);
+      selectedSourcesSet.add(selection);
     }
 
-    // // Here we change all the sites and select all species / sectors at that site
-    let selectedSites = cloneDeep(this.state.selectedSites);
+    // Here we change all the sites and select all species / sectors at that site
+    let selectedSources = cloneDeep(this.state.selectedSources);
 
-    for (const site of selectedSiteSet) {
-      if (selectedSites.has(site)) {
-        selectedSites.delete(site);
+    for (const source of selectedSourcesSet) {
+      if (selectedSources.has(source)) {
+        selectedSources.delete(source);
       } else {
-        selectedSites.add(site);
+        selectedSources.add(source);
       }
     }
 
-    // Now update the selectedKeys so each selected site has all its
-    // keys set to true
-    let selectedKeys = cloneDeep(this.state.selectedKeys);
-
-    for (const [species, speciesData] of Object.entries(selectedKeys)) {
-      for (const [network, networkData] of Object.entries(speciesData)) {
-        for (const [site, sectorData] of Object.entries(networkData)) {
-          const value = selectedSites.has(site);
-          for (const dataVar of Object.keys(sectorData)) {
-            selectedKeys[species][network][site][dataVar] = value;
-          }
-        }
-      }
-    }
-
-    this.setState({ selectedKeys: selectedKeys, selectedSites: selectedSites });
+    this.setState({ selectedSources: selectedSources });
   }
 
-  clearSites() {
-    this.setState({ selectedSites: new Set() });
+  clearSources() {
+    this.setState({ selectedSources: new Set() });
   }
 
   speciesSelector(species) {
     const speciesLower = species.toLowerCase();
-    const selectedSitesClone = cloneDeep(this.state.selectedSites);
+
+    const selectedSourcesClone = cloneDeep(this.state.selectedSources);
 
     this.setState({ selectedSites: new Set() }, () => {
-      this.siteSpeciesChange(species, selectedSitesClone);
+      this.siteSpeciesChange(species, selectedSourcesClone);
     });
 
     this.setState({ selectedSpecies: speciesLower });
@@ -151,7 +136,7 @@ class Dashboard extends React.Component {
       newSites.add(site);
     }
 
-    this.siteSelector(newSites);
+    this.sourceSelector(newSites);
   }
 
   toggleOverlay() {
@@ -169,101 +154,89 @@ class Dashboard extends React.Component {
   processData(rawData) {
     // Process the data and create the correct Javascript time objects
     // expected by plotly
+
+    // NOTE - I use data source here, please don't confuse with an OpenGHG Datasource,
     let dataKeys = {};
     let processedData = {};
-    let metadata = {};
 
-    let defaultNetwork = Object.keys(rawData).sort()[0];
-    let defaultSpecies = Object.keys(rawData[defaultNetwork]).sort()[0];
-    let defaultSite = Object.keys(rawData[defaultNetwork][defaultSpecies]).sort()[0];
+    const defaultSpecies = Object.keys(rawData)[0];
+    const defaultSourceKey = Object.keys(rawData[defaultSpecies])[0];
+    const defaultSourceData = rawData[defaultSpecies][defaultSourceKey];
+    const defaultMetadata = defaultSourceData["metadata"];
 
-    // site, inlet, instrument
-    let colourMapping = {};
-    let nColoursNeeded = 0;
+    const defaultSite = defaultMetadata["site"];
+    const defaultInlet = defaultMetadata["inlet"];
+    const defaultInstrument = defaultMetadata["instrument"];
+
+    const colourMap = chroma.scale(["#f94144", "#577590"]).mode("lch").colors(108);
+    let count = 0;
 
     try {
-      for (const [network, networkData] of Object.entries(rawData)) {
-        for (const [species, speciesData] of Object.entries(networkData)) {
-          for (const [site, siteData] of Object.entries(speciesData)) {
-            set(uniqueId, `${network}.${site}`, null);
-            const defaultValue = site === defaultSite;
+      for (const [species, speciesData] of Object.entries(rawData)) {
+        processedData[species] = {};
+        for (const [key, jsonData] of Object.entries(speciesData)) {
+          const timeseriesData = jsonData["data"];
+          const metadata = jsonData["metadata"];
 
-            for (const [instrument, instrumentData] of Object.entries(siteData)) {
-              for (const [inlet, gasData] of Object.entries(instrumentData)) {
-                // Build the colourMapping object so we can create colours for each data source
+          const species = metadata["species"];
+          const rawData = timeseriesData[species];
 
-                set(colourMapping, `${site}.${inlet}.${instrument}`, null);
-                nColoursNeeded++;
+          const x_timestamps = Object.keys(rawData);
+          const x_values = x_timestamps.map((d) => new Date(parseInt(d)));
+          const y_values = Object.values(rawData);
 
-                for (const [dataVar, data] of Object.entries(gasData)) {
-                  if (dataVar === "data") {
-                    const speciesLower = species.toLowerCase();
+          const graphData = {
+            x_values: x_values,
+            y_values: y_values,
+          };
 
-                    // Use lodash set to create the nested structure
-                    set(dataKeys, `${species}.${network}.${site}.${inlet}.${instrument}.${speciesLower}`, defaultValue);
+          processedData[species][key] = {};
+          processedData[species][key]["data"] = graphData;
+          processedData[species][key]["metadata"] = metadata;
+          processedData[species][key]["colour"] = colourMap[count];
 
-                    // We need to use speciesLower here as we've exported the variables
-                    // from a pandas Dataframe and may want errors etc in the future
-                    const timeseriesData = data[speciesLower];
-                    const x_timestamps = Object.keys(timeseriesData);
-                    const x_values = x_timestamps.map((d) => new Date(parseInt(d)));
-                    // Measurement values
-                    const y_values = Object.values(timeseriesData);
-
-                    const graphData = {
-                      x_values: x_values,
-                      y_values: y_values,
-                    };
-
-                    set(
-                      processedData,
-                      `${species}.${network}.${site}.${inlet}.${instrument}.${speciesLower}`,
-                      graphData
-                    );
-                  } else if (dataVar === "metadata") {
-                    set(metadata, `${species}.${network}.${site}`, data);
-                  }
-                }
-              }
-            }
-          }
+          count++
         }
+        
+        // Reuse the colours for now
+        count = 0;
       }
     } catch (error) {
-      console.error("Error reading data: ", error);
+      console.error(`Error processing raw data - ${error}`);
     }
+
+    // Give fixed colours to each data source
+    // Colour tuples for use with Chroma
+    // const colour_start_end = [
+    //     ["#f94144", "#577590"],
+    //     ["#d9ed92", "#184e77"],
+    //     ["#fafa6e", "#2A4858"],
+    //     ["#264653", "#e76f51"],
+    // ];
+
+    // const nColoursNeeded = size(dataTable);
+    // let colourMapping = {};
+    // let nSet = 0;
+    // const nColoursPerSet = 12;
+
+
+
+    // let count = 0;
+    // for(const [species, speciedData] of Object.keys(processedData))
+    // for (const key of Object.keys(processedData)) {
+    //   colourMapping[key] = colourMap[count];
+    //   count++;
+    // }
 
     // Only expecting three networks so use these for now
     // const colourMaps = [schemeTableau10, schemeSet3, schemeDark2];
     // const cool_greens = chroma.scale(["#fafa6e", "#2A4858"]).mode("lch").colors(12);
     // const blue_purple = chroma.scale(["#ffbb44", "#902ac7"]).mode("lch").colors(12);
 
-    // Colour tuples for use with Chroma
-    const colour_start_end = [
-      ["#f94144", "#577590"],
-      ["#d9ed92", "#184e77"],
-      ["#fafa6e", "#2A4858"],
-      ["#264653", "#e76f51"],
-    ];
-
     // https://coolors.co/264653-2a9d8f-e9c46a-f4a261-e76f51
     // https://coolors.co/f94144-f3722c-f8961e-f9c74f-90be6d-43aa8b-577590
     // https://coolors.co/f94144-f3722c-f8961e-f9844a-f9c74f-90be6d-43aa8b-4d908e-577590-277da1
     // ["d9ed92","b5e48c","99d98c","76c893","52b69a","34a0a4","168aad","1a759f","1e6091","184e77"]
-
-    // Assign some colours for the sites
-    let siteIndex = 0;
-    let networkIndex = 0;
-    let siteColours = {};
-
-    for (const [site, siteData] of Object.entries(colourMapping)) {
-      for (const [inlet, inletData] of Object.entries(siteData)) {
-        for (const [instrument, val] of Object.entries(inletData)) {
-          // Let's say we get 8 good colours from a single range
-          siteColours[site][inlet][instrument] = "#fff";
-        }
-      }
-    }
 
     // // Set colours for each of the inlets/instrument/site
     // for (const [network, localSiteData] of Object.entries(processedData)) {
@@ -284,12 +257,13 @@ class Dashboard extends React.Component {
     // Give each site a colour
     this.state.defaultSpecies = defaultSpecies;
     this.state.defaultSite = defaultSite;
-    this.state.selectedSites = new Set([defaultSite]);
+    this.state.defaultInlet = defaultInlet;
+    this.state.defaultInstrument = defaultInstrument;
+    this.state.defaultSourceKey = defaultSourceKey;
+    this.state.selectedSources = new Set([defaultSite]);
     this.state.selectedSpecies = defaultSpecies;
-    this.state.colours = siteColours;
     this.state.processedData = processedData;
     this.state.selectedKeys = dataKeys;
-    this.state.metadata = metadata;
     this.state.isLoaded = true;
     /* eslint-enable react/no-direct-mutation-state */
   }
@@ -318,10 +292,6 @@ class Dashboard extends React.Component {
     //       });
     //     }
     //   );
-  }
-
-  updateSites(selectedSpecies) {
-    // Update the sites shown on the map so only sites with data for the selected species are shown.
   }
 
   anySelected() {
@@ -412,17 +382,16 @@ class Dashboard extends React.Component {
               <Route path="/">
                 <LiveData
                   dataSelector={this.dataSelector}
-                  clearSites={this.clearSites}
+                  clearSources={this.clearSources}
                   speciesSelector={this.speciesSelector}
-                  siteSelector={this.siteSelector}
-                  selectedKeys={this.state.selectedKeys}
+                  sourceSelector={this.sourceSelector}
                   processedData={this.state.processedData}
-                  selectedSites={this.state.selectedSites}
+                  selectedSources={this.state.selectedSources}
+
+                  selectedKeys={this.state.selectedKeys}
                   selectedSpecies={this.state.selectedSpecies}
                   defaultSpecies={this.state.defaultSpecies}
-                  colours={this.state.colours}
                   setSiteOverlay={this.state.setSiteOverlay}
-                  metadata={this.state.metadata}
                 />
               </Route>
             </Switch>

@@ -22,93 +22,83 @@ class LeafletMap extends React.Component {
   }
 
   processSites() {
-    const metadata = this.props.metadata;
-
-    if (!metadata) {
-      return null;
-    }
+    const processedData = this.props.processedData;
+    const selectedSpecies = this.props.selectedSpecies;
 
     let markers = [];
 
-    let seenSites = new Set();
-    const selectedSpecies = this.props.selectedSpecies;
-    //
-    for (const [species, speciesData] of Object.entries(metadata)) {
+    for (const [species, speciesData] of Object.entries(processedData)) {
       if (species !== selectedSpecies) {
         continue;
       }
 
-      for (const [network, networkData] of Object.entries(speciesData)) {
-        for (const [site, value] of Object.entries(networkData)) {
-          if (seenSites.has(site)) {
-            continue;
-          }
+      for (const [key, sourceData] of Object.entries(speciesData)) {
+        const metadata = sourceData["metadata"];
 
-          let marker = null;
-          try {
-            const latitude = value["latitude"];
-            const longitude = value["longitude"];
+        let marker = null;
+        try {
+          const latitude = metadata["latitude"];
+          const longitude = metadata["longitude"];
 
-            const locationStr = `${latitude}, ${longitude}`;
-            const location = [latitude, longitude];
+          const locationStr = `${latitude}, ${longitude}`;
+          const location = [latitude, longitude];
 
-            const networkURL = networkMetadata[network]["url"];
-            const networkName = networkMetadata[network]["long_name"];
-            const siteName = value["long_name"];
+          const siteName = metadata["long_name"];
+          const siteHeight = metadata["magl"];
 
-            const siteHeight = value["magl"];
-
-            let heightSection = null;
-            if (siteHeight && siteHeight !== "NA") {
-              heightSection = (
-                <div>
-                  <br />
-                  Height: {siteHeight}
-                  <br />
-                </div>
-              );
-            }
-
-            const colourHex = this.props.colours[network][site];
-
-            marker = (
-              <CircleMarker
-                key={locationStr}
-                center={location}
-                data={site}
-                eventHandlers={{
-                  click: this.handleClick,
-                }}
-                fillColor={colourHex}
-                color={colourHex}
-                fill={true}
-                fillOpacity={1.0}
-                radius={10}
-              >
-                <Popup>
-                  <div className={styles.marker}>
-                    <div className={styles.markerBody}>
-                      <div className={styles.markerTitle}>{toTitleCase(siteName)}</div>
-                      <br />
-                      {heightSection}
-                      <br />
-                      For more information please visit the&nbsp;
-                      <a href={networkURL} target="_blank" rel="noopener noreferrer">
-                        {networkName} website.
-                      </a>
-                    </div>
-                    <div className={styles.markerLocation}>Location: {locationStr}</div>
-                  </div>
-                </Popup>
-              </CircleMarker>
+          let heightSection = null;
+          if (siteHeight && siteHeight !== "NA") {
+            heightSection = (
+              <div>
+                <br />
+                Height: {siteHeight}
+                <br />
+              </div>
             );
-
-            markers.push(marker);
-            seenSites.add(site);
-          } catch (error) {
-            console.log(error);
-            continue;
           }
+
+          const colourHex = sourceData["colour"];
+
+          marker = (
+            <CircleMarker
+              key={locationStr}
+              center={location}
+              data={key}
+              eventHandlers={{
+                click: this.handleClick,
+              }}
+              fillColor={colourHex}
+              color={colourHex}
+              fill={true}
+              fillOpacity={1.0}
+              radius={10}
+            >
+              <Popup>
+                <div className={styles.marker}>
+                  <div className={styles.markerBody}>
+                    <div className={styles.markerTitle}>{toTitleCase(siteName)}</div>
+                    <br />
+                    {heightSection}
+                    <br />
+                    For more information please visit the&nbsp;
+                    <a
+                      href="https://www.bristol.ac.uk/chemistry/research/acrg/current/decc.html"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      The DECC network website.
+                    </a>
+                  </div>
+                  <div className={styles.markerLocation}>Location: {locationStr}</div>
+                </div>
+              </Popup>
+            </CircleMarker>
+          );
+
+          markers.push(marker);
+        } catch (error) {
+          console.log(error);
+          continue;
         }
       }
     }
