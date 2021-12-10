@@ -14,42 +14,34 @@ import NiceButton from "../NiceButton/NiceButton";
 
 class ObsBox extends React.Component {
   createEmissionsGraphs() {
-    const selectedKeys = this.props.selectedKeys;
     const processedData = this.props.processedData;
-    const selectedSites = this.props.selectedSites;
+    const selectedSources = this.props.selectedSources;
     const selectedSpecies = this.props.selectedSpecies;
-    const metadata = this.props.metadata;
 
-    const noSiteSelected = selectedSites.size === 0;
+    const noSiteSelected = selectedSources.size === 0;
 
     if (noSiteSelected) {
       return <div className={styles.emptyMessage}>Please select a site</div>;
     }
 
-    let speciesEmissions = {};
+    let dataToPlot = {};
     let multiUnits = [];
 
-    if (selectedKeys) {
-      const speciesData = selectedKeys[selectedSpecies];
+    if (selectedSources) {
+      const speciesData = processedData[selectedSpecies];
 
-      for (const [network, networkData] of Object.entries(speciesData)) {
-        for (const [site, sectorData] of Object.entries(networkData)) {
-          for (const [sector, value] of Object.entries(sectorData)) {
-            if (value) {
-              const data = processedData[selectedSpecies][network][site][sector];
-              set(speciesEmissions, `${network}.${site}.${sector}`, data);
+      for (const key of selectedSources) {
+        dataToPlot[key] = speciesData[key];
 
-              try {
-                multiUnits.push(metadata[selectedSpecies][network][site]["units"]);
-              } catch (error) {
-                console.error(`Error reading units - ${error}`);
-              }
-            }
-          }
+        try {
+          const units = speciesData["metadata"]["units"];
+          multiUnits.push(units);
+        } catch (error) {
+          console.error(`Error reading units - ${error}`);
         }
       }
 
-      if (!isEmpty(speciesEmissions)) {
+      if (!isEmpty(dataToPlot)) {
         // Do a quick check to make sure all the units are the same
         let units = "";
         if (new Set(multiUnits).size === 1) {
@@ -58,19 +50,13 @@ class ObsBox extends React.Component {
           console.error(`Multiple units for same species - ${multiUnits}`);
         }
 
-        const key = Object.keys(speciesEmissions).join("-");
+        const key = Object.keys(dataToPlot).join("-");
 
         const widthScale = 0.9;
         const heightScale = 0.9;
 
         // We only set the title of the graph if there's one site selected
         let title = null;
-        // if (this.props.selectedSites.size === 1) {
-        //   let iter = this.props.selectedSites.values();
-        //   const siteName = iter.next().value;
-        //   title = metadata[selectedSpecies][network][siteName]["long_name"];
-        // }
-
         const xLabel = "Date";
         const yLabel = `Concentration${units}`;
 
@@ -79,13 +65,12 @@ class ObsBox extends React.Component {
             <MultiSiteLineChart
               title={title}
               divID={getVisID()}
-              data={speciesEmissions}
+              data={dataToPlot}
               xLabel={xLabel}
               yLabel={yLabel}
               key={key}
               colours={this.props.colours}
               units={units}
-              siteMetadata={this.props.metadata}
               selectedSpecies={this.props.selectedSpecies}
             />
           </GraphContainer>
@@ -100,11 +85,11 @@ class ObsBox extends React.Component {
   }
 
   render() {
-    const siteSelected = this.props.selectedSites.size > 0;
+    const siteSelected = this.props.selectedSources.size > 0;
 
     let clearButton = null;
     if (siteSelected) {
-      clearButton = <NiceButton onClick={this.props.clearSelectedSites}>Clear</NiceButton>;
+      clearButton = <NiceButton onClick={this.props.clearselectedSources}>Clear</NiceButton>;
     }
 
     return (
@@ -130,10 +115,10 @@ ObsBox.propTypes = {
   headerText: PropTypes.string,
   processedData: PropTypes.object,
   selectedKeys: PropTypes.object,
-  selectedSites: PropTypes.object,
+  selectedSources: PropTypes.object,
   selectedSpecies: PropTypes.string,
   speciesSelector: PropTypes.func,
-  clearSelectedSites: PropTypes.func,
+  clearselectedSources: PropTypes.func,
   colours: PropTypes.object.isRequired,
 };
 

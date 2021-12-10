@@ -8,8 +8,6 @@ import { toTitleCase } from "../../util/helpers";
 
 import styles from "./LeafletMap.module.css";
 
-import networkMetadata from "../../data/networkInfo.json";
-
 class LeafletMap extends React.Component {
   constructor(props) {
     super(props);
@@ -18,7 +16,7 @@ class LeafletMap extends React.Component {
   }
 
   handleClick(e) {
-    this.props.siteSelector(e.target.options.data);
+    this.props.sourceSelector(e.target.options.data);
   }
 
   processSites() {
@@ -86,7 +84,7 @@ class LeafletMap extends React.Component {
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      The DECC network website.
+                      the DECC network website.
                     </a>
                   </div>
                   <div className={styles.markerLocation}>Location: {locationStr}</div>

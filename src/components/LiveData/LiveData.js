@@ -19,23 +19,7 @@ class LiveData extends React.Component {
   }
 
   createIntro() {
-    const explanation = `Welcome to the DECC network data dashboard where you can view the latest measurements from sensors across the UK.`;
-    return <ExplanationBox nogap={true} explain={explanation} />;
-  }
-
-  createObsBox() {
-    return (
-      <ObsBox
-        dataSelector={this.props.dataSelector}
-        clearSources={this.props.clearSources}
-        speciesSelector={this.props.speciesSelector}
-        selectedSources={this.props.selectedSources}
-        processedData={this.props.processedData}
-        selectedKeys={this.props.selectedKeys}
-        selectedSpecies={this.props.selectedSpecies}
-        defaultSpecies={this.props.defaultSpecies}
-      />
-    );
+  
   }
 
   render() {
@@ -46,7 +30,16 @@ class LiveData extends React.Component {
       <div className={styles.content}>
         <div className={styles.intro}>{this.createIntro()}</div>
         <div className={styles.timeseries} id="graphContent">
-          {this.createObsBox()}
+          <ObsBox
+            dataSelector={this.props.dataSelector}
+            clearSources={this.props.clearSources}
+            speciesSelector={this.props.speciesSelector}
+            selectedSources={this.props.selectedSources}
+            processedData={this.props.processedData}
+            selectedKeys={this.props.selectedKeys}
+            selectedSpecies={this.props.selectedSpecies}
+            defaultSpecies={this.props.defaultSpecies}
+          />
         </div>
         <div className={styles.mapExplainer}>
           <ObsExplainer />
@@ -60,14 +53,6 @@ class LiveData extends React.Component {
             processedData={this.props.processedData}
             siteInfoOverlay={this.props.setSiteOverlay}
           />
-        </div>
-        <div className={styles.mobileMap}>
-          <GraphContainer divName="densityMapContent">
-            <ScatterMap />
-          </GraphContainer>
-        </div>
-        <div className={styles.mobileExplainer} id="densityMapContent">
-          <MobileExplainer />
         </div>
       </div>
     );
