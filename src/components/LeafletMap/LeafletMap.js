@@ -22,63 +22,62 @@ class LeafletMap extends React.Component {
 
   createMarkers() {
     const processedData = this.props.processedData;
+    const siteStructure = this.props.siteStructure;
     const selectedSpecies = this.props.selectedSpecies;
+
+    const speciesStructure = siteStructure[selectedSpecies];
+    const speciesData = processedData[selectedSpecies];
 
     let markers = [];
 
-    let inletButtons = {};
+    // We want a marker for each site, with selection buttons within the popup
+    for (const [network, siteData] of Object.entries(speciesStructure)) {
+      for (const [site, inletData] of Object.entries(siteData)) {
+        let marker = null;
+        let colour = null;
+        let sourceButtons = [];
+        // The site metadata we require will be the same for each inlet / instrument
+        let siteMetadata = null;
 
-    for (const [species, speciesData] of Object.entries(processedData)) {
-      if (species !== selectedSpecies) {
-        continue;
-      }
+        const buttonStyling = { fontSize: "1.0em" };
 
-      for (const [key, sourceData] of Object.entries(speciesData)) {
-        const metadata = sourceData["metadata"];
+        for (const [inlet, instrumentData] of Object.entries(inletData)) {
+          for (const [instrument, sourceKey] of Object.entries(instrumentData)) {
+            const button = (
+              <TextButton
+                styling="dark"
+                extraStyling={buttonStyling}
+                onClickParam={sourceKey}
+                onClick={this.props.sourceSelector}
+              >
+                {inlet}
+              </TextButton>
+            );
 
-        const site = metadata["site"]
+            sourceButtons.push(button);
 
-        if(!(site in inletButtons)) {
-            inletButtons[site] = [];
+            if (!siteMetadata) {
+              siteMetadata = speciesData[sourceKey]["metadata"];
+            }
+
+            colour = speciesData[sourceKey]["colour"];
+          }
         }
 
-        let marker = null;
         try {
-          const latitude = metadata["latitude"];
-          const longitude = metadata["longitude"];
+          const latitude = siteMetadata["latitude"];
+          const longitude = siteMetadata["longitude"];
 
           const locationStr = `${latitude}, ${longitude}`;
           const location = [latitude, longitude];
-
-          const siteName = metadata["long_name"];
-          const siteHeight = metadata["magl"];
-
-          let heightSection = null;
-          if (siteHeight && siteHeight !== "NA") {
-            heightSection = (
-              <div>
-                <br />
-                Height: {siteHeight}
-                <br />
-              </div>
-            );
-          }
-
-          const colourHex = sourceData["colour"];
-
-          let buttons = [];
-          for 
+          const siteName = siteMetadata["long_name"];
 
           marker = (
             <CircleMarker
               key={locationStr}
               center={location}
-              data={key}
-            //   eventHandlers={{
-            //     click: this.handleClick,
-            //   }}
-              fillColor={colourHex}
-              color={colourHex}
+              fillColor={colour}
+              color={colour}
               fill={true}
               fillOpacity={1.0}
               radius={10}
@@ -87,11 +86,7 @@ class LeafletMap extends React.Component {
                 <div className={styles.marker}>
                   <div className={styles.markerBody}>
                     <div className={styles.markerTitle}>{toTitleCase(siteName)}</div>
-                    <div className={styles.markerButtons}>
-                        <TextButton></TextButton>
-                    </div>
-                    <br />
-                    {heightSection}
+                    <div className={styles.markerButtons}>{sourceButtons}</div>
                     <br />
                     For more information please visit the&nbsp;
                     <a

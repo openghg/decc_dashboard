@@ -51,6 +51,7 @@ class LiveData extends React.Component {
             zoom={5}
             processedData={this.props.processedData}
             siteInfoOverlay={this.props.setSiteOverlay}
+            siteStructure={this.props.siteStructure}
           />
         </div>
       </div>

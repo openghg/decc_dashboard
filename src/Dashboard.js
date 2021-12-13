@@ -1,7 +1,7 @@
 import React from "react";
 import { Switch, Route, Link, HashRouter } from "react-router-dom";
 // import { schemeTableau10, schemeSet3, schemeDark2, schemeAccent } from "d3-scale-chromatic";
-import { cloneDeep, has, set, uniqueId, size } from "lodash";
+import { cloneDeep, has, set, uniqueId, size, defaults } from "lodash";
 
 import ControlPanel from "./components/ControlPanel/ControlPanel";
 import OverlayContainer from "./components/OverlayContainer/OverlayContainer";
@@ -158,47 +158,64 @@ class Dashboard extends React.Component {
     // NOTE - I use data source here, please don't confuse with an OpenGHG Datasource,
     let dataKeys = {};
     let processedData = {};
+    let siteStructure = {};
 
-    const defaultSpecies = Object.keys(rawData)[0];
-    const defaultSourceKey = Object.keys(rawData[defaultSpecies])[0];
-    const defaultSourceData = rawData[defaultSpecies][defaultSourceKey];
-    const defaultMetadata = defaultSourceData["metadata"];
-
-    const defaultSite = defaultMetadata["site"];
-    const defaultInlet = defaultMetadata["inlet"];
-    const defaultInstrument = defaultMetadata["instrument"];
+    let defaultSpecies = null;
+    let defaultSourceKey = null;
+    let defaultNetwork = null;
 
     const colourMap = chroma.scale(["#f94144", "#577590"]).mode("lch").colors(108);
     let count = 0;
 
     try {
-      for (const [species, speciesData] of Object.entries(rawData)) {
-        processedData[species] = {};
-        for (const [key, jsonData] of Object.entries(speciesData)) {
-          const timeseriesData = jsonData["data"];
-          const metadata = jsonData["metadata"];
-
-          const species = metadata["species"];
-          const rawData = timeseriesData[species];
-
-          const x_timestamps = Object.keys(rawData);
-          const x_values = x_timestamps.map((d) => new Date(parseInt(d)));
-          const y_values = Object.values(rawData);
-
-          const graphData = {
-            x_values: x_values,
-            y_values: y_values,
-          };
-
-          processedData[species][key] = {};
-          processedData[species][key]["data"] = graphData;
-          processedData[species][key]["metadata"] = metadata;
-          processedData[species][key]["colour"] = colourMap[count];
-
-          count++
+      for (const [species, networkData] of Object.entries(rawData)) {
+        if (!defaultSpecies) {
+          defaultSpecies = species;
         }
-        
-        // Reuse the colours for now
+        for (const [network, siteData] of Object.entries(networkData)) {
+          if (!defaultNetwork) {
+            defaultNetwork = network;
+          }
+          for (const [site, inletData] of Object.entries(siteData)) {
+            for (const [inlet, instrumentData] of Object.entries(inletData)) {
+              for (const [instrument, measurementData] of Object.entries(instrumentData)) {
+                // Data key
+                const key = `${network}_${site}_${inlet}_${instrument}`;
+                const nestedPath = `${species}.${network}.${site}.${inlet}.${instrument}`;
+
+                if (!defaultSourceKey) {
+                  defaultSourceKey = key;
+                }
+
+                // We create a nested object for easy automated creation of the interface
+                set(siteStructure, nestedPath, key);
+
+                // Create the data structures expected by plotly
+                const timeseriesData = measurementData["data"];
+                const metadata = measurementData["metadata"];
+                const rawData = timeseriesData[species];
+
+                const x_timestamps = Object.keys(rawData);
+                const x_values = x_timestamps.map((d) => new Date(parseInt(d)));
+                const y_values = Object.values(rawData);
+
+                const graphData = {
+                  x_values: x_values,
+                  y_values: y_values,
+                };
+
+                const dataKey = `${species}.${network}_${site}_${inlet}_${instrument}`;
+                const colour = colourMap[count];
+                const combinedData = { data: graphData, metadata: metadata, colour: colour };
+
+                set(processedData, dataKey, combinedData);
+
+                count++;
+              }
+            }
+          }
+        }
+        // Species can share colours for
         count = 0;
       }
     } catch (error) {
@@ -218,8 +235,6 @@ class Dashboard extends React.Component {
     // let colourMapping = {};
     // let nSet = 0;
     // const nColoursPerSet = 12;
-
-
 
     // let count = 0;
     // for(const [species, speciedData] of Object.keys(processedData))
@@ -256,15 +271,14 @@ class Dashboard extends React.Component {
     /* eslint-disable react/no-direct-mutation-state */
     // Give each site a colour
     this.state.defaultSpecies = defaultSpecies;
-    this.state.defaultSite = defaultSite;
-    this.state.defaultInlet = defaultInlet;
-    this.state.defaultInstrument = defaultInstrument;
+    this.state.defaultNetwork = defaultNetwork;
     this.state.defaultSourceKey = defaultSourceKey;
     this.state.selectedSources = new Set([defaultSourceKey]);
     this.state.selectedSpecies = defaultSpecies;
     this.state.processedData = processedData;
     this.state.selectedKeys = dataKeys;
     this.state.isLoaded = true;
+    this.state.siteStructure = siteStructure;
     /* eslint-enable react/no-direct-mutation-state */
   }
 
@@ -387,11 +401,11 @@ class Dashboard extends React.Component {
                   sourceSelector={this.sourceSelector}
                   processedData={this.state.processedData}
                   selectedSources={this.state.selectedSources}
-
                   selectedKeys={this.state.selectedKeys}
                   selectedSpecies={this.state.selectedSpecies}
                   defaultSpecies={this.state.defaultSpecies}
                   setSiteOverlay={this.state.setSiteOverlay}
+                  siteStructure={this.state.siteStructure}
                 />
               </Route>
             </Switch>
