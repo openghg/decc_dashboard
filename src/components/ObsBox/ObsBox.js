@@ -31,7 +31,7 @@ class ObsBox extends React.Component {
         dataToPlot[key] = speciesData[key];
 
         try {
-          const units = speciesData["metadata"]["units"];
+          const units = speciesData[key]["metadata"]["units"];
           multiUnits.push(units);
         } catch (error) {
           console.error(`Error reading units - ${error}`);

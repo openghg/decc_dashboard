@@ -110,33 +110,30 @@ class Dashboard extends React.Component {
     const selectedSourcesClone = cloneDeep(this.state.selectedSources);
 
     this.setState({ selectedSites: new Set() }, () => {
-      this.siteSpeciesChange(species, selectedSourcesClone);
+      this.sourceSpeciesChange(species, selectedSourcesClone);
     });
 
     this.setState({ selectedSpecies: speciesLower });
   }
 
-  siteSpeciesChange(species, oldSelectedSites) {
-    // We want to select a site that has data for this species and show that
+  sourceSpeciesChange(species, oldSelectedSources) {
     const processedData = this.state.processedData;
-    const speciesData = this.state.processedData[species];
+    const speciesData = processedData[species];
 
-    let newSites = new Set();
-    for (const networkData of Object.values(speciesData)) {
-      for (const site of oldSelectedSites) {
-        if (has(networkData, site)) {
-          newSites.add(site);
-        }
+    let newSources = new Set();
+
+    for (const sourceKey of oldSelectedSources) {
+      if (has(speciesData, sourceKey)) {
+        newSources.add(sourceKey);
       }
     }
 
-    if (newSites.size === 0) {
-      const network = Object.keys(processedData[species]).sort()[0];
-      const site = Object.keys(processedData[species][network]).sort()[0];
-      newSites.add(site);
+    if (newSources.size === 0) {
+      const defaultSource = Object.keys(speciesData)[0];
+      newSources.add(defaultSource);
     }
 
-    this.sourceSelector(newSites);
+    this.sourceSelector(newSources);
   }
 
   toggleOverlay() {
@@ -180,15 +177,15 @@ class Dashboard extends React.Component {
             for (const [inlet, instrumentData] of Object.entries(inletData)) {
               for (const [instrument, measurementData] of Object.entries(instrumentData)) {
                 // Data key
-                const key = `${network}_${site}_${inlet}_${instrument}`;
+                const sourceKey = `${network}_${site}_${inlet}_${instrument}`;
                 const nestedPath = `${species}.${network}.${site}.${inlet}.${instrument}`;
 
                 if (!defaultSourceKey) {
-                  defaultSourceKey = key;
+                  defaultSourceKey = sourceKey;
                 }
 
                 // We create a nested object for easy automated creation of the interface
-                set(siteStructure, nestedPath, key);
+                set(siteStructure, nestedPath, sourceKey);
 
                 // Create the data structures expected by plotly
                 const timeseriesData = measurementData["data"];
@@ -204,7 +201,7 @@ class Dashboard extends React.Component {
                   y_values: y_values,
                 };
 
-                const dataKey = `${species}.${network}_${site}_${inlet}_${instrument}`;
+                const dataKey = `${species}.${sourceKey}`;
                 const colour = colourMap[count];
                 const combinedData = { data: graphData, metadata: metadata, colour: colour };
 

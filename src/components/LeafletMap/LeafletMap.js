@@ -17,7 +17,8 @@ class LeafletMap extends React.Component {
   }
 
   handleClick(e) {
-    this.props.sourceSelector(e.target.options.data);
+    // Extract what we want from the event returned by the button click
+    this.props.sourceSelector(e.target.dataset.onclickparam);
   }
 
   createMarkers() {
@@ -48,7 +49,7 @@ class LeafletMap extends React.Component {
                 styling="dark"
                 extraStyling={buttonStyling}
                 onClickParam={sourceKey}
-                onClick={this.props.sourceSelector}
+                onClick={this.handleClick}
               >
                 {inlet}
               </TextButton>
