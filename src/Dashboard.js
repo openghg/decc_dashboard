@@ -1,7 +1,6 @@
 import React from "react";
 import { Switch, Route, Link, HashRouter } from "react-router-dom";
-// import { schemeTableau10, schemeSet3, schemeDark2, schemeAccent } from "d3-scale-chromatic";
-import { cloneDeep, has, set, uniqueId, size, defaults, shuffle } from "lodash";
+import { cloneDeep, has, set, shuffle } from "lodash";
 
 import ControlPanel from "./components/ControlPanel/ControlPanel";
 import OverlayContainer from "./components/OverlayContainer/OverlayContainer";
@@ -243,7 +242,6 @@ class Dashboard extends React.Component {
       console.error(`Error processing raw data - ${error}`);
     }
 
-
     // Disabled the no direct mutation rule here as this only gets called from the constructor
     /* eslint-disable react/no-direct-mutation-state */
     // Give each site a colour
@@ -355,18 +353,12 @@ class Dashboard extends React.Component {
                 <Link to="/" className={styles.navLink}>
                   Live Data
                 </Link>
-                <Link to="/explainer" className={styles.navLink}>
-                  Explainer
-                </Link>
                 <Link to="/FAQ" className={styles.navLink}>
                   FAQ
                 </Link>
               </ControlPanel>
             </aside>
             <Switch>
-              <Route path="/explainer">
-                <Explainer speciesSelector={this.speciesSelector} />
-              </Route>
               <Route path="/FAQ">
                 <FAQ />
               </Route>

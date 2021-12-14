@@ -37,8 +37,8 @@
 .markerButtons {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
   padding-top: 2vh;
+  gap: 1vw;
 }
 
 .markerLocation {

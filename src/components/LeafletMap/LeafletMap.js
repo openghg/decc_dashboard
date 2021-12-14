@@ -87,7 +87,9 @@ class LeafletMap extends React.Component {
                 <div className={styles.marker}>
                   <div className={styles.markerBody}>
                     <div className={styles.markerTitle}>{toTitleCase(siteName)}</div>
-                    <div className={styles.markerButtons}>{sourceButtons}</div>
+                    <div className={styles.markerButtons}>
+                    Select inlet:
+                    {sourceButtons}</div>
                     <br />
                     For more information please visit the&nbsp;
                     <a
