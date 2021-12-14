@@ -1,5 +1,5 @@
 import React from "react";
-import { Switch, Route, Link, HashRouter } from "react-router-dom";
+import { Routes, Route, Link, HashRouter } from "react-router-dom";
 import { cloneDeep, has, set, shuffle } from "lodash";
 
 import ControlPanel from "./components/ControlPanel/ControlPanel";
@@ -358,7 +358,7 @@ class Dashboard extends React.Component {
                 </Link>
               </ControlPanel>
             </aside>
-            <Switch>
+            <Routes>
               <Route path="/FAQ">
                 <FAQ />
               </Route>
@@ -377,7 +377,7 @@ class Dashboard extends React.Component {
                   siteStructure={this.state.siteStructure}
                 />
               </Route>
-            </Switch>
+            </Routes>
             {overlay}
           </div>
         </HashRouter>
