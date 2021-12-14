@@ -1,7 +1,7 @@
 import React from "react";
 import { Switch, Route, Link, HashRouter } from "react-router-dom";
 // import { schemeTableau10, schemeSet3, schemeDark2, schemeAccent } from "d3-scale-chromatic";
-import { cloneDeep, has, set, uniqueId, size, defaults } from "lodash";
+import { cloneDeep, has, set, uniqueId, size, defaults, shuffle } from "lodash";
 
 import ControlPanel from "./components/ControlPanel/ControlPanel";
 import OverlayContainer from "./components/OverlayContainer/OverlayContainer";
@@ -161,7 +161,25 @@ class Dashboard extends React.Component {
     let defaultSourceKey = null;
     let defaultNetwork = null;
 
-    const colourMap = chroma.scale(["#f94144", "#577590"]).mode("lch").colors(108);
+    // Give fixed colours to each data source
+    // Colour tuples for use with Chroma
+    const colour_start_end = [
+      ["#f94144", "#577590"],
+      ["#d9ed92", "#184e77"],
+      ["#fafa6e", "#2A4858"],
+      ["#264653", "#e76f51"],
+    ];
+
+    let unshuffledColours = [];
+    const nColoursPerMap = 9;
+
+    for (const colourPair of colour_start_end) {
+      const cmap = chroma.scale(colourPair).mode("lch").colors(nColoursPerMap);
+      unshuffledColours.push(...cmap);
+    }
+
+    const colours = shuffle(unshuffledColours);
+
     let count = 0;
 
     try {
@@ -202,7 +220,9 @@ class Dashboard extends React.Component {
                 };
 
                 const dataKey = `${species}.${sourceKey}`;
-                const colour = colourMap[count];
+
+                // So we want to jump each site and each instrument
+                const colour = colours[count];
                 const combinedData = { data: graphData, metadata: metadata, colour: colour };
 
                 set(processedData, dataKey, combinedData);
@@ -211,8 +231,12 @@ class Dashboard extends React.Component {
               }
             }
           }
+
+          if (count > colours.length) {
+            count = 0;
+          }
         }
-        // Species can share colours for
+        // Colours can be shared between species as they won't be compared
         count = 0;
       }
     } catch (error) {

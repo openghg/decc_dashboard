@@ -74,8 +74,8 @@ export function importSiteImages() {
       const sansExtension = String(filename).split(".")[0].toUpperCase();
 
       if (sansExtension.length > 3) {
-          console.error("We expect filenames to be three letter site codes");
-          continue;
+        console.error("We expect filenames to be three letter site codes");
+        continue;
       }
 
       siteInfo[sansExtension] = requiredJPGs(path)["default"];
@@ -87,10 +87,7 @@ export function importSiteImages() {
 }
 
 export function toTitleCase(str) {
-  return str.replace(
-    /\w\S*/g,
-    function(txt) {
-      return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-    }
-  );
+  return str.replace(/\w\S*/g, function (txt) {
+    return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+  });
 }
