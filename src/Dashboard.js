@@ -19,7 +19,7 @@ import styles from "./Dashboard.module.css";
 
 // Site description information
 import siteInfoJSON from "./data/siteInfo.json";
-import bsdInlets from "./data/bsd_inlets.json";
+import bsdInlets from "./data/decc_example.json";
 
 class Dashboard extends React.Component {
   constructor(props) {
@@ -243,50 +243,6 @@ class Dashboard extends React.Component {
       console.error(`Error processing raw data - ${error}`);
     }
 
-    // Give fixed colours to each data source
-    // Colour tuples for use with Chroma
-    // const colour_start_end = [
-    //     ["#f94144", "#577590"],
-    //     ["#d9ed92", "#184e77"],
-    //     ["#fafa6e", "#2A4858"],
-    //     ["#264653", "#e76f51"],
-    // ];
-
-    // const nColoursNeeded = size(dataTable);
-    // let colourMapping = {};
-    // let nSet = 0;
-    // const nColoursPerSet = 12;
-
-    // let count = 0;
-    // for(const [species, speciedData] of Object.keys(processedData))
-    // for (const key of Object.keys(processedData)) {
-    //   colourMapping[key] = colourMap[count];
-    //   count++;
-    // }
-
-    // Only expecting three networks so use these for now
-    // const colourMaps = [schemeTableau10, schemeSet3, schemeDark2];
-    // const cool_greens = chroma.scale(["#fafa6e", "#2A4858"]).mode("lch").colors(12);
-    // const blue_purple = chroma.scale(["#ffbb44", "#902ac7"]).mode("lch").colors(12);
-
-    // https://coolors.co/264653-2a9d8f-e9c46a-f4a261-e76f51
-    // https://coolors.co/f94144-f3722c-f8961e-f9c74f-90be6d-43aa8b-577590
-    // https://coolors.co/f94144-f3722c-f8961e-f9844a-f9c74f-90be6d-43aa8b-4d908e-577590-277da1
-    // ["d9ed92","b5e48c","99d98c","76c893","52b69a","34a0a4","168aad","1a759f","1e6091","184e77"]
-
-    // // Set colours for each of the inlets/instrument/site
-    // for (const [network, localSiteData] of Object.entries(processedData)) {
-    //   const nSites = Object.keys(localSiteData).length;
-    //   const start_end = colour_start_end[networkIndex];
-    //   const colorMap = chroma.scale(start_end).mode("lch").colors(nSites);
-    //   for (const site of Object.keys(localSiteData)) {
-    //     const colourCode = colorMap[siteIndex];
-    //     set(siteColours, `${network}.${site}`, colourCode);
-    //     siteIndex++;
-    //   }
-    //   networkIndex++;
-    //   siteIndex = 0;
-    // }
 
     // Disabled the no direct mutation rule here as this only gets called from the constructor
     /* eslint-disable react/no-direct-mutation-state */
