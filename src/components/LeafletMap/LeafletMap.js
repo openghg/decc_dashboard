@@ -32,8 +32,8 @@ class LeafletMap extends React.Component {
     let markers = [];
 
     // We want a marker for each site, with selection buttons within the popup
-    for (const [network, siteData] of Object.entries(speciesStructure)) {
-      for (const [site, inletData] of Object.entries(siteData)) {
+    for (const siteData of Object.values(speciesStructure)) {
+      for (const inletData of Object.values(siteData)) {
         let marker = null;
         let colour = null;
         let sourceButtons = [];
@@ -43,7 +43,7 @@ class LeafletMap extends React.Component {
         const buttonStyling = { fontSize: "1.0em" };
 
         for (const [inlet, instrumentData] of Object.entries(inletData)) {
-          for (const [instrument, sourceKey] of Object.entries(instrumentData)) {
+          for (const sourceKey of Object.values(instrumentData)) {
             const button = (
               <TextButton
                 styling="dark"

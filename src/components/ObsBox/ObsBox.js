@@ -89,12 +89,14 @@ class ObsBox extends React.Component {
       clearButton = <NiceButton onClick={this.props.clearselectedSources}>Clear</NiceButton>;
     }
 
+    const availableSpecies = Object.keys(this.props.processedData)
+
     return (
       <div className={styles.container}>
         <div className={styles.select}>
           <RadioButtons
             onChange={this.props.speciesSelector}
-            options={this.props.selectedKeys}
+            options={availableSpecies}
             selected={this.props.selectedSpecies}
           />
           <div className={styles.clearButton}>{clearButton}</div>
@@ -104,19 +106,5 @@ class ObsBox extends React.Component {
     );
   }
 }
-
-ObsBox.propTypes = {
-  bodyText: PropTypes.string,
-  dataSelector: PropTypes.func,
-  defaultSpecies: PropTypes.string,
-  headerText: PropTypes.string,
-  processedData: PropTypes.object,
-  selectedKeys: PropTypes.object,
-  selectedSources: PropTypes.object,
-  selectedSpecies: PropTypes.string,
-  speciesSelector: PropTypes.func,
-  clearselectedSources: PropTypes.func,
-  colours: PropTypes.object.isRequired,
-};
 
 export default ObsBox;
