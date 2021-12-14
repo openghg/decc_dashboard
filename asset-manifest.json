@@ -1,0 +1,19 @@
+{
+  "files": {
+    "main.css": "/decc_dashboard/static/css/main.d2d898ef.css",
+    "main.js": "/decc_dashboard/static/js/main.ae354317.js",
+    "static/js/787.05d991be.chunk.js": "/decc_dashboard/static/js/787.05d991be.chunk.js",
+    "static/media/OpenGHG_Logo_Portrait.svg": "/decc_dashboard/static/media/OpenGHG_Logo_Portrait.8f15efa532c0a56f254c55d664b05d81.svg",
+    "static/media/BTT.jpg": "/decc_dashboard/static/media/BTT.611f21ae0727cc327572.jpg",
+    "static/media/NPL.jpg": "/decc_dashboard/static/media/NPL.611f21ae0727cc327572.jpg",
+    "static/media/TMB.jpg": "/decc_dashboard/static/media/TMB.611f21ae0727cc327572.jpg",
+    "index.html": "/decc_dashboard/index.html",
+    "main.d2d898ef.css.map": "/decc_dashboard/static/css/main.d2d898ef.css.map",
+    "main.ae354317.js.map": "/decc_dashboard/static/js/main.ae354317.js.map",
+    "787.05d991be.chunk.js.map": "/decc_dashboard/static/js/787.05d991be.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.d2d898ef.css",
+    "static/js/main.ae354317.js"
+  ]
+}
