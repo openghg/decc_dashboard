@@ -59,20 +59,4 @@ class LiveData extends React.Component {
   }
 }
 
-LiveData.propTypes = {
-  clearSites: PropTypes.func,
-  colours: PropTypes.object,
-  dataSelector: PropTypes.func,
-  defaultSpecies: PropTypes.string,
-  processedData: PropTypes.object,
-  selectedKeys: PropTypes.object,
-  selectedSites: PropTypes.object,
-  selectedSpecies: PropTypes.string,
-  setSiteOverlay: PropTypes.func,
-  siteData: PropTypes.object,
-  siteSelector: PropTypes.func,
-  sites: PropTypes.object,
-  speciesSelector: PropTypes.func,
-};
-
 export default LiveData;

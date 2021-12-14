@@ -109,7 +109,7 @@ class Dashboard extends React.Component {
 
     const selectedSourcesClone = cloneDeep(this.state.selectedSources);
 
-    this.setState({ selectedSites: new Set() }, () => {
+    this.setState({ selectedSources: new Set() }, () => {
       this.sourceSpeciesChange(species, selectedSourcesClone);
     });
 
