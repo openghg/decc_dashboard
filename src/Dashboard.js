@@ -9,7 +9,6 @@ import TextButton from "./components/TextButton/TextButton";
 import Overlay from "./components/Overlay/Overlay";
 import FAQ from "./components/FAQ/FAQ";
 import LiveData from "./components/LiveData/LiveData";
-import Explainer from "./components/Explainer/Explainer";
 
 import chroma from "chroma-js";
 
@@ -333,6 +332,22 @@ class Dashboard extends React.Component {
         </div>
       );
     } else {
+      const liveData = (
+        <LiveData
+          dataSelector={this.dataSelector}
+          clearSources={this.clearSources}
+          speciesSelector={this.speciesSelector}
+          sourceSelector={this.sourceSelector}
+          processedData={this.state.processedData}
+          selectedSources={this.state.selectedSources}
+          selectedKeys={this.state.selectedKeys}
+          selectedSpecies={this.state.selectedSpecies}
+          defaultSpecies={this.state.defaultSpecies}
+          setSiteOverlay={this.state.setSiteOverlay}
+          siteStructure={this.state.siteStructure}
+        />
+      );
+
       return (
         <HashRouter>
           <div className={styles.gridContainer}>
@@ -359,24 +374,8 @@ class Dashboard extends React.Component {
               </ControlPanel>
             </aside>
             <Routes>
-              <Route path="/FAQ">
-                <FAQ />
-              </Route>
-              <Route path="/">
-                <LiveData
-                  dataSelector={this.dataSelector}
-                  clearSources={this.clearSources}
-                  speciesSelector={this.speciesSelector}
-                  sourceSelector={this.sourceSelector}
-                  processedData={this.state.processedData}
-                  selectedSources={this.state.selectedSources}
-                  selectedKeys={this.state.selectedKeys}
-                  selectedSpecies={this.state.selectedSpecies}
-                  defaultSpecies={this.state.defaultSpecies}
-                  setSiteOverlay={this.state.setSiteOverlay}
-                  siteStructure={this.state.siteStructure}
-                />
-              </Route>
+              <Route path="/FAQ" element={<FAQ />} />
+              <Route path="/" element={liveData} />
             </Routes>
             {overlay}
           </div>
