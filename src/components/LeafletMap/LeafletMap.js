@@ -5,10 +5,9 @@ import { LayerGroup, MapContainer, ImageOverlay, TileLayer, CircleMarker, Popup 
 // import "./LeafletMapResponsive.css";
 
 import { toTitleCase } from "../../util/helpers";
+import TextButton from "../TextButton/TextButton";
 
 import styles from "./LeafletMap.module.css";
-
-import networkMetadata from "../../data/networkInfo.json";
 
 class LeafletMap extends React.Component {
   constructor(props) {
@@ -18,97 +17,99 @@ class LeafletMap extends React.Component {
   }
 
   handleClick(e) {
-    this.props.siteSelector(e.target.options.data);
+    // Extract what we want from the event returned by the button click
+    this.props.sourceSelector(e.target.dataset.onclickparam);
   }
 
-  processSites() {
-    const metadata = this.props.metadata;
+  createMarkers() {
+    const processedData = this.props.processedData;
+    const siteStructure = this.props.siteStructure;
+    const selectedSpecies = this.props.selectedSpecies;
 
-    if (!metadata) {
-      return null;
-    }
+    const speciesStructure = siteStructure[selectedSpecies];
+    const speciesData = processedData[selectedSpecies];
 
     let markers = [];
 
-    let seenSites = new Set();
-    const selectedSpecies = this.props.selectedSpecies;
-    //
-    for (const [species, speciesData] of Object.entries(metadata)) {
-      if (species !== selectedSpecies) {
-        continue;
-      }
+    // We want a marker for each site, with selection buttons within the popup
+    for (const siteData of Object.values(speciesStructure)) {
+      for (const inletData of Object.values(siteData)) {
+        let marker = null;
+        let colour = null;
+        let sourceButtons = [];
+        // The site metadata we require will be the same for each inlet / instrument
+        let siteMetadata = null;
 
-      for (const [network, networkData] of Object.entries(speciesData)) {
-        for (const [site, value] of Object.entries(networkData)) {
-          if (seenSites.has(site)) {
-            continue;
-          }
+        const buttonStyling = { fontSize: "1.0em" };
 
-          let marker = null;
-          try {
-            const latitude = value["latitude"];
-            const longitude = value["longitude"];
-
-            const locationStr = `${latitude}, ${longitude}`;
-            const location = [latitude, longitude];
-
-            const networkURL = networkMetadata[network]["url"];
-            const networkName = networkMetadata[network]["long_name"];
-            const siteName = value["long_name"];
-
-            const siteHeight = value["magl"];
-
-            let heightSection = null;
-            if (siteHeight && siteHeight !== "NA") {
-              heightSection = (
-                <div>
-                  <br />
-                  Height: {siteHeight}
-                  <br />
-                </div>
-              );
-            }
-
-            const colourHex = this.props.colours[network][site];
-
-            marker = (
-              <CircleMarker
-                key={locationStr}
-                center={location}
-                data={site}
-                eventHandlers={{
-                  click: this.handleClick,
-                }}
-                fillColor={colourHex}
-                color={colourHex}
-                fill={true}
-                fillOpacity={1.0}
-                radius={10}
+        for (const [inlet, instrumentData] of Object.entries(inletData)) {
+          for (const sourceKey of Object.values(instrumentData)) {
+            const button = (
+              <TextButton
+                styling="dark"
+                extraStyling={buttonStyling}
+                onClickParam={sourceKey}
+                onClick={this.handleClick}
               >
-                <Popup>
-                  <div className={styles.marker}>
-                    <div className={styles.markerBody}>
-                      <div className={styles.markerTitle}>{toTitleCase(siteName)}</div>
-                      <br />
-                      {heightSection}
-                      <br />
-                      For more information please visit the&nbsp;
-                      <a href={networkURL} target="_blank" rel="noopener noreferrer">
-                        {networkName} website.
-                      </a>
-                    </div>
-                    <div className={styles.markerLocation}>Location: {locationStr}</div>
-                  </div>
-                </Popup>
-              </CircleMarker>
+                {inlet}
+              </TextButton>
             );
 
-            markers.push(marker);
-            seenSites.add(site);
-          } catch (error) {
-            console.log(error);
-            continue;
+            sourceButtons.push(button);
+
+            if (!siteMetadata) {
+              siteMetadata = speciesData[sourceKey]["metadata"];
+            }
+
+            colour = speciesData[sourceKey]["colour"];
           }
+        }
+
+        try {
+          const latitude = siteMetadata["latitude"];
+          const longitude = siteMetadata["longitude"];
+
+          const locationStr = `${latitude}, ${longitude}`;
+          const location = [latitude, longitude];
+          const siteName = siteMetadata["long_name"];
+
+          marker = (
+            <CircleMarker
+              key={locationStr}
+              center={location}
+              fillColor={colour}
+              color={colour}
+              fill={true}
+              fillOpacity={1.0}
+              radius={10}
+            >
+              <Popup>
+                <div className={styles.marker}>
+                  <div className={styles.markerBody}>
+                    <div className={styles.markerTitle}>{toTitleCase(siteName)}</div>
+                    <div className={styles.markerButtons}>
+                    Select inlet:
+                    {sourceButtons}</div>
+                    <br />
+                    For more information please visit the&nbsp;
+                    <a
+                      href="https://www.bristol.ac.uk/chemistry/research/acrg/current/decc.html"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      the DECC network website.
+                    </a>
+                  </div>
+                  <div className={styles.markerLocation}>Location: {locationStr}</div>
+                </div>
+              </Popup>
+            </CircleMarker>
+          );
+
+          markers.push(marker);
+        } catch (error) {
+          console.log(error);
+          continue;
         }
       }
     }
@@ -134,7 +135,7 @@ class LeafletMap extends React.Component {
       attribution = extraAttr + attrTiles;
     }
 
-    const markers = this.processSites();
+    const markers = this.createMarkers();
     const zoom = this.props.zoom ? this.props.zoom : 5;
 
     const style = { width: "90%" };

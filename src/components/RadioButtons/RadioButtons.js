@@ -14,10 +14,8 @@ class RadioButtons extends React.Component {
   }
 
   render() {
-    const options = this.props.options;
-
     let buttons = [];
-    for (const option of Object.keys(options)) {
+    for (const option of this.props.options) {
       const checked = option === this.props.selected;
 
       const optionUpper = option.toUpperCase();

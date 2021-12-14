@@ -23,7 +23,7 @@
 }
 
 .markerTitle {
-  font-size: 1.0em;
+  font-size: 1em;
   font-weight: 600;
 }
 
@@ -32,6 +32,13 @@
   font-weight: 300;
   padding-bottom: 1vh;
   gap: 1vh;
+}
+
+.markerButtons {
+  display: flex;
+  flex-direction: row;
+  padding-top: 2vh;
+  gap: 1vw;
 }
 
 .markerLocation {

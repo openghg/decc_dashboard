@@ -4,7 +4,6 @@ import Plot from "react-plotly.js";
 import { toTitleCase } from "../../util/helpers";
 import styles from "./MultiSiteLineChart.module.css";
 
-
 class MultiSiteLineChart extends React.Component {
   render() {
     let plotData = [];
@@ -12,53 +11,53 @@ class MultiSiteLineChart extends React.Component {
     let minY = Infinity;
 
     const data = this.props.data;
-    const selectedSpecies = this.props.selectedSpecies;
 
-    for (const [network, networkData] of Object.entries(data)) {
-      for (const [site, siteData] of Object.entries(networkData)) {
-        for (const sectorData of Object.values(siteData)) {
-          const metadata = this.props.siteMetadata[selectedSpecies][network][site];
-          const xValues = sectorData["x_values"];
-          const yValues = sectorData["y_values"];
+    for (const sourceData of Object.values(data)) {
+      const metadata = sourceData["metadata"];
+      const measurementData = sourceData["data"];
 
-          const max = Math.max(...yValues);
-          const min = Math.min(...yValues);
+      const xValues = measurementData["x_values"];
+      const yValues = measurementData["y_values"];
 
-          if (max > maxY) {
-            maxY = max;
-          }
+      const max = Math.max(...yValues);
+      const min = Math.min(...yValues);
 
-          if (min < minY) {
-            minY = min;
-          }
-
-          // Set the name for the legend
-          let name = null;
-          try {
-            name = toTitleCase(metadata["long_name"]);
-          } catch (error) {
-            console.error(`Error reading name for legend - ${error}`);
-          }
-
-          const colour = this.props.colours[network][site];
-          const units = this.props.units;
-
-          const trace = {
-            x: xValues,
-            y: yValues,
-            units: this.props.units,
-            mode: "lines",
-            line: {
-              width: 1,
-              color: colour,
-            },
-            name: `<b>${name}</b>`,
-            hovertemplate: `<b>Date</b>: %{x} <br><b>Concentration: </b>: %{y:.2f} ${units}<br>`,
-          };
-
-          plotData.push(trace);
-        }
+      if (max > maxY) {
+        maxY = max;
       }
+
+      if (min < minY) {
+        minY = min;
+      }
+
+      // Set the name for the legend
+      let name = null;
+      try {
+        const siteName = metadata["long_name"];
+        const inlet = metadata["inlet"];
+
+        name = `${toTitleCase(siteName)} - ${inlet}`;
+      } catch (error) {
+        console.error(`Error reading name for legend - ${error}`);
+      }
+
+      const colour = sourceData["colour"];
+      const units = metadata["units"];
+
+      const trace = {
+        x: xValues,
+        y: yValues,
+        units: units,
+        mode: "lines",
+        line: {
+          width: 1,
+          color: colour,
+        },
+        name: `<b>${name}</b>`,
+        hovertemplate: `<b>Date</b>: %{x} <br><b>Concentration: </b>: %{y:.2f} ${units}<br>`,
+      };
+
+      plotData.push(trace);
     }
 
     let dateMarkObject = null;

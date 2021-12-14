@@ -6,74 +6,46 @@ import LeafletMap from "../LeafletMap/LeafletMap";
 import styles from "../../Dashboard.module.css";
 import ObsBox from "../ObsBox/ObsBox";
 import ObsExplainer from "../ObsExplainer/ObsExplainer";
-import GraphContainer from "../GraphContainer/GraphContainer";
-import MobileExplainer from "../MobileExplainer/MobileExplainer";
-import ScatterMap from "../ScatterMap/ScatterMap";
 
 class LiveData extends React.Component {
   createMapExplainer() {
-    const header = "Observations";
-    const explainer = `• Greenhouse gas concentrations are monitored from a network of sites across the city.\n
-    • Measurements are made of carbon dioxide and methane, the most important greenhouse gases.\n
-    • Scientists are using these observations to learn more about the UK's methane emissions.\n
-    Start exploring the measurements by selecting a site from the map`;
+    const header = "Atmospheric Monitoring & Verification of the UK’s GHG Inventory";
+    const explainer = `The UK DECC (Deriving Emissions linked to Climate Change) Network consists of four sites in the UK and Ireland measuring 
+    greenhouse and ozone depleting gases from tall telecommunication towers.`;
     return <ExplanationBox header={header} explain={explainer} split={true} />;
   }
 
-  createIntro() {
-    const explanation = `Welcome to the COP 26 greenhouse gas data dashboard, where you can view atmospheric greenhouse gas measurements made in Glasgow before and during the COP 26 event.`;
-    return <ExplanationBox nogap={true} explain={explanation} />;
-  }
-
-  createObsBox() {
-    return (
-      <ObsBox
-        dataSelector={this.props.dataSelector}
-        clearSelectedSites={this.props.clearSites}
-        speciesSelector={this.props.speciesSelector}
-        selectedKeys={this.props.selectedKeys}
-        processedData={this.props.processedData}
-        selectedSites={this.props.selectedSites}
-        selectedSpecies={this.props.selectedSpecies}
-        defaultSpecies={this.props.defaultSpecies}
-        colours={this.props.colours}
-        metadata={this.props.metadata}
-        // sites={this.props.sites}
-      />
-    );
-  }
+  createIntro() {}
 
   render() {
-    // Map centre lat/long
-    const mapCentre = [55.861, -4.248];
+    const mapCentre = [54.5168, -2.5645]; // lat / long
 
     return (
       <div className={styles.content}>
         <div className={styles.intro}>{this.createIntro()}</div>
         <div className={styles.timeseries} id="graphContent">
-          {this.createObsBox()}
+          <ObsBox
+            clearSources={this.props.clearSources}
+            speciesSelector={this.props.speciesSelector}
+            selectedSources={this.props.selectedSources}
+            processedData={this.props.processedData}
+            selectedSpecies={this.props.selectedSpecies}
+            defaultSpecies={this.props.defaultSpecies}
+          />
         </div>
         <div className={styles.mapExplainer}>
           <ObsExplainer />
         </div>
         <div className={styles.siteMap}>
           <LeafletMap
-            siteSelector={this.props.siteSelector}
-            metadata={this.props.metadata}
+            sourceSelector={this.props.sourceSelector}
             selectedSpecies={this.props.selectedSpecies}
             centre={mapCentre}
-            zoom={9}
-            colours={this.props.colours}
+            zoom={5}
+            processedData={this.props.processedData}
             siteInfoOverlay={this.props.setSiteOverlay}
+            siteStructure={this.props.siteStructure}
           />
-        </div>
-        <div className={styles.mobileMap}>
-          <GraphContainer divName="densityMapContent">
-            <ScatterMap />
-          </GraphContainer>
-        </div>
-        <div className={styles.mobileExplainer} id="densityMapContent">
-          <MobileExplainer />
         </div>
       </div>
     );
@@ -81,19 +53,15 @@ class LiveData extends React.Component {
 }
 
 LiveData.propTypes = {
-  clearSites: PropTypes.func,
-  colours: PropTypes.object,
-  dataSelector: PropTypes.func,
-  defaultSpecies: PropTypes.string,
-  processedData: PropTypes.object,
-  selectedKeys: PropTypes.object,
-  selectedSites: PropTypes.object,
-  selectedSpecies: PropTypes.string,
-  setSiteOverlay: PropTypes.func,
-  siteData: PropTypes.object,
-  siteSelector: PropTypes.func,
-  sites: PropTypes.object,
-  speciesSelector: PropTypes.func,
+  clearSources: PropTypes.func.isRequired,
+  defaultSpecies: PropTypes.string.isRequired,
+  processedData: PropTypes.object.isRequired,
+  selectedSources: PropTypes.object.isRequired,
+  selectedSpecies: PropTypes.string.isRequired,
+  setSiteOverlay: PropTypes.func.isRequired,
+  siteStructure: PropTypes.object.isRequired,
+  sourceSelector: PropTypes.func.isRequired,
+  speciesSelector: PropTypes.func.isRequired,
 };
 
 export default LiveData;

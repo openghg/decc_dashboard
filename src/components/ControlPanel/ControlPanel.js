@@ -37,12 +37,12 @@ class ControlPanel extends React.Component {
           </TextButton>
         </div>
         <div className={styles.header}>
-          <div className={styles.headerText}>Greenhouse gas data dashboard</div>
+          <div className={styles.headerText}>DECC network dashboard</div>
           <div className={styles.headerTag}>by OpenGHG</div>
         </div>
         <div className={styles.content}>{this.props.children}</div>
         <div className={styles.footer}>
-          <a href="https://github.com/openghg/dashboard" rel="noreferrer" target="_blank">
+          <a href="https://github.com/openghg/decc_dashboard" rel="noreferrer" target="_blank">
             <img src={OpenGHGLogo} alt="OpenGHG Logo" />
           </a>
         </div>

@@ -16,17 +16,16 @@ class TextButton extends React.Component {
     }
 
     // Shoehorn another way of doing this in
-    if(this.props.selected) {
+    if (this.props.selected) {
       style = styles.dark;
     }
 
     const extraStyling = this.props.extraStyling ? this.props.extraStyling : {};
-    const onClickParam = this.props.onClickParam;
 
     return (
       <button
         type="button"
-        data-onclickparam={onClickParam}
+        data-onclickparam={this.props.onClickParam}
         className={style}
         style={extraStyling}
         onClick={this.props.onClick}
@@ -43,7 +42,7 @@ TextButton.propTypes = {
   onClick: PropTypes.func.isRequired,
   onClickParam: PropTypes.string,
   selected: PropTypes.bool,
-  styling: PropTypes.string
+  styling: PropTypes.string,
 };
 
 export default TextButton;

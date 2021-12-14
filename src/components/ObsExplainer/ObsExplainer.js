@@ -9,53 +9,15 @@ class ObsExplainer extends React.Component {
 
     return (
       <div className={style}>
-        <div className={styles.header}>Observations</div>
+        <div className={styles.header}>Atmospheric Monitoring & Verification of the UK’s GHG Inventory</div>
         <div className={styles.explain}>
-          <li>Greenhouse gas concentrations are monitored from a network of sites across the city.</li>
-          <li>Measurements are made of carbon dioxide and methane, the most important greenhouse gases.</li>
-          <li>Scientists are using these observations to learn more about the UK's greenhouse gas emissions.</li>
-
           <li>
-            Partners on this project are the&nbsp;
-            <a
-              href="https://www.bristol.ac.uk/chemistry/research/acrg/current/decc.html"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              UK DECC network
-            </a>
-            ,&nbsp;
-            <a href="https://www.bristol.ac.uk/chemistry/research/acrg/" target="_blank" rel="noopener noreferrer">
-              University of Bristol
-            </a>
-            ,&nbsp;
-            <a href="https://www.npl.co.uk/emissions-atmospheric-metrology" target="_blank" rel="noopener noreferrer">
-              National Physical Laboratory
-            </a>
-            ,&nbsp;
-            <a href="http://beacon.berkeley.edu/about/" target="_blank" rel="noopener noreferrer">
-              BEACO2N
-            </a>
-            ,&nbsp;
-            <a
-              href="https://www.royalholloway.ac.uk/research-and-teaching/departments-and-schools/earth-sciences/research/research-laboratories/greenhouse-gas-laboratory/"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Royal Holloway University of London
-            </a>
-            ,&nbsp;
-            <a href="https://www.ch.cam.ac.uk/group/atm/" target="_blank" rel="noopener noreferrer">
-              University of Cambridge
-            </a>
-            ,&nbsp;and&nbsp;
-            <a
-              href="https://www.strath.ac.uk/workwithus/globalenvironmentalmeasurementmonitoring/"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              University of Strathclyde.
-            </a>
+            The UK DECC (Deriving Emissions linked to Climate Change) Network consists of four sites in the UK and
+            Ireland measuring greenhouse and ozone depleting gases from tall telecommunication towers.
+          </li>
+          <li>
+            High-frequency measurements of all major greenhouse gases (including carbon dioxide, methane, nitrous oxide,
+            sulfur hexafluoride and a suite of halocarbons) are made at these sites.
           </li>
           <li>Start exploring the measurements by selecting a site from the map</li>
         </div>
