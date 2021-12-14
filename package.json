@@ -1,6 +1,6 @@
 {
-  "name": "openghg_dashboard",
-  "homepage": "http://openghg.github.io/dashboard",
+  "name": "decc_dashboard",
+  "homepage": "http://openghg.github.io/decc_dashboard",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -9,7 +9,6 @@
     "chroma-js": "^2.1.2",
     "d3": "^7.2.1",
     "d3-color": "^3.0.1",
-    "gh-pages": "^3.2.3",
     "leaflet": "^1.7.1",
     "lodash": "^4.17.21",
     "nanoid": "^3.1.30",
@@ -57,6 +56,7 @@
     ]
   },
   "devDependencies": {
+    "gh-pages": "^3.2.3",
     "@testing-library/jest-dom": "^5.16.1",
     "@testing-library/react": "^12.1.2",
     "@testing-library/user-event": "^13.5.0",

@@ -6,9 +6,6 @@ import LeafletMap from "../LeafletMap/LeafletMap";
 import styles from "../../Dashboard.module.css";
 import ObsBox from "../ObsBox/ObsBox";
 import ObsExplainer from "../ObsExplainer/ObsExplainer";
-import GraphContainer from "../GraphContainer/GraphContainer";
-import MobileExplainer from "../MobileExplainer/MobileExplainer";
-import ScatterMap from "../ScatterMap/ScatterMap";
 
 class LiveData extends React.Component {
   createMapExplainer() {
@@ -18,9 +15,7 @@ class LiveData extends React.Component {
     return <ExplanationBox header={header} explain={explainer} split={true} />;
   }
 
-  createIntro() {
-  
-  }
+  createIntro() {}
 
   render() {
     const mapCentre = [54.5168, -2.5645]; // lat / long
@@ -30,12 +25,10 @@ class LiveData extends React.Component {
         <div className={styles.intro}>{this.createIntro()}</div>
         <div className={styles.timeseries} id="graphContent">
           <ObsBox
-            dataSelector={this.props.dataSelector}
             clearSources={this.props.clearSources}
             speciesSelector={this.props.speciesSelector}
             selectedSources={this.props.selectedSources}
             processedData={this.props.processedData}
-            selectedKeys={this.props.selectedKeys}
             selectedSpecies={this.props.selectedSpecies}
             defaultSpecies={this.props.defaultSpecies}
           />
@@ -58,5 +51,17 @@ class LiveData extends React.Component {
     );
   }
 }
+
+LiveData.propTypes = {
+  clearSources: PropTypes.func.isRequired,
+  defaultSpecies: PropTypes.string.isRequired,
+  processedData: PropTypes.object.isRequired,
+  selectedSources: PropTypes.object.isRequired,
+  selectedSpecies: PropTypes.string.isRequired,
+  setSiteOverlay: PropTypes.func.isRequired,
+  siteStructure: PropTypes.object.isRequired,
+  sourceSelector: PropTypes.func.isRequired,
+  speciesSelector: PropTypes.func.isRequired,
+};
 
 export default LiveData;

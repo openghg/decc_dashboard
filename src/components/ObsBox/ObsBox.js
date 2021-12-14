@@ -66,7 +66,6 @@ class ObsBox extends React.Component {
               xLabel={xLabel}
               yLabel={yLabel}
               key={key}
-              colours={this.props.colours}
               units={units}
               selectedSpecies={this.props.selectedSpecies}
             />
@@ -89,7 +88,7 @@ class ObsBox extends React.Component {
       clearButton = <NiceButton onClick={this.props.clearSources}>Clear</NiceButton>;
     }
 
-    const availableSpecies = Object.keys(this.props.processedData)
+    const availableSpecies = Object.keys(this.props.processedData);
 
     return (
       <div className={styles.container}>
@@ -106,5 +105,13 @@ class ObsBox extends React.Component {
     );
   }
 }
+
+ObsBox.propTypes = {
+  clearSources: PropTypes.func.isRequired,
+  processedData: PropTypes.object.isRequired,
+  selectedSources: PropTypes.object.isRequired,
+  selectedSpecies: PropTypes.string.isRequired,
+  speciesSelector: PropTypes.func.isRequired,
+};
 
 export default ObsBox;

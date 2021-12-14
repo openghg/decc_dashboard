@@ -17,7 +17,7 @@ import styles from "./Dashboard.module.css";
 
 // Site description information
 import siteInfoJSON from "./data/siteInfo.json";
-import bsdInlets from "./data/decc_example.json";
+import deccMeasData from "./data/decc_example.json";
 
 class Dashboard extends React.Component {
   constructor(props) {
@@ -261,7 +261,7 @@ class Dashboard extends React.Component {
   }
 
   componentDidMount() {
-    this.processData(bsdInlets);
+    this.processData(deccMeasData);
     this.setState({ isLoaded: true });
     // const apiURL = "https://raw.githubusercontent.com/openghg/dashboard_data/main/combined_data.json";
     // fetch(apiURL)
