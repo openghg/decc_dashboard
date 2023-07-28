@@ -157,8 +157,6 @@ class Dashboard extends React.Component {
     let defaultSourceKey = null;
     let defaultNetwork = null;
 
-    let count = 0;
-
     try {
       for (const [species, networkData] of Object.entries(rawData)) {
         if (!defaultSpecies) {
