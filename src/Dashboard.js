@@ -162,10 +162,10 @@ class Dashboard extends React.Component {
     // Give fixed colours to each data source
     // Colour tuples for use with Chroma
     const colour_start_end = [
-      ["#f94144", "#577590"],
-      ["#d9ed92", "#184e77"],
-      ["#fafa6e", "#2A4858"],
-      ["#264653", "#e76f51"],
+      ["#22A699", "#577590"],
+      ["#F29727", "#184e77"],
+      ["#111D5E", "#2A4858"],
+      ["#111D5E", "#e76f51"],
     ];
 
     let unshuffledColours = [];
@@ -176,7 +176,7 @@ class Dashboard extends React.Component {
       unshuffledColours.push(...cmap);
     }
 
-    const colours = shuffle(unshuffledColours);
+    const colours = unshuffledColours;
 
     let count = 0;
 

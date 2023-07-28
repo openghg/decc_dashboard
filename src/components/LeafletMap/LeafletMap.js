@@ -77,11 +77,11 @@ class LeafletMap extends React.Component {
             <CircleMarker
               key={locationStr}
               center={location}
-              fillColor={colour}
-              color={colour}
+              // fillColor={colour}
+              // color={colour}
               fill={true}
-              fillOpacity={1.0}
-              radius={10}
+              fillOpacity={0.7}
+              radius={8}
             >
               <Popup>
                 <div className={styles.marker}>
