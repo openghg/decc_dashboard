@@ -159,25 +159,6 @@ class Dashboard extends React.Component {
     let defaultSourceKey = null;
     let defaultNetwork = null;
 
-    // Give fixed colours to each data source
-    // Colour tuples for use with Chroma
-    const colour_start_end = [
-      ["#22A699", "#577590"],
-      ["#F29727", "#184e77"],
-      ["#111D5E", "#2A4858"],
-      ["#111D5E", "#e76f51"],
-    ];
-
-    let unshuffledColours = [];
-    const nColoursPerMap = 9;
-
-    for (const colourPair of colour_start_end) {
-      const cmap = chroma.scale(colourPair).mode("lch").colors(nColoursPerMap);
-      unshuffledColours.push(...cmap);
-    }
-
-    const colours = unshuffledColours;
-
     let count = 0;
 
     try {
@@ -220,8 +201,8 @@ class Dashboard extends React.Component {
                 const dataKey = `${species}.${sourceKey}`;
 
                 // So we want to jump each site and each instrument
-                const colour = colours[count];
-                const combinedData = { data: graphData, metadata: metadata, colour: colour };
+                // const colour = colours[count];
+                const combinedData = { data: graphData, metadata: metadata};
 
                 set(processedData, dataKey, combinedData);
 
@@ -230,9 +211,9 @@ class Dashboard extends React.Component {
             }
           }
 
-          if (count > colours.length) {
-            count = 0;
-          }
+          // if (count > colours.length) {
+          //   count = 0;
+          // }
         }
         // Colours can be shared between species as they won't be compared
         count = 0;
