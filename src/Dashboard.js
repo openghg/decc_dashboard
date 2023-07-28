@@ -1,6 +1,6 @@
 import React from "react";
 import { Routes, Route, Link, HashRouter } from "react-router-dom";
-import { cloneDeep, has, set, shuffle } from "lodash";
+import { cloneDeep, has, set} from "lodash";
 
 import ControlPanel from "./components/ControlPanel/ControlPanel";
 import OverlayContainer from "./components/OverlayContainer/OverlayContainer";
@@ -9,8 +9,6 @@ import TextButton from "./components/TextButton/TextButton";
 import Overlay from "./components/Overlay/Overlay";
 import FAQ from "./components/FAQ/FAQ";
 import LiveData from "./components/LiveData/LiveData";
-
-import chroma from "chroma-js";
 
 import { importSiteImages } from "./util/helpers";
 import styles from "./Dashboard.module.css";
@@ -204,8 +202,7 @@ class Dashboard extends React.Component {
                 const combinedData = { data: graphData, metadata: metadata};
 
                 set(processedData, dataKey, combinedData);
-
-                count++;
+;
               }
             }
           }
