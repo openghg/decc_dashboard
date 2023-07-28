@@ -35,7 +35,6 @@ class LeafletMap extends React.Component {
     for (const siteData of Object.values(speciesStructure)) {
       for (const inletData of Object.values(siteData)) {
         let marker = null;
-        let colour = null;
         let sourceButtons = [];
         // The site metadata we require will be the same for each inlet / instrument
         let siteMetadata = null;
@@ -61,7 +60,6 @@ class LeafletMap extends React.Component {
               siteMetadata = speciesData[sourceKey]["metadata"];
             }
 
-            colour = speciesData[sourceKey]["colour"];
           }
         }
 
@@ -77,8 +75,6 @@ class LeafletMap extends React.Component {
             <CircleMarker
               key={locationStr}
               center={location}
-              // fillColor={colour}
-              // color={colour}
               fill={true}
               fillOpacity={0.7}
               radius={8}

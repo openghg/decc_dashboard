@@ -200,8 +200,7 @@ class Dashboard extends React.Component {
 
                 const dataKey = `${species}.${sourceKey}`;
 
-                // So we want to jump each site and each instrument
-                // const colour = colours[count];
+
                 const combinedData = { data: graphData, metadata: metadata};
 
                 set(processedData, dataKey, combinedData);
@@ -211,12 +210,7 @@ class Dashboard extends React.Component {
             }
           }
 
-          // if (count > colours.length) {
-          //   count = 0;
-          // }
         }
-        // Colours can be shared between species as they won't be compared
-        count = 0;
       }
     } catch (error) {
       console.error(`Error processing raw data - ${error}`);
