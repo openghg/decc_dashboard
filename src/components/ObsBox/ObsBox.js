@@ -10,6 +10,7 @@ import RadioButtons from "../RadioButtons/RadioButtons";
 import NiceButton from "../NiceButton/NiceButton";
 
 class ObsBox extends React.Component {
+
   createEmissionsGraphs() {
     const processedData = this.props.processedData;
     const selectedSources = this.props.selectedSources;
@@ -55,7 +56,7 @@ class ObsBox extends React.Component {
         // We only set the title of the graph if there's one site selected
         let title = null;
         const xLabel = "Date";
-        const yLabel = `Concentration${units}`;
+        const yLabel = `Concentration <br>${units}`;
 
         const vis = (
           <GraphContainer heightScale={heightScale} widthScale={widthScale} key={key} divName="graphContent">
@@ -85,13 +86,14 @@ class ObsBox extends React.Component {
 
     let clearButton = null;
     if (siteSelected) {
-      clearButton = <NiceButton onClick={this.props.clearSources}>Clear</NiceButton>;
+      clearButton = <NiceButton onClick={this.props.clearSources} >Clear</NiceButton>;
+      
     }
 
     const availableSpecies = Object.keys(this.props.processedData);
 
     return (
-      <div className={styles.container}>
+      <div className={styles.container} style={{display:'flex'}}>
         <div className={styles.select}>
           <RadioButtons
             onChange={this.props.speciesSelector}

@@ -1,24 +1,21 @@
 import PropTypes from "prop-types";
 import React from "react";
 
-import styles from "./NiceButton.module.css";
+import { Button } from "@mui/material";
 
 class NiceButton extends React.Component {
   render() {
-    const style = styles.niceButton;
-    const extraStyling = this.props.extraStyling ? this.props.extraStyling : {};
     const onClickParam = this.props.onClickParam;
 
     return (
-      <button
-        type="button"
+      <Button
+        variant="outlined"
         data-onclickparam={onClickParam}
-        className={style}
-        style={extraStyling}
         onClick={this.props.onClick}
+        size="small"
       >
         {this.props.children}
-      </button>
+      </Button>
     );
   }
 }

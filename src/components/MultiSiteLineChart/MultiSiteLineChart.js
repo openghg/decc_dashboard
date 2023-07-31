@@ -130,7 +130,7 @@ class MultiSiteLineChart extends React.Component {
     };
 
     return (
-      <div data-testid={"linePlot"} className={styles.container}>
+      <div data-testid={"linePlot"} className={styles.container} >
         <Plot data={plotData} layout={layout} />
       </div>
     );

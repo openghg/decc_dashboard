@@ -48,7 +48,7 @@ class RadioButtons extends React.Component {
     }
 
     return (
-      <div className={styles.buttons} onChange={this.onChangeValue}>
+      <div className={styles.buttons} onChange={this.onChangeValue} style={{display: "contents"}} >
         {buttons}
       </div>
     );
