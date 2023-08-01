@@ -94,7 +94,8 @@ class MultiSiteLineChart extends React.Component {
         xanchor: "center",
         y: 0.97,
         yanchor: "top",
-      },images: [
+      },
+      images: [
         {
           source: uniOfBristol,
           xref: 'paper',
