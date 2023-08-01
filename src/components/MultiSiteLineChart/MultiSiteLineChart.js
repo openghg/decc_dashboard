@@ -4,6 +4,7 @@ import Plot from "react-plotly.js";
 import { toTitleCase } from "../../util/helpers";
 import styles from "./MultiSiteLineChart.module.css";
 
+
 class MultiSiteLineChart extends React.Component {
   render() {
     let plotData = [];
@@ -80,6 +81,9 @@ class MultiSiteLineChart extends React.Component {
     }
 
     const widthScaleFactor = 0.925;
+    const uniOfBristol = require(`../../images/UniOfBristolLogo.png`);
+    const metOffice = require(`../../images/Metoffice.png`);
+    const ncas = require(`../../images/ncas.png`);
 
     const layout = {
       title: {
@@ -90,7 +94,44 @@ class MultiSiteLineChart extends React.Component {
         xanchor: "center",
         y: 0.97,
         yanchor: "top",
-      },
+      },images: [
+        {
+          source: uniOfBristol,
+          xref: 'paper',
+          yref: 'paper',
+          x: 0.1,
+          y: 1,
+          sizex: 0.15,
+          sizey: 0.15,
+          opacity: 1,
+          xanchor: 'center',
+          yanchor: 'middle',
+        },
+        {
+          source: metOffice,
+          xref: 'paper',
+          yref: 'paper',
+          x: 0.25,
+          y: 1,
+          sizex: 0.15,
+          sizey: 0.15,
+          opacity: 0.8,
+          xanchor: 'center',
+          yanchor: 'middle',
+        },
+        {
+          source: ncas,
+          xref: 'paper',
+          yref: 'paper',
+          x: 0.4,
+          y: 1,
+          sizex: 0.15,
+          sizey: 0.15,
+          opacity: 0.8,
+          xanchor: 'center',
+          yanchor: 'middle',
+        },
+      ],
       xaxis: {
         range: this.props.xRange ? this.props.xRange : null,
         showgrid: false,
@@ -133,6 +174,7 @@ class MultiSiteLineChart extends React.Component {
       <div data-testid={"linePlot"} className={styles.container}>
         <Plot data={plotData} layout={layout} />
       </div>
+
     );
   }
 }
