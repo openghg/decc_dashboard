@@ -6,8 +6,8 @@ import MultiSiteLineChart from "../MultiSiteLineChart/MultiSiteLineChart";
 import { isEmpty, getVisID } from "../../util/helpers";
 
 import styles from "./ObsBox.module.css";
-import RadioButtons from "../RadioButtons/RadioButtons";
 import NiceButton from "../NiceButton/NiceButton";
+import SelectOptions from "../SelectOptions/SelectOptions"
 
 class ObsBox extends React.Component {
   createEmissionsGraphs() {
@@ -93,12 +93,12 @@ class ObsBox extends React.Component {
     return (
       <div className={styles.container}>
         <div className={styles.select}>
-          <RadioButtons
-            onChange={this.props.speciesSelector}
-            options={availableSpecies}
-            selected={this.props.selectedSpecies}
-          />
           <div className={styles.clearButton}>{clearButton}</div>
+              <SelectOptions
+                onChange={this.props.speciesSelector}
+                options={availableSpecies}
+                selected={this.props.selectedSpecies}
+              />
         </div>
         <div className={styles.plot}>{this.createEmissionsGraphs()}</div>
       </div>
