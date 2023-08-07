@@ -22,7 +22,7 @@
     "react-leaflet": "^3.2.2",
     "react-plotly.js": "^2.5.1",
     "react-router-dom": "^6.1.1",
-    "react-scripts": "5.0.0",
+    "react-scripts": "5.0.1",
     "react-switch": "^6.0.0",
     "react-transition-group": "^4.4.2",
     "source-map-explorer": "^2.5.2",
