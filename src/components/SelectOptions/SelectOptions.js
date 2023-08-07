@@ -31,7 +31,7 @@ class Select extends React.Component {
   render() {
     return (
       <FormControl variant="standard">
-        <InputLabel>Select an option</InputLabel>
+        <InputLabel>Select Species </InputLabel>
         <MuiSelect
           value={this.props.selected}
           onChange={this.onChangeValue}
