@@ -3,6 +3,8 @@ import React from "react";
 import Plot from "react-plotly.js";
 import { toTitleCase } from "../../util/helpers";
 import styles from "./MultiSiteLineChart.module.css";
+import OpenGHGLogo from "../../images/OpenGHG_Logo_Portrait.svg";
+
 
 
 class MultiSiteLineChart extends React.Component {
@@ -101,10 +103,10 @@ class MultiSiteLineChart extends React.Component {
           xref: 'paper',
           yref: 'paper',
           x: 0.1,
-          y: 1,
-          sizex: 0.15,
-          sizey: 0.15,
-          opacity: 1,
+          y: 0.9,
+          sizex: 0.13,
+          sizey: 0.13,
+          opacity: 0.6,
           xanchor: 'center',
           yanchor: 'middle',
         },
@@ -113,10 +115,10 @@ class MultiSiteLineChart extends React.Component {
           xref: 'paper',
           yref: 'paper',
           x: 0.25,
-          y: 1,
+          y: 0.9,
           sizex: 0.15,
           sizey: 0.15,
-          opacity: 0.8,
+          opacity: 0.6,
           xanchor: 'center',
           yanchor: 'middle',
         },
@@ -125,10 +127,22 @@ class MultiSiteLineChart extends React.Component {
           xref: 'paper',
           yref: 'paper',
           x: 0.4,
-          y: 1,
+          y: 0.9,
           sizex: 0.15,
           sizey: 0.15,
-          opacity: 0.8,
+          opacity: 0.6,
+          xanchor: 'center',
+          yanchor: 'middle',
+        },
+        {
+          source: OpenGHGLogo,
+          xref: 'paper',
+          yref: 'paper',
+          x: 0.6,
+          y: 0.9,
+          sizex: 0.15,
+          sizey: 0.15,
+          opacity: 0.6,
           xanchor: 'center',
           yanchor: 'middle',
         },
