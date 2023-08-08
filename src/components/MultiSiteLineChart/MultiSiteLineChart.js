@@ -1,10 +1,28 @@
-import PropTypes from "prop-types";
 import React from "react";
+import PropTypes from "prop-types";
 import Plot from "react-plotly.js";
 import { toTitleCase } from "../../util/helpers";
 import styles from "./MultiSiteLineChart.module.css";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
+import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 
 class MultiSiteLineChart extends React.Component {
+  handleDownloadPDF = () => {
+    const pdf = new jsPDF();
+    const chartContainer = document.getElementById("chart-container");
+
+    // Check if chartContainer exists before proceeding
+    if (chartContainer) {
+      html2canvas(chartContainer).then((canvas) => {
+        const imgData = canvas.toDataURL("image/jpeg");
+        pdf.addImage(imgData, "JPEG", 10, 10, 200, 70);
+        pdf.save("concentrationTime_OpenghgPlot.pdf");
+      });
+    } else {
+      console.error("Chart container not found.");
+    }
+  };
   render() {
     let plotData = [];
     let maxY = 0;
@@ -102,7 +120,10 @@ class MultiSiteLineChart extends React.Component {
         automargin: true,
         title: {
           text: this.props.yLabel,
-          standoff: 1,
+          standoff: 10,
+          font: {
+            size:16,
+          }
         },
         range: this.props.yRange ? this.props.yRange : null,
         showgrid: false,
@@ -128,10 +149,19 @@ class MultiSiteLineChart extends React.Component {
       },
       shapes: [dateMarkObject],
     };
-
     return (
       <div data-testid={"linePlot"} className={styles.container}>
-        <Plot data={plotData} layout={layout} />
+        <div id="chart-container">
+          <Plot data={plotData} layout={layout} />
+        </div>
+        <div className={styles.downloadContainer}>
+          <FileDownloadOutlinedIcon
+            size='small'
+            onClick={this.handleDownloadPDF}
+            style={{color:'blue'}}
+          />
+          <span>PDF</span>
+        </div>
       </div>
     );
   }
