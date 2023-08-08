@@ -3,7 +3,6 @@ import React from "react";
 import Plot from "react-plotly.js";
 import { toTitleCase } from "../../util/helpers";
 import styles from "./MultiSiteLineChart.module.css";
-import OpenGHGLogo from "../../images/OpenGHG_Logo_Portrait.svg";
 
 
 
@@ -86,6 +85,7 @@ class MultiSiteLineChart extends React.Component {
     const uniOfBristol = require(`../../images/UniOfBristolLogo.png`);
     const metOffice = require(`../../images/Metoffice.png`);
     const ncas = require(`../../images/ncas.png`);
+    const openghg = require(`../../images/OpenGHG_Logo_Landscape.png`);
 
     const layout = {
       title: {
@@ -99,13 +99,25 @@ class MultiSiteLineChart extends React.Component {
       },
       images: [
         {
-          source: uniOfBristol,
+          source: openghg,
           xref: 'paper',
           yref: 'paper',
           x: 0.1,
-          y: 0.9,
-          sizex: 0.13,
-          sizey: 0.13,
+          y: 0.89,
+          sizex: 0.12,
+          sizey: 0.12,
+          opacity: 0.6,
+          xanchor: 'center',
+          yanchor: 'middle',
+        },
+        {
+          source: uniOfBristol,
+          xref: 'paper',
+          yref: 'paper',
+          x: 0.22,
+          y: 0.89,
+          sizex: 0.11,
+          sizey: 0.11,
           opacity: 0.6,
           xanchor: 'center',
           yanchor: 'middle',
@@ -114,10 +126,10 @@ class MultiSiteLineChart extends React.Component {
           source: metOffice,
           xref: 'paper',
           yref: 'paper',
-          x: 0.2,
-          y: 0.9,
-          sizex: 0.15,
-          sizey: 0.15,
+          x: 0.31,
+          y: 0.89,
+          sizex: 0.12,
+          sizey: 0.12,
           opacity: 0.6,
           xanchor: 'center',
           yanchor: 'middle',
@@ -126,26 +138,15 @@ class MultiSiteLineChart extends React.Component {
           source: ncas,
           xref: 'paper',
           yref: 'paper',
-          x: 0.31,
-          y: 0.9,
-          sizex: 0.15,
-          sizey: 0.15,
-          opacity: 0.6,
-          xanchor: 'center',
-          yanchor: 'middle',
-        },
-        {
-          source: OpenGHGLogo,
-          xref: 'paper',
-          yref: 'paper',
           x: 0.41,
-          y: 0.9,
-          sizex: 0.15,
-          sizey: 0.15,
+          y: 0.89,
+          sizex: 0.12,
+          sizey: 0.12,
           opacity: 0.6,
           xanchor: 'center',
           yanchor: 'middle',
         },
+
       ],
       xaxis: {
         range: this.props.xRange ? this.props.xRange : null,
