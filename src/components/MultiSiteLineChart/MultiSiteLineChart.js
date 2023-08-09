@@ -6,17 +6,32 @@ import styles from "./MultiSiteLineChart.module.css";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
+import { Button } from "@mui/material";
 
 class MultiSiteLineChart extends React.Component {
   handleDownloadPDF = () => {
-    const pdf = new jsPDF();
     const chartContainer = document.getElementById("chart-container");
 
     // Check if chartContainer exists before proceeding
     if (chartContainer) {
       html2canvas(chartContainer).then((canvas) => {
         const imgData = canvas.toDataURL("image/jpeg");
-        pdf.addImage(imgData, "JPEG", 10, 10, 200, 70);
+
+        // Get the dimensions of the chart
+        const chartWidth = chartContainer.offsetWidth;
+        const chartHeight = chartContainer.offsetHeight;
+  
+        // Create a new PDF document with the size of the chart
+        const pdf = new jsPDF({
+          orientation: chartWidth > chartHeight ? "landscape" : "portrait",
+          unit: "mm",
+          format: [chartWidth, chartHeight],
+        });
+  
+        // Add the image of the chart to the PDF
+        pdf.addImage(imgData, "JPEG", 0, 0, chartWidth, chartHeight);
+  
+        // Save the PDF
         pdf.save("concentrationTime_OpenghgPlot.pdf");
       });
     } else {
@@ -155,12 +170,14 @@ class MultiSiteLineChart extends React.Component {
           <Plot data={plotData} layout={layout} />
         </div>
         <div className={styles.downloadContainer}>
-          <FileDownloadOutlinedIcon
-            size='small'
-            onClick={this.handleDownloadPDF}
-            style={{color:'blue'}}
-          />
-          <span>PDF</span>
+        <Button
+        size="small"
+        variant="contained"
+        color="success"
+        startIcon={<FileDownloadOutlinedIcon />}
+        onClick={this.handleDownloadPDF}>
+          PDF
+          </Button>
         </div>
       </div>
     );
