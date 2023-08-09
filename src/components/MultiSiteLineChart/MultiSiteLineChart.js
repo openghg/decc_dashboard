@@ -9,29 +9,27 @@ import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 import { Button } from "@mui/material";
 
 class MultiSiteLineChart extends React.Component {
+
+  // used to create pdf object and download the image of the chart as pdf
   handleDownloadPDF = () => {
+    // Here we fetch the html element of chart-container that needs to be downloaded by id.
     const chartContainer = document.getElementById("chart-container");
 
-    // Check if chartContainer exists before proceeding
     if (chartContainer) {
       html2canvas(chartContainer).then((canvas) => {
         const imgData = canvas.toDataURL("image/jpeg");
 
-        // Get the dimensions of the chart
         const chartWidth = chartContainer.offsetWidth;
         const chartHeight = chartContainer.offsetHeight;
   
-        // Create a new PDF document with the size of the chart
         const pdf = new jsPDF({
           orientation: chartWidth > chartHeight ? "landscape" : "portrait",
           unit: "mm",
           format: [chartWidth, chartHeight],
         });
   
-        // Add the image of the chart to the PDF
         pdf.addImage(imgData, "JPEG", 0, 0, chartWidth, chartHeight);
   
-        // Save the PDF
         pdf.save("concentrationTime_OpenghgPlot.pdf");
       });
     } else {
@@ -114,6 +112,8 @@ class MultiSiteLineChart extends React.Component {
 
     const widthScaleFactor = 0.925;
 
+
+    // This specifies various plot elements that needs to be supplied as argument to <Plot>
     const layout = {
       title: {
         text: this.props.title ? this.props.title : null,
