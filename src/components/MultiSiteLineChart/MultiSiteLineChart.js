@@ -226,7 +226,7 @@ class MultiSiteLineChart extends React.Component {
         <div id="chart-container">
           <Plot data={plotData} layout={layout} />
         </div>
-        <div className={styles.downloadContainer}>
+        <div className={`${styles.downloadContainer} ${styles.smallButtonPosition}`}>
         <Button
         size="small"
         variant="contained"
