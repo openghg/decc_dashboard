@@ -4,7 +4,27 @@ import Plot from "react-plotly.js";
 import { toTitleCase } from "../../util/helpers";
 import styles from "./MultiSiteLineChart.module.css";
 
-
+/**
+ * Creates an image object for the layout.
+ *
+ * @param {string} source - The image source URL.
+ * @param {number} x - The horizontal position of the image.
+ * @param {number} [opacity=0.6] - The opacity of the image.
+ * @returns {Object} The image object for the layout.
+ */
+function createImage(source, x, opacity = 0.6) {
+  return {
+    source: source,
+    xref: 'paper',
+    yref: 'paper',
+    x: x,
+    y: 0.89,
+    sizex: 0.12,
+    sizey: 0.12,
+    opacity: opacity,
+    xanchor: 'center',
+    yanchor: 'middle',
+  }};
 
 class MultiSiteLineChart extends React.Component {
   render() {
@@ -98,55 +118,10 @@ class MultiSiteLineChart extends React.Component {
         yanchor: "top",
       },
       images: [
-        {
-          source: openghg,
-          xref: 'paper',
-          yref: 'paper',
-          x: 0.1,
-          y: 0.89,
-          sizex: 0.12,
-          sizey: 0.12,
-          opacity: 0.6,
-          xanchor: 'center',
-          yanchor: 'middle',
-        },
-        {
-          source: uniOfBristol,
-          xref: 'paper',
-          yref: 'paper',
-          x: 0.22,
-          y: 0.89,
-          sizex: 0.11,
-          sizey: 0.11,
-          opacity: 0.6,
-          xanchor: 'center',
-          yanchor: 'middle',
-        },
-        {
-          source: metOffice,
-          xref: 'paper',
-          yref: 'paper',
-          x: 0.31,
-          y: 0.89,
-          sizex: 0.12,
-          sizey: 0.12,
-          opacity: 0.6,
-          xanchor: 'center',
-          yanchor: 'middle',
-        },
-        {
-          source: ncas,
-          xref: 'paper',
-          yref: 'paper',
-          x: 0.41,
-          y: 0.89,
-          sizex: 0.12,
-          sizey: 0.12,
-          opacity: 0.6,
-          xanchor: 'center',
-          yanchor: 'middle',
-        },
-
+        createImage(openghg, 0.1),
+        createImage(uniOfBristol, 0.22),
+        createImage(metOffice, 0.31),
+        createImage(ncas, 0.41),
       ],
       xaxis: {
         range: this.props.xRange ? this.props.xRange : null,
