@@ -1,13 +1,41 @@
-import PropTypes from "prop-types";
 import React from "react";
+import PropTypes from "prop-types";
 import Plot from "react-plotly.js";
 import { toTitleCase } from "../../util/helpers";
 import styles from "./MultiSiteLineChart.module.css";
-import colours from "../../data/colours.json";
-
-
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
+import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
+import { Button } from "@mui/material";
 
 class MultiSiteLineChart extends React.Component {
+
+  // used to create pdf object and download the image of the chart as pdf
+  handleDownloadPDF = () => {
+    // Here we fetch the html element of chart-container that needs to be downloaded by id.
+    const chartContainer = document.getElementById("chart-container");
+
+    if (chartContainer) {
+      html2canvas(chartContainer).then((canvas) => {
+        const imgData = canvas.toDataURL("image/jpeg");
+
+        const chartWidth = chartContainer.offsetWidth;
+        const chartHeight = chartContainer.offsetHeight;
+  
+        const pdf = new jsPDF({
+          orientation: chartWidth > chartHeight ? "landscape" : "portrait",
+          unit: "mm",
+          format: [chartWidth, chartHeight],
+        });
+  
+        pdf.addImage(imgData, "JPEG", 0, 0, chartWidth, chartHeight);
+  
+        pdf.save("concentrationTime_OpenghgPlot.pdf");
+      });
+    } else {
+      console.error("Chart container not found.");
+    }
+  };
   render() {
     let plotData = [];
     let maxY = 0;
@@ -88,6 +116,8 @@ class MultiSiteLineChart extends React.Component {
     const ncas = require(`../../images/ncas.png`);
     const openghg = require(`../../images/OpenGHG_Logo_Landscape.png`);
 
+
+    // This specifies various plot elements that needs to be supplied as argument to <Plot>
     const layout = {
       title: {
         text: this.props.title ? this.props.title : null,
@@ -190,12 +220,22 @@ class MultiSiteLineChart extends React.Component {
       },
       shapes: [dateMarkObject],
     };
-
     return (
       <div data-testid={"linePlot"} className={styles.container}>
-        <Plot data={plotData} layout={layout} />
+        <div id="chart-container">
+          <Plot data={plotData} layout={layout} />
+        </div>
+        <div className={styles.downloadContainer}>
+        <Button
+        size="small"
+        variant="contained"
+        color="success"
+        startIcon={<FileDownloadOutlinedIcon />}
+        onClick={this.handleDownloadPDF}>
+          PDF
+          </Button>
+        </div>
       </div>
-
     );
   }
 }
