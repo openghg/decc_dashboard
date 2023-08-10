@@ -3,28 +3,8 @@ import React from "react";
 import Plot from "react-plotly.js";
 import { toTitleCase } from "../../util/helpers";
 import styles from "./MultiSiteLineChart.module.css";
+import { createImage } from "../../util/helpers"
 
-/**
- * Creates an image object for the layout.
- *
- * @param {string} source - The image source URL.
- * @param {number} x - The horizontal position of the image.
- * @param {number} [opacity=0.6] - The opacity of the image.
- * @returns {Object} The image object for the layout.
- */
-function createImage(source, x, opacity = 0.6) {
-  return {
-    source: source,
-    xref: 'paper',
-    yref: 'paper',
-    x: x,
-    y: 0.89,
-    sizex: 0.12,
-    sizey: 0.12,
-    opacity: opacity,
-    xanchor: 'center',
-    yanchor: 'middle',
-  }};
 
 class MultiSiteLineChart extends React.Component {
   render() {
