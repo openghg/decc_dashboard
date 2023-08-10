@@ -155,12 +155,16 @@ class MultiSiteLineChart extends React.Component {
         linecolor: "black",
         autotick: true,
         ticks: "outside",
+
       },
       yaxis: {
         automargin: true,
         title: {
           text: this.props.yLabel,
-          standoff: 1,
+          standoff: 10,
+          font: {
+            size:16,
+          }
         },
         range: this.props.yRange ? this.props.yRange : null,
         showgrid: false,
