@@ -18,6 +18,8 @@ import styles from "./Dashboard.module.css";
 // Site description information
 import siteInfoJSON from "./data/siteInfo.json";
 import deccMeasData from "./data/decc_example.json";
+import { Button } from "@mui/material";
+import LaunchIcon from '@mui/icons-material/Launch';
 
 class Dashboard extends React.Component {
   constructor(props) {
@@ -352,6 +354,7 @@ class Dashboard extends React.Component {
         <HashRouter>
           <div className={styles.gridContainer}>
             <div className={styles.header}>
+            <Button variant="text" href="https://catalogue.ceda.ac.uk/uuid/f5b38d1654d84b03ba79060746541e4f" target="_blank" startIcon={<LaunchIcon/>} style={{color:"#97FEED"}}>Visit DECC Public Data</Button> 
               <div className={styles.menuIcon}>
                 <TextButton styling="light" extraStyling={{ fontSize: "1.6em" }} onClick={this.toggleSidebar}>
                   &#9776;
