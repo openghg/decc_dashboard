@@ -63,12 +63,54 @@ class ScatterMap extends React.Component {
     const width = this.props.width;
     const plotData = this.state.plotData;
 
+    const uniOfBristol = require(`../../images/UniOfBristolLogo.png`);
+    const metOffice = require(`../../images/Metoffice.png`);
+    const ncas = require(`../../images/ncas.png`);
+    
     const layout = {
       mapbox: { center: { lon: -4.212836, lat: 55.843658 }, style: "open-street-map", zoom: 10 },
       coloraxis: {
         colorscale: "Viridis",
         colorbar: { title: { side: "right", text: "Methane (ppb)", font: { size: 16 } } },
       },
+      images: [
+        {
+          source: uniOfBristol,
+          xref: 'paper',
+          yref: 'paper',
+          x: 0.1,
+          y: 1,
+          sizex: 0.15,
+          sizey: 0.15,
+          opacity: 1,
+          xanchor: 'center',
+          yanchor: 'middle',
+        },
+        {
+          source: metOffice,
+          xref: 'paper',
+          yref: 'paper',
+          x: 0.25,
+          y: 1,
+          sizex: 0.15,
+          sizey: 0.15,
+          opacity: 0.8,
+          xanchor: 'center',
+          yanchor: 'middle',
+        },
+        {
+          source: ncas,
+          xref: 'paper',
+          yref: 'paper',
+          x: 0.4,
+          y: 1,
+          sizex: 0.15,
+          sizey: 0.15,
+          opacity: 0.8,
+          xanchor: 'center',
+          yanchor: 'middle',
+        },
+      ],
       margin: { t: 30, b: 30, l: 30, r: 30 },
       width: width,
       height: height,

@@ -70,6 +70,10 @@ class LineChart extends React.Component {
 
     const widthScaleFactor = 0.925;
 
+    const uniOfBristol = require(`../../images/UniOfBristolLogo.png`);
+    const metOffice = require(`../../images/Metoffice.png`);
+    const ncas = require(`../../images/ncas.png`);
+    
     const layout = {
       title: {
         text: this.props.title ? this.props.title : null,
@@ -110,6 +114,44 @@ class LineChart extends React.Component {
         pad: 5,
       },
       shapes: [dateMarkObject],
+      images: [
+        {
+          source: uniOfBristol,
+          xref: 'paper',
+          yref: 'paper',
+          x: 0.1,
+          y: 1,
+          sizex: 0.15,
+          sizey: 0.15,
+          opacity: 1,
+          xanchor: 'center',
+          yanchor: 'middle',
+        },
+        {
+          source: metOffice,
+          xref: 'paper',
+          yref: 'paper',
+          x: 0.25,
+          y: 1,
+          sizex: 0.15,
+          sizey: 0.15,
+          opacity: 0.8,
+          xanchor: 'center',
+          yanchor: 'middle',
+        },
+        {
+          source: ncas,
+          xref: 'paper',
+          yref: 'paper',
+          x: 0.4,
+          y: 1,
+          sizex: 0.15,
+          sizey: 0.15,
+          opacity: 0.8,
+          xanchor: 'center',
+          yanchor: 'middle',
+        },
+      ],
     };
 
     return (
