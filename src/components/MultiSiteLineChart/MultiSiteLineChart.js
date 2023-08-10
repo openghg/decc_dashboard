@@ -7,6 +7,7 @@ import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 import { Button } from "@mui/material";
+import colours from "../../data/colours.json";
 
 class MultiSiteLineChart extends React.Component {
 
