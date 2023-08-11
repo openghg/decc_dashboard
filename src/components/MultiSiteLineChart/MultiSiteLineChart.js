@@ -11,10 +11,11 @@ import { Button } from "@mui/material";
 class MultiSiteLineChart extends React.Component {
 
   // used to create pdf object and download the image of the chart as pdf
-  handleDownloadPDF = () => {
+  handleDownloadPDF = (species, units) => {
     // Here we fetch the html element of chart-container that needs to be downloaded by id.
     const chartContainer = document.getElementById("chart-container");
-
+    const filename = `${toTitleCase(species)}_${units}.pdf`;
+    
     if (chartContainer) {
       html2canvas(chartContainer).then((canvas) => {
         const imgData = canvas.toDataURL("image/jpeg");
@@ -30,7 +31,7 @@ class MultiSiteLineChart extends React.Component {
   
         pdf.addImage(imgData, "JPEG", 0, 0, chartWidth, chartHeight);
   
-        pdf.save("concentrationTime_OpenghgPlot.pdf");
+        pdf.save(filename);
       });
     } else {
       console.error("Chart container not found.");
@@ -42,6 +43,8 @@ class MultiSiteLineChart extends React.Component {
     let minY = Infinity;
 
     const data = this.props.data;
+    var species = null;
+    var units = null;
 
     for (const sourceData of Object.values(data)) {
       const metadata = sourceData["metadata"];
@@ -73,8 +76,9 @@ class MultiSiteLineChart extends React.Component {
       }
 
       const colour = sourceData["colour"];
-      const units = metadata["units"];
-
+      units = metadata["units"];
+      species = metadata["species"]
+      
       const trace = {
         x: xValues,
         y: yValues,
@@ -175,7 +179,7 @@ class MultiSiteLineChart extends React.Component {
         variant="contained"
         color="success"
         startIcon={<FileDownloadOutlinedIcon />}
-        onClick={this.handleDownloadPDF}>
+        onClick={()=>this.handleDownloadPDF(species,units)}>
           PDF
           </Button>
         </div>
