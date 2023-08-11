@@ -11,11 +11,12 @@ import { Button } from "@mui/material";
 class MultiSiteLineChart extends React.Component {
 
   // used to create pdf object and download the image of the chart as pdf
-  handleDownloadPDF = (species, units) => {
+  // also we are giving the filename based on species and sites selected to plot
+  handleDownloadPDF = (species, sites) => {
     // Here we fetch the html element of chart-container that needs to be downloaded by id.
     const chartContainer = document.getElementById("chart-container");
-    const filename = `${toTitleCase(species)}_${units}.pdf`;
-    
+    var filenames = [species, ...sites].join('_');
+
     if (chartContainer) {
       html2canvas(chartContainer).then((canvas) => {
         const imgData = canvas.toDataURL("image/jpeg");
@@ -31,7 +32,7 @@ class MultiSiteLineChart extends React.Component {
   
         pdf.addImage(imgData, "JPEG", 0, 0, chartWidth, chartHeight);
   
-        pdf.save(filename);
+        pdf.save(filenames);
       });
     } else {
       console.error("Chart container not found.");
@@ -94,6 +95,11 @@ class MultiSiteLineChart extends React.Component {
 
       plotData.push(trace);
     }
+    //fetching all the site names to pass them as filename
+    // using regex to remove <b> </b> and "-" within the name
+    let sites = [];
+    sites = plotData.map(item => item.name);
+    sites = sites.map(item => item.replace(/<\/?b>/g, '').replace(/\s*-\s*/g, ''));
 
     let dateMarkObject = null;
     const selectedDate = this.props.selectedDate;
@@ -179,7 +185,7 @@ class MultiSiteLineChart extends React.Component {
         variant="contained"
         color="success"
         startIcon={<FileDownloadOutlinedIcon />}
-        onClick={()=>this.handleDownloadPDF(species,units)}>
+        onClick={()=>this.handleDownloadPDF(species,sites)}>
           PDF
           </Button>
         </div>
