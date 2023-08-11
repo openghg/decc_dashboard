@@ -5,6 +5,7 @@ import styles from "./ScatterMap.module.css";
 
 import ch4MobileGlasgow from "../../data/ch4_mobile_glasgow.json";
 import { createImage } from "../../util/helpers"
+import openghg from "../../images/OpenGHG_Logo_Landscape.png"
 
 
 class ScatterMap extends React.Component {
