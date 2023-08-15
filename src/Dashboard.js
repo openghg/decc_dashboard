@@ -1,6 +1,6 @@
 import React from "react";
 import { Routes, Route, Link, HashRouter } from "react-router-dom";
-import { cloneDeep, has, set, shuffle } from "lodash";
+import { cloneDeep, has, set} from "lodash";
 
 import ControlPanel from "./components/ControlPanel/ControlPanel";
 import OverlayContainer from "./components/OverlayContainer/OverlayContainer";
@@ -10,14 +10,14 @@ import Overlay from "./components/Overlay/Overlay";
 import FAQ from "./components/FAQ/FAQ";
 import LiveData from "./components/LiveData/LiveData";
 
-import chroma from "chroma-js";
-
 import { importSiteImages } from "./util/helpers";
 import styles from "./Dashboard.module.css";
 
 // Site description information
 import siteInfoJSON from "./data/siteInfo.json";
 import deccMeasData from "./data/decc_example.json";
+import { Button } from "@mui/material";
+import LaunchIcon from '@mui/icons-material/Launch';
 
 class Dashboard extends React.Component {
   constructor(props) {
@@ -159,27 +159,6 @@ class Dashboard extends React.Component {
     let defaultSourceKey = null;
     let defaultNetwork = null;
 
-    // Give fixed colours to each data source
-    // Colour tuples for use with Chroma
-    const colour_start_end = [
-      ["#f94144", "#577590"],
-      ["#d9ed92", "#184e77"],
-      ["#fafa6e", "#2A4858"],
-      ["#264653", "#e76f51"],
-    ];
-
-    let unshuffledColours = [];
-    const nColoursPerMap = 9;
-
-    for (const colourPair of colour_start_end) {
-      const cmap = chroma.scale(colourPair).mode("lch").colors(nColoursPerMap);
-      unshuffledColours.push(...cmap);
-    }
-
-    const colours = shuffle(unshuffledColours);
-
-    let count = 0;
-
     try {
       for (const [species, networkData] of Object.entries(rawData)) {
         if (!defaultSpecies) {
@@ -219,23 +198,16 @@ class Dashboard extends React.Component {
 
                 const dataKey = `${species}.${sourceKey}`;
 
-                // So we want to jump each site and each instrument
-                const colour = colours[count];
-                const combinedData = { data: graphData, metadata: metadata, colour: colour };
+
+                const combinedData = { data: graphData, metadata: metadata};
 
                 set(processedData, dataKey, combinedData);
-
-                count++;
+;
               }
             }
           }
 
-          if (count > colours.length) {
-            count = 0;
-          }
         }
-        // Colours can be shared between species as they won't be compared
-        count = 0;
       }
     } catch (error) {
       console.error(`Error processing raw data - ${error}`);
@@ -352,6 +324,7 @@ class Dashboard extends React.Component {
         <HashRouter>
           <div className={styles.gridContainer}>
             <div className={styles.header}>
+            <Button variant="text" href="https://catalogue.ceda.ac.uk/uuid/f5b38d1654d84b03ba79060746541e4f" target="_blank" startIcon={<LaunchIcon/>} style={{color:"#97FEED"}}>Visit DECC Public Data</Button> 
               <div className={styles.menuIcon}>
                 <TextButton styling="light" extraStyling={{ fontSize: "1.6em" }} onClick={this.toggleSidebar}>
                   &#9776;

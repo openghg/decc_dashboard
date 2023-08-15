@@ -7,7 +7,7 @@ body {
   font-family: "Open Sans", Roboto, Noto Sans, Ubuntu, Droid Sans, "Helvetica Neue", sans-serif;
   font-weight: 300;
   box-sizing: border-box;
-  background-color: #fff;
+  background-color: #ffffff;
 }
 
 /* Start with mobile friendly first */
@@ -38,7 +38,7 @@ body {
   align-items: center;
   justify-content: flex-end;
   padding: 0 16px;
-  background-color: #648ca6;
+  background-color: #47677b;
   z-index: 5;
   color: white;
 }
@@ -62,7 +62,8 @@ body {
   box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.16), 0 0 0 1px rgba(0, 0, 0, 0.08);
   z-index: 1001;
   /* Needs to sit above the hamburger menu icon */
-  background: #2d5d7b;
+  background: linear-gradient(#2d5d7b, #4da9e2);
+  box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2); /* Add a background shadow to the container */
 }
 
 .sidebar a:hover {

@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import React from "react";
-
+import { Button } from "@mui/material";
 import styles from "./TextButton.module.css";
 
 class TextButton extends React.Component {
@@ -23,7 +23,8 @@ class TextButton extends React.Component {
     const extraStyling = this.props.extraStyling ? this.props.extraStyling : {};
 
     return (
-      <button
+      <Button
+        variant = "outlined"
         type="button"
         data-onclickparam={this.props.onClickParam}
         className={style}
@@ -31,7 +32,7 @@ class TextButton extends React.Component {
         onClick={this.props.onClick}
       >
         {this.props.children}
-      </button>
+      </Button>
     );
   }
 }
