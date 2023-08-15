@@ -18,6 +18,7 @@ import siteInfoJSON from "./data/siteInfo.json";
 import deccMeasData from "./data/decc_example.json";
 import { Button } from "@mui/material";
 import LaunchIcon from '@mui/icons-material/Launch';
+import Explainer from "./components/Explainer/Explainer";
 
 class Dashboard extends React.Component {
   constructor(props) {
@@ -341,12 +342,14 @@ class Dashboard extends React.Component {
                 <Link to="/" className={styles.navLink}>
                   Live Data
                 </Link>
+                <Link to='/explainer' className={styles.navLink}>Synopsis</Link>
                 <Link to="/FAQ" className={styles.navLink}>
                   FAQ
                 </Link>
               </ControlPanel>
             </aside>
             <Routes>
+              <Route path="/explainer" element={<Explainer></Explainer>}/>
               <Route path="/FAQ" element={<FAQ />} />
               <Route path="/" element={liveData} />
             </Routes>
