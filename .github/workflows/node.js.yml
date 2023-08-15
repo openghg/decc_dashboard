@@ -13,35 +13,31 @@ jobs:
     if: "!contains(github.event.head_commit.message, '[skip ci]')"
     strategy:
       matrix:
-        node-version: [18.x]  # Adjust node version as needed
+        node-version: [18.x]
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-
+    - uses: actions/checkout@v2
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v2
+      uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-
-    - name: Install dependencies
-      run: npm install
-
-    - name: Build the app
-      run: npm run build --if-present
-
-    - name: Deploy to GitHub Pages
+    - run: npm ci
+    - run: npm run build --if-present
+    - run: npm run lint
+    # - run: npm test
+      
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v1
+      
+    - name: Deploy to GitHub pages
       run: |
-        git config --global user.name 'GitHub Actions'
-        git config --global user.email 'github-actions@github.com'
-        git remote set-url origin https://github.com/openghg/${{ github.repository }}
+        git config --global user.name $user_name
+        git config --global user.email $user_email
+        git remote set-url origin https://${github_token}@github.com/${repository}
         npm run deploy
       if: github.ref == 'refs/heads/main' && matrix.node-version == '18.x'
       env:
-        CI: true  # Important for Create React App deployments
-
-    - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v2
-
-env:
-  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        user_name: 'github-actions[bot]'
+        user_email: 'github-actions[bot]@users.noreply.github.com'
+        github_token: ${{ secrets.ACTIONS_DEPLOY_ACCESS_TOKEN }}
+        repository: ${{ github.repository }}
