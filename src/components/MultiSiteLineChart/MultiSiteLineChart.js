@@ -124,7 +124,11 @@ class MultiSiteLineChart extends React.Component {
     }
 
     const widthScaleFactor = 0.925;
-
+    const uniOfBristol = require(`../../images/UniOfBristolLogo.png`);
+    const metOffice = require(`../../images/Metoffice.png`);
+    const ncas = require(`../../images/ncas.png`);
+    const openghg = require(`../../images/OpenGHG_Logo_Landscape.png`);
+    
     const layout = {
       title: {
         text: this.props.title ? this.props.title : null,
