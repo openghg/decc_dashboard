@@ -3,6 +3,7 @@ import React from "react";
 import Plot from "react-plotly.js";
 import { toTitleCase } from "../../util/helpers";
 import styles from "./MultiSiteLineChart.module.css";
+import colours from "../../data/colours.json";
 
 class MultiSiteLineChart extends React.Component {
   render() {
@@ -41,7 +42,7 @@ class MultiSiteLineChart extends React.Component {
         console.error(`Error reading name for legend - ${error}`);
       }
 
-      const colour = sourceData["colour"];
+      const colour = colours["pastelColours"];
       const units = metadata["units"];
 
       const trace = {
