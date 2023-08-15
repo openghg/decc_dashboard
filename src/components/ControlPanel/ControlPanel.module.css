@@ -59,9 +59,9 @@
 
 .footer {
   grid-area: "footer";
-  padding: 2vh 0vh 0vh 2vh;
   color: white;
   font-size: 0.8em;
+  padding-left: 3vw;
 }
 
 .footer img {

@@ -1,8 +1,9 @@
 import PropTypes from "prop-types";
 import React from "react";
 import Plot from "react-plotly.js";
-
 import styles from "./LineChart.module.css";
+import { createImage } from "../../util/helpers"
+
 
 class LineChart extends React.Component {
   render() {
@@ -70,6 +71,11 @@ class LineChart extends React.Component {
 
     const widthScaleFactor = 0.925;
 
+    const uniOfBristol = require(`../../images/UniOfBristolLogo.png`);
+    const metOffice = require(`../../images/Metoffice.png`);
+    const ncas = require(`../../images/ncas.png`);
+    const openghg = require(`../../images/OpenGHG_Logo_Landscape.png`);
+    
     const layout = {
       title: {
         text: this.props.title ? this.props.title : null,
@@ -110,6 +116,12 @@ class LineChart extends React.Component {
         pad: 5,
       },
       shapes: [dateMarkObject],
+      images: [
+        createImage(openghg, 0.1),
+        createImage(uniOfBristol, 0.22),
+        createImage(metOffice, 0.31),
+        createImage(ncas, 0.41),
+      ],
     };
 
     return (

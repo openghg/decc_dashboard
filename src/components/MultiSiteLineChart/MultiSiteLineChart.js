@@ -7,6 +7,9 @@ import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 import { Button } from "@mui/material";
+import { createImage } from "../../util/helpers"
+
+import colours from "../../data/colours.json";
 
 class MultiSiteLineChart extends React.Component {
 
@@ -76,7 +79,7 @@ class MultiSiteLineChart extends React.Component {
         console.error(`Error reading name for legend - ${error}`);
       }
 
-      const colour = sourceData["colour"];
+      const colour = colours["pastelColours"];
       units = metadata["units"];
       species = metadata["species"]
       
@@ -122,8 +125,6 @@ class MultiSiteLineChart extends React.Component {
 
     const widthScaleFactor = 0.925;
 
-
-    // This specifies various plot elements that needs to be supplied as argument to <Plot>
     const layout = {
       title: {
         text: this.props.title ? this.props.title : null,
@@ -134,12 +135,19 @@ class MultiSiteLineChart extends React.Component {
         y: 0.97,
         yanchor: "top",
       },
+      images: [
+        createImage(openghg, 0.1),
+        createImage(uniOfBristol, 0.22),
+        createImage(metOffice, 0.31),
+        createImage(ncas, 0.41),
+      ],
       xaxis: {
         range: this.props.xRange ? this.props.xRange : null,
         showgrid: false,
         linecolor: "black",
         autotick: true,
         ticks: "outside",
+
       },
       yaxis: {
         automargin: true,

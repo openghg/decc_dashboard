@@ -2,10 +2,10 @@
 import React from "react";
 import Plot from "react-plotly.js";
 import { extend } from "lodash";
-
 import styles from "./DensityMap.module.css";
-
 import ch4MobileGlasgow from "../../data/ch4_mobile_glasgow.json";
+import { createImage } from "../../util/helpers"
+import openghg from "../../images/OpenGHG_Logo_Landscape.png"
 
 class DensityMap extends React.Component {
   render() {
@@ -26,6 +26,10 @@ class DensityMap extends React.Component {
     const height = 400;
     const width = this.props.width;
 
+    const uniOfBristol = require(`../../images/UniOfBristolLogo.png`);
+    const metOffice = require(`../../images/Metoffice.png`);
+    const ncas = require(`../../images/ncas.png`);
+    
     const layout = {
       mapbox: { center: { lon: -4.212836, lat: 55.843658 }, style: "open-street-map", zoom: 10 },
       coloraxis: {
@@ -35,6 +39,12 @@ class DensityMap extends React.Component {
       margin: { t: 30, b: 30, l: 30, r: 30 },
       width: width,
       height: height,
+      images: [
+        createImage(openghg, 0.1),
+        createImage(uniOfBristol, 0.22),
+        createImage(metOffice, 0.31),
+        createImage(ncas, 0.41),
+      ],
     };
 
     return (
