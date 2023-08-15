@@ -13,7 +13,7 @@ jobs:
     if: "!contains(github.event.head_commit.message, '[skip ci]')"
     strategy:
       matrix:
-        node-version: [14.x]  # Adjust node version as needed
+        node-version: [18.x]  # Adjust node version as needed
 
     steps:
     - name: Checkout code
