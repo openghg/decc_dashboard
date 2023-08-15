@@ -3,6 +3,7 @@ import { Select as MuiSelect, MenuItem, FormControl, InputLabel } from "@mui/mat
 
 class Select extends React.Component {
   constructor(props) {
+    console.log(props)
     super(props);
     this.state = {
       speciesLabels: {},
@@ -11,8 +12,8 @@ class Select extends React.Component {
   }
 
   componentDidMount() {
-    // Fetch the speciesLabels.json file and store the data in state
-    fetch("/speciesLabels.json")
+    // Fetch the decc_example.json file and store the data in state
+    fetch("./data/decc_example.json")
       .then((response) => response.json())
       .then((data) => this.setState({ speciesLabels: data }))
       .catch((error) => console.error("Error fetching speciesLabels:", error));
@@ -29,7 +30,9 @@ class Select extends React.Component {
   }
 
   render() {
+    // console.log(this.props)
     return (
+      
       <FormControl variant="standard">
         <InputLabel>Select Species </InputLabel>
         <MuiSelect
