@@ -34,7 +34,7 @@ jobs:
       run: |
         git config --global user.name 'GitHub Actions'
         git config --global user.email 'github-actions@github.com'
-        git remote set-url origin https://github.com/${{ github.repository }}
+        git remote set-url origin https://github.com/openghg/${{ github.repository }}
         npm run deploy
       if: github.ref == 'refs/heads/main' && matrix.node-version == '18.x'
       env:
