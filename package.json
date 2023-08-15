@@ -37,7 +37,7 @@
     "test-ci": "react-scripts test --watchAll=false --coverage --coverageReporters=cobertura --reporters=default --reporters=jest-junit",
     "eject": "react-scripts eject",
     "predeploy": "npm run build",
-    "deploy": "CI=true gh-pages -d build",
+    "deploy": "gh-pages -d build",
     "lint": "./node_modules/.bin/eslint src/"
   },
   "eslintConfig": {
