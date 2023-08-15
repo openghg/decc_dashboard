@@ -1,19 +1,19 @@
 {
   "files": {
-    "main.css": "/decc_dashboard/static/css/main.bc0c21bf.css",
-    "main.js": "/decc_dashboard/static/js/main.6bd685dd.js",
+    "main.css": "/decc_dashboard/static/css/main.37890575.css",
+    "main.js": "/decc_dashboard/static/js/main.2c913b21.js",
     "static/js/787.05d991be.chunk.js": "/decc_dashboard/static/js/787.05d991be.chunk.js",
     "static/media/OpenGHG_Logo_Portrait.svg": "/decc_dashboard/static/media/OpenGHG_Logo_Portrait.8f15efa532c0a56f254c55d664b05d81.svg",
     "static/media/BTT.jpg": "/decc_dashboard/static/media/BTT.611f21ae0727cc327572.jpg",
     "static/media/NPL.jpg": "/decc_dashboard/static/media/NPL.611f21ae0727cc327572.jpg",
     "static/media/TMB.jpg": "/decc_dashboard/static/media/TMB.611f21ae0727cc327572.jpg",
     "index.html": "/decc_dashboard/index.html",
-    "main.bc0c21bf.css.map": "/decc_dashboard/static/css/main.bc0c21bf.css.map",
-    "main.6bd685dd.js.map": "/decc_dashboard/static/js/main.6bd685dd.js.map",
+    "main.37890575.css.map": "/decc_dashboard/static/css/main.37890575.css.map",
+    "main.2c913b21.js.map": "/decc_dashboard/static/js/main.2c913b21.js.map",
     "787.05d991be.chunk.js.map": "/decc_dashboard/static/js/787.05d991be.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.bc0c21bf.css",
-    "static/js/main.6bd685dd.js"
+    "static/css/main.37890575.css",
+    "static/js/main.2c913b21.js"
   ]
 }
