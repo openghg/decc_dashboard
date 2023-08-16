@@ -11,12 +11,6 @@ class SelectOptions extends React.Component {
     this.props.onChange(event.target.value);
   }
 
-  getLabelForOption(option) {
-    const optionUpper = option.toUpperCase();
-    const { speciesLabels } = this.state;
-    return speciesLabels[optionUpper] || optionUpper;
-  }
-
   render() {
     return (
       <FormControl variant="standard">
