@@ -1,22 +1,10 @@
 import React from "react";
 import { Select as MuiSelect, MenuItem, FormControl, InputLabel } from "@mui/material";
 
-class Select extends React.Component {
+class SelectOptions extends React.Component {
   constructor(props) {
-    console.log(props)
     super(props);
-    this.state = {
-      speciesLabels: {},
-    };
     this.onChangeValue = this.onChangeValue.bind(this);
-  }
-
-  componentDidMount() {
-    // Fetch the decc_example.json file and store the data in state
-    fetch("./data/decc_example.json")
-      .then((response) => response.json())
-      .then((data) => this.setState({ speciesLabels: data }))
-      .catch((error) => console.error("Error fetching speciesLabels:", error));
   }
 
   onChangeValue(event) {
@@ -30,18 +18,12 @@ class Select extends React.Component {
   }
 
   render() {
-    // console.log(this.props)
     return (
-      
       <FormControl variant="standard">
         <InputLabel>Select Species </InputLabel>
-        <MuiSelect
-          value={this.props.selected}
-          onChange={this.onChangeValue}
-          label="Species"
-        >
+        <MuiSelect value={this.props.selected} onChange={this.onChangeValue} label="Species">
           {this.props.options.map((option) => {
-            const label = this.getLabelForOption(option);
+            const label = option.toUpperCase()
             return (
               <MenuItem key={option} value={option}>
                 {label}
@@ -54,4 +36,4 @@ class Select extends React.Component {
   }
 }
 
-export default Select;
+export default SelectOptions;
