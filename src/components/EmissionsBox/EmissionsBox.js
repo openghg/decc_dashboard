@@ -3,7 +3,7 @@ import React from "react";
 
 import TextButton from "../TextButton/TextButton";
 import LeafletMap from "../LeafletMap/LeafletMap";
-
+import { Button } from "@mui/material";
 import styles from "./EmissionsBox.module.css";
 
 import comb_ch4 from "../../images/emissionsPNGs/ch4/uk_raw/ch4_ukghg_map_combustion_20170101T00.png";
@@ -92,9 +92,9 @@ class EmissionsBox extends React.Component {
       }
 
       const button = (
-        <TextButton key={key} onClickParam={key} extraStyling={extraStyling} styling={styling} onClick={this.setImage}>
+        <Button variant="outlined" key={key} onClickParam={key} extraStyling={extraStyling} styling={styling} onClick={this.setImage}>
           {key}
-        </TextButton>
+        </Button>
       );
 
       sectorButtons.push(button);
@@ -125,7 +125,8 @@ class EmissionsBox extends React.Component {
       }
 
       const button = (
-        <TextButton
+        <Button
+          variant="outlined" 
           key={key}
           styling={styling}
           onClickParam={key}
@@ -133,7 +134,7 @@ class EmissionsBox extends React.Component {
           onClick={this.setSpecies}
         >
           {label}
-        </TextButton>
+        </Button>
       );
 
       speciesButtons.push(button);
@@ -177,8 +178,11 @@ class EmissionsBox extends React.Component {
         <div className={styles.plot}>
           <LeafletMap centre={overlayMidpoint} zoom={5} overlayBounds={overlayBounds} overlayImg={emissionsImage} mapstyle={mapstyle}/>
         </div>
-        <div className={styles.buttons}>
+        <div className={styles.buttons} style={{padding:'25px'}}>
           <div className={styles.speciesButtons}>{speciesButtons}</div>
+          </div>
+          <div className={styles.buttons} style={{padding:'0.1%'}}>
+
           <div className={styles.sectorButtons}>{sectorButtons}</div>
         </div>
       </div>

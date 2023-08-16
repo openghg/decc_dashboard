@@ -7,6 +7,7 @@ import OverlayContainer from "./components/OverlayContainer/OverlayContainer";
 
 import TextButton from "./components/TextButton/TextButton";
 import Overlay from "./components/Overlay/Overlay";
+import Explainer from "./components/Explainer/Explainer";
 import FAQ from "./components/FAQ/FAQ";
 import LiveData from "./components/LiveData/LiveData";
 
@@ -339,19 +340,30 @@ class Dashboard extends React.Component {
                 toggleOverlay={this.toggleOverlay}
                 closePanel={this.toggleSidebar}
               >
+                <Button variant="contained" >
                 <Link to="/" className={styles.navLink}>
                   Live Data
                 </Link>
-                <Link to='/explainer' className={styles.navLink}>Synopsis</Link>
+                </Button>
+                <Button variant="contained">
                 <Link to="/FAQ" className={styles.navLink}>
                   FAQ
                 </Link>
+                </Button>
+                <Button variant="contained">
+                <Link to="/explainer" className={styles.navLink}>
+                  Synopsis
+                </Link>
+                </Button>
+
+
               </ControlPanel>
             </aside>
             <Routes>
               <Route path="/explainer" element={<Explainer></Explainer>}/>
               <Route path="/FAQ" element={<FAQ />} />
               <Route path="/" element={liveData} />
+              <Route path="/explainer" element={<Explainer/>}/>
             </Routes>
             {overlay}
           </div>
