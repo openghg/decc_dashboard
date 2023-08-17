@@ -17,9 +17,9 @@ import styles from "./Dashboard.module.css";
 // Site description information
 import siteInfoJSON from "./data/siteInfo.json";
 import deccMeasData from "./data/decc_example.json";
-import { Button } from "@mui/material";
+import { Button, MenuItem } from "@mui/material";
 import LaunchIcon from '@mui/icons-material/Launch';
-import Explainer from "./components/Explainer/Explainer";
+import MyTabs from "./components/MyTabs/MyTabs";
 
 class Dashboard extends React.Component {
   constructor(props) {
@@ -328,9 +328,9 @@ class Dashboard extends React.Component {
             <div className={styles.header}>
             <Button variant="text" href="https://catalogue.ceda.ac.uk/uuid/f5b38d1654d84b03ba79060746541e4f" target="_blank" startIcon={<LaunchIcon/>} style={{color:"#97FEED"}}>Visit DECC Public Data</Button> 
               <div className={styles.menuIcon}>
-                <TextButton styling="light" extraStyling={{ fontSize: "1.6em" }} onClick={this.toggleSidebar}>
+                <MenuItem styling="light" extraStyling={{ fontSize: "1.6em" }} onClick={this.toggleSidebar}>
                   &#9776;
-                </TextButton>
+                </MenuItem>
               </div>
             </div>
             <aside className={styles.sidebar} style={extraSidebarStyle}>
@@ -340,21 +340,7 @@ class Dashboard extends React.Component {
                 toggleOverlay={this.toggleOverlay}
                 closePanel={this.toggleSidebar}
               >
-                <Button variant="contained" >
-                <Link to="/" className={styles.navLink}>
-                  Live Data
-                </Link>
-                </Button>
-                <Button variant="contained">
-                <Link to="/FAQ" className={styles.navLink}>
-                  FAQ
-                </Link>
-                </Button>
-                <Button variant="contained">
-                <Link to="/explainer" className={styles.navLink}>
-                  Synopsis
-                </Link>
-                </Button>
+                <MyTabs/> 
 
 
               </ControlPanel>
