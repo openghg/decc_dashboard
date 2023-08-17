@@ -5,7 +5,6 @@ import { cloneDeep, has, set} from "lodash";
 import ControlPanel from "./components/ControlPanel/ControlPanel";
 import OverlayContainer from "./components/OverlayContainer/OverlayContainer";
 
-import TextButton from "./components/TextButton/TextButton";
 import Overlay from "./components/Overlay/Overlay";
 import Explainer from "./components/Explainer/Explainer";
 import FAQ from "./components/FAQ/FAQ";
@@ -17,8 +16,7 @@ import styles from "./Dashboard.module.css";
 // Site description information
 import siteInfoJSON from "./data/siteInfo.json";
 import deccMeasData from "./data/decc_example.json";
-import { Button, MenuItem } from "@mui/material";
-import LaunchIcon from '@mui/icons-material/Launch';
+import { MenuItem } from "@mui/material";
 import MyTabs from "./components/MyTabs/MyTabs";
 
 class Dashboard extends React.Component {

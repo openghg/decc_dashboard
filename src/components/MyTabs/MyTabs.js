@@ -3,13 +3,13 @@ import { Link } from "react-router-dom";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import QuizOutlinedIcon from '@mui/icons-material/QuizOutlined';
-import { DescriptionOutlined, Launch, LaunchOutlined, LiveTvOutlined } from "@mui/icons-material";
+import { DescriptionOutlined, LaunchOutlined, LiveTvOutlined } from "@mui/icons-material";
 
 function MyTabs() {
-  const [selectedValue, setSelectedValue] = useState(0); // Updated variable name
+  const [selectedValue, setSelectedValue] = useState(0); // This takes care of the updated variable name
 
   const handleChange = (event, newValue) => {
-    setSelectedValue(newValue); // Updated variable name
+    setSelectedValue(newValue);
   };
 
   return (
