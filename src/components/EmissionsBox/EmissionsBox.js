@@ -1,7 +1,6 @@
 import PropTypes from "prop-types";
 import React from "react";
 
-import TextButton from "../TextButton/TextButton";
 import LeafletMap from "../LeafletMap/LeafletMap";
 import { Button } from "@mui/material";
 import styles from "./EmissionsBox.module.css";

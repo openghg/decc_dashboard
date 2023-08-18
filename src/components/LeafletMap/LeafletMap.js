@@ -27,7 +27,7 @@ class LeafletMap extends React.Component {
     const siteStructure = this.props.siteStructure;
     const selectedSpecies = this.props.selectedSpecies;
     let markers = [];
-    if(siteStructure!=undefined && processedData!=undefined){
+    if(siteStructure !== undefined && processedData !== undefined){
       const speciesStructure = siteStructure[selectedSpecies];
     const speciesData = processedData[selectedSpecies];
 
