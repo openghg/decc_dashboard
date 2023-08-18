@@ -15,6 +15,7 @@ class Checkbox extends React.Component {
             data-testid={this.props.name}
             site={this.props.site}
             species={this.props.species}
+            
             type="checkbox"
             checked={this.props.checked}
             onChange={this.props.onChange}
