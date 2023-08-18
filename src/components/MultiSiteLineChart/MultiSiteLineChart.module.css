@@ -22,16 +22,22 @@
 .downloadContainer {
   position: absolute;
   bottom: 5px;
-  right: 0px;
+  left: 0;
   display: flex;
   align-items: center;
+  justify-content: flex-end;
+
+  gap: 2px;
+  opacity: 0.9;
+
 }
 
 .smallButtonPosition {
   font-size: 12px;
-  padding: 0px 8px;
+  padding: 0 8px;
 }
 
 .downloadIcon {
   margin-right: 5px;
 }
+

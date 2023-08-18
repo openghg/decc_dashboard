@@ -12,9 +12,34 @@ import { createImage } from "../../util/helpers"
 import colours from "../../data/colours.json";
 
 class MultiSiteLineChart extends React.Component {
-
-  // used to create pdf object and download the image of the chart as pdf
-  // also we are giving the filename based on species and sites selected to plot
+    /*
+    This method takes care of downloading the Plot 
+    on the website in format of PNG
+    It fetches the html tag for plot and converts to PNG
+    */
+  handleDownloadPNG = (species, sites) => {
+    const chartContainer = document.getElementById("chart-container");
+    var filenames = [species, ...sites].join('_');
+  
+    if (chartContainer) {
+      html2canvas(chartContainer).then((canvas) => {
+        const imgData = canvas.toDataURL("image/png");
+  
+        const link = document.createElement("a");
+        link.href = imgData;
+        link.download = `${filenames}.png`;
+        link.click();
+      });
+    } else {
+      console.error("Chart container not found.");
+    }
+  };
+  
+    /*
+    This method takes care of downloading the Plot 
+    on the website in format of PDF
+    It fetches the html tag for plot and converts to PDF
+    */
   handleDownloadPDF = (species, sites) => {
     // Here we fetch the html element of chart-container that needs to be downloaded by id.
     const chartContainer = document.getElementById("chart-container");
@@ -98,8 +123,10 @@ class MultiSiteLineChart extends React.Component {
 
       plotData.push(trace);
     }
-    //fetching all the site names to pass them as filename
-    // using regex to remove <b> </b> and "-" within the name
+
+    /*fetching all the site names to pass them as filename
+     using regex to remove <b> </b> and "-" within the name
+     */
     let sites = [];
     sites = plotData.map(item => item.name);
     sites = sites.map(item => item.replace(/<\/?b>/g, '').replace(/\s*-\s*/g, ''));
@@ -200,6 +227,15 @@ class MultiSiteLineChart extends React.Component {
         onClick={()=>this.handleDownloadPDF(species,sites)}>
           PDF
           </Button>
+          <Button
+          size="small"
+          variant="contained"
+          color="primary"
+          startIcon={<FileDownloadOutlinedIcon />}
+          onClick={() => this.handleDownloadPNG(species, sites)}
+          >
+          PNG
+        </Button>
         </div>
       </div>
     );
