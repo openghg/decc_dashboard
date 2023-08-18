@@ -22,7 +22,7 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - run: npm ci
-    - run: export NODE_OPTIONS="--max_old_space_size=4096"
+    - run: export NODE_OPTIONS=--max-old-space-size=8192
     - run: npm run build --if-present
     - run: npm run lint
     # - run: npm test
