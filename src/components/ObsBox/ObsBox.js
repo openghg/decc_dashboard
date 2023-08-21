@@ -6,8 +6,8 @@ import MultiSiteLineChart from "../MultiSiteLineChart/MultiSiteLineChart";
 import { isEmpty, getVisID } from "../../util/helpers";
 
 import styles from "./ObsBox.module.css";
-import NiceButton from "../NiceButton/NiceButton";
 import SelectOptions from "../SelectOptions/SelectOptions"
+import { Button } from "@mui/material";
 
 class ObsBox extends React.Component {
   createEmissionsGraphs() {
@@ -85,7 +85,7 @@ class ObsBox extends React.Component {
 
     let clearButton = null;
     if (siteSelected) {
-      clearButton = <NiceButton onClick={this.props.clearSources}>Clear</NiceButton>;
+      clearButton = <Button variant="contained" size="small" onClick={this.props.clearSources}>Clear</Button>;
     }
 
     const availableSpecies = Object.keys(this.props.processedData);

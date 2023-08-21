@@ -4,6 +4,9 @@ import Plot from "react-plotly.js";
 import styles from "./ScatterMap.module.css";
 
 import ch4MobileGlasgow from "../../data/ch4_mobile_glasgow.json";
+import { createImage } from "../../util/helpers"
+import openghg from "../../images/OpenGHG_Logo_Landscape.png"
+
 
 class ScatterMap extends React.Component {
   constructor(props) {
@@ -74,42 +77,10 @@ class ScatterMap extends React.Component {
         colorbar: { title: { side: "right", text: "Methane (ppb)", font: { size: 16 } } },
       },
       images: [
-        {
-          source: uniOfBristol,
-          xref: 'paper',
-          yref: 'paper',
-          x: 0.1,
-          y: 1,
-          sizex: 0.15,
-          sizey: 0.15,
-          opacity: 1,
-          xanchor: 'center',
-          yanchor: 'middle',
-        },
-        {
-          source: metOffice,
-          xref: 'paper',
-          yref: 'paper',
-          x: 0.25,
-          y: 1,
-          sizex: 0.15,
-          sizey: 0.15,
-          opacity: 0.8,
-          xanchor: 'center',
-          yanchor: 'middle',
-        },
-        {
-          source: ncas,
-          xref: 'paper',
-          yref: 'paper',
-          x: 0.4,
-          y: 1,
-          sizex: 0.15,
-          sizey: 0.15,
-          opacity: 0.8,
-          xanchor: 'center',
-          yanchor: 'middle',
-        },
+        createImage(openghg, 0.1),
+        createImage(uniOfBristol, 0.22),
+        createImage(metOffice, 0.31),
+        createImage(ncas, 0.41),
       ],
       margin: { t: 30, b: 30, l: 30, r: 30 },
       width: width,

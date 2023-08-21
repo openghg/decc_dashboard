@@ -3,10 +3,8 @@ import PropTypes from "prop-types";
 import Plot from "react-plotly.js";
 import { toTitleCase } from "../../util/helpers";
 import styles from "./MultiSiteLineChart.module.css";
-import jsPDF from "jspdf";
-import html2canvas from "html2canvas";
-import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
-import { Button } from "@mui/material";
+import { createImage } from "../../util/helpers"
+
 import colours from "../../data/colours.json";
 
 class MultiSiteLineChart extends React.Component {
@@ -130,55 +128,10 @@ class MultiSiteLineChart extends React.Component {
         yanchor: "top",
       },
       images: [
-        {
-          source: openghg,
-          xref: 'paper',
-          yref: 'paper',
-          x: 0.1,
-          y: 0.89,
-          sizex: 0.12,
-          sizey: 0.12,
-          opacity: 0.6,
-          xanchor: 'center',
-          yanchor: 'middle',
-        },
-        {
-          source: uniOfBristol,
-          xref: 'paper',
-          yref: 'paper',
-          x: 0.22,
-          y: 0.89,
-          sizex: 0.11,
-          sizey: 0.11,
-          opacity: 0.6,
-          xanchor: 'center',
-          yanchor: 'middle',
-        },
-        {
-          source: metOffice,
-          xref: 'paper',
-          yref: 'paper',
-          x: 0.31,
-          y: 0.89,
-          sizex: 0.12,
-          sizey: 0.12,
-          opacity: 0.6,
-          xanchor: 'center',
-          yanchor: 'middle',
-        },
-        {
-          source: ncas,
-          xref: 'paper',
-          yref: 'paper',
-          x: 0.41,
-          y: 0.89,
-          sizex: 0.12,
-          sizey: 0.12,
-          opacity: 0.6,
-          xanchor: 'center',
-          yanchor: 'middle',
-        },
-
+        createImage(openghg, 0.1),
+        createImage(uniOfBristol, 0.22),
+        createImage(metOffice, 0.31),
+        createImage(ncas, 0.41),
       ],
       xaxis: {
         range: this.props.xRange ? this.props.xRange : null,

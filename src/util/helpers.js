@@ -8,6 +8,27 @@ export function getVisID() {
 export function isEmpty(obj) {
   return Object.keys(obj).length === 0;
 }
+/**
+ * Creates an image object for the layout.
+ *
+ * @param {string} source - The image source URL.
+ * @param {number} x - The horizontal position of the image.
+ * @param {number} [opacity=0.6] - The opacity of the image.
+ * @returns {Object} The image object for the layout.
+ */
+export function createImage(source, x, opacity = 0.6) {
+  return {
+    source: source,
+    xref: 'paper',
+    yref: 'paper',
+    x: x,
+    y: 0.89,
+    sizex: 0.12,
+    sizey: 0.12,
+    opacity: opacity,
+    xanchor: 'center',
+    yanchor: 'middle',
+  }};
 
 // export function importSVGs() {
 //   let footprints = {};

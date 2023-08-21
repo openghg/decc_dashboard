@@ -1,8 +1,9 @@
 import PropTypes from "prop-types";
 import React from "react";
 import Plot from "react-plotly.js";
-
 import styles from "./LineChart.module.css";
+import { createImage } from "../../util/helpers"
+
 
 class LineChart extends React.Component {
   render() {
@@ -73,6 +74,7 @@ class LineChart extends React.Component {
     const uniOfBristol = require(`../../images/UniOfBristolLogo.png`);
     const metOffice = require(`../../images/Metoffice.png`);
     const ncas = require(`../../images/ncas.png`);
+    const openghg = require(`../../images/OpenGHG_Logo_Landscape.png`);
     
     const layout = {
       title: {
@@ -115,42 +117,10 @@ class LineChart extends React.Component {
       },
       shapes: [dateMarkObject],
       images: [
-        {
-          source: uniOfBristol,
-          xref: 'paper',
-          yref: 'paper',
-          x: 0.1,
-          y: 1,
-          sizex: 0.15,
-          sizey: 0.15,
-          opacity: 1,
-          xanchor: 'center',
-          yanchor: 'middle',
-        },
-        {
-          source: metOffice,
-          xref: 'paper',
-          yref: 'paper',
-          x: 0.25,
-          y: 1,
-          sizex: 0.15,
-          sizey: 0.15,
-          opacity: 0.8,
-          xanchor: 'center',
-          yanchor: 'middle',
-        },
-        {
-          source: ncas,
-          xref: 'paper',
-          yref: 'paper',
-          x: 0.4,
-          y: 1,
-          sizex: 0.15,
-          sizey: 0.15,
-          opacity: 0.8,
-          xanchor: 'center',
-          yanchor: 'middle',
-        },
+        createImage(openghg, 0.1),
+        createImage(uniOfBristol, 0.22),
+        createImage(metOffice, 0.31),
+        createImage(ncas, 0.41),
       ],
     };
 

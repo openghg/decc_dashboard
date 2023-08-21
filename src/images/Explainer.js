@@ -92,7 +92,7 @@ class Explainer extends React.Component {
             , BEIS, 2019
           </div>
         </div>
-        </div>
+      </div>
     );
   }
 }

@@ -1,7 +1,8 @@
 import React from "react";
 
 import QnA from "../QnA/QnA";
-import styles from "./FAQ.module.css";
+import styles from "../../Dashboard.module.css";
+import { Typography } from "@mui/material";
 
 class FAQ extends React.Component {
   render() {
@@ -62,8 +63,11 @@ class FAQ extends React.Component {
     In future, greenhouse gas observing systems will likely rely on both space-based and ground-based data.`;
 
     return (
-      <div className={styles.main}>
-        <div className={styles.content}>
+      <div>
+      <div className={styles.faqHeader}>
+        <Typography variant="h3">Frequently Asked Questions</Typography>
+      </div>
+        <div className={styles.faqContent}>
           <QnA number="Q1" split={false} question={Q1} answer={A1} />
           <QnA number="Q2" split={true} question={Q2} answer={A2} />
           <QnA number="Q3" split={false} question={Q3} answer={A3} />
@@ -72,8 +76,9 @@ class FAQ extends React.Component {
           <QnA number="Q6" split={false} question={Q6} answer={A6} />
           <QnA number="Q7" split={false} question={Q7} answer={A7} />
           <QnA number="Q8" split={false} question={Q8} answer={A8} />
-        </div>
       </div>
+      </div>
+
     );
   }
 }
