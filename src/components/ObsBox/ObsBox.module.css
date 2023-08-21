@@ -16,7 +16,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 10px;
-  background-color: #c7e0ee;
+  /* background-color: #d5dce0; */
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   margin-bottom: 10px; }
@@ -30,7 +30,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #c7e0ee;
+  /* background-color: #d5dce0; */
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   min-height: 400px; }
