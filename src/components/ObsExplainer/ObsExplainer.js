@@ -5,11 +5,12 @@ import styles from "./ObsExplainer.module.css";
 
 class ObsExplainer extends React.Component {
   render() {
-    const style = this.props.nogap ? styles.containerNoGap : styles.container;
+    // const style = this.props.nogap ? styles.containerNoGap : styles.container;
+    const style = styles.container;
 
     return (
       <div className={style}>
-        <div className={styles.header}>Atmospheric Monitoring & Verification of the UK’s GHG Inventory</div>
+        <div className={styles.header} style={{paddingRight: "10px"}}>Atmospheric Monitoring & Verification of the UK’s GHG Inventory</div>
         <div className={styles.explain}>
           <li>
             The UK DECC (Deriving Emissions linked to Climate Change) Network consists of four sites in the UK and
