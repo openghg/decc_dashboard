@@ -5,8 +5,7 @@ import styles from "./ObsExplainer.module.css";
 
 class ObsExplainer extends React.Component {
   render() {
-    // const style = this.props.nogap ? styles.containerNoGap : styles.container;
-    const style = styles.container;
+    const style = this.props.nogap ? styles.containerNoGap : styles.container;
 
     return (
       <div className={style}>
