@@ -134,7 +134,7 @@ class LeafletMap extends React.Component {
     const markers = this.createMarkers();
     const zoom = this.props.zoom ? this.props.zoom : 5;
 
-    const style = { width: "90%" };
+    const style = { width: "90%"};
 
     return (
       <div className={styles.container}>
