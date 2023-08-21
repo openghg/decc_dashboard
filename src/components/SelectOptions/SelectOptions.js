@@ -14,7 +14,7 @@ class SelectOptions extends React.Component {
   render() {
     return (
 <FormControl variant="standard" style={{ width: '50%' }}>
-  <InputLabel>Select Species</InputLabel>
+  <InputLabel style={{ fontWeight: 'bold', color: 'black', fontSize: '20px' }}>Select Species</InputLabel>
   <MuiSelect
     value={this.props.selected}
     onChange={this.onChangeValue}
