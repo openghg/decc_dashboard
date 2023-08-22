@@ -15,12 +15,12 @@ class ScatterMap extends React.Component {
     const ch4Data = ch4MobileGlasgow["ch4"]["data"];
 
     const measurements = ch4Data["z"];
-    const latitude = ch4Data["lat"];
-    const longitude = ch4Data["lon"];
+    const station_latitude = ch4Data["lat"];
+    const station_longitude = ch4Data["lon"];
 
     const hovertemplate =
-      "<b>Latitude</b>: %{lat:.5f}<br>" +
-      "<b>Longitude</b>: %{lon:.5f}<br><br>" +
+      "<b>station_latitude</b>: %{lat:.5f}<br>" +
+      "<b>station_longitude</b>: %{lon:.5f}<br><br>" +
       "<b>Concentration: </b>: %{text:.2f} ppb <br>" +
       "(enhancement over background)" +
       "<extra></extra>";
@@ -37,8 +37,8 @@ class ScatterMap extends React.Component {
       coloraxis: "coloraxis",
       hovertemplate: hovertemplate,
       text: measurements,
-      lon: longitude,
-      lat: latitude,
+      lon: station_longitude,
+      lat: station_latitude,
       marker: {
         color: measurements,
         colorscale: "Viridis",

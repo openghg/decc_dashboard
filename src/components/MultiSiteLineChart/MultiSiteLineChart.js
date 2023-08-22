@@ -36,7 +36,7 @@ class MultiSiteLineChart extends React.Component {
       // Set the name for the legend
       let name = null;
       try {
-        const siteName = metadata["long_name"];
+        const siteName = metadata["station_long_name"];
         const inlet = metadata["inlet"];
 
         name = `${toTitleCase(siteName)} - ${inlet}`;
