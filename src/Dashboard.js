@@ -1,24 +1,24 @@
 import React from "react";
-import { Routes, Route, HashRouter } from "react-router-dom";
+import { Routes, Route, Link, HashRouter } from "react-router-dom";
 import { cloneDeep, has, set} from "lodash";
 
 import ControlPanel from "./components/ControlPanel/ControlPanel";
 import OverlayContainer from "./components/OverlayContainer/OverlayContainer";
 
+import TextButton from "./components/TextButton/TextButton";
 import Overlay from "./components/Overlay/Overlay";
-import Explainer from "./components/Explainer/Explainer";
 import FAQ from "./components/FAQ/FAQ";
 import LiveData from "./components/LiveData/LiveData";
+import Explainer from "./components/Explainer/Explainer";
 
 import { importSiteImages } from "./util/helpers";
 import styles from "./Dashboard.module.css";
-import { MenuItem } from "@mui/material";
-import MyTabs from "./components/MyTabs/MyTabs";
 
 // Site description information
 import siteInfoJSON from "./data/siteInfo.json";
 import deccMeasData from "./data/decc_example.json";
-
+import { Button } from "@mui/material";
+import LaunchIcon from '@mui/icons-material/Launch';
 
 class Dashboard extends React.Component {
   constructor(props) {
@@ -325,10 +325,11 @@ class Dashboard extends React.Component {
         <HashRouter>
           <div className={styles.gridContainer}>
             <div className={styles.header}>
+            <Button variant="text" href="https://catalogue.ceda.ac.uk/uuid/f5b38d1654d84b03ba79060746541e4f" target="_blank" startIcon={<LaunchIcon/>} style={{color:"#97FEED"}}>Visit DECC Public Data</Button> 
               <div className={styles.menuIcon}>
-                <MenuItem styling="light" extraStyling={{ fontSize: "1.6em" }} onClick={this.toggleSidebar}>
+                <TextButton styling="light" extraStyling={{ fontSize: "1.6em" }} onClick={this.toggleSidebar}>
                   &#9776;
-                </MenuItem>
+                </TextButton>
               </div>
             </div>
             <aside className={styles.sidebar} style={extraSidebarStyle}>
@@ -338,15 +339,21 @@ class Dashboard extends React.Component {
                 toggleOverlay={this.toggleOverlay}
                 closePanel={this.toggleSidebar}
               >
-                <MyTabs/> 
-
-
+                <Link to="/" className={styles.navLink}>
+                  Live Data
+                </Link>
+                <Link to="/FAQ" className={styles.navLink}>
+                  FAQ
+                </Link>
+                <Link to="/explainer" className={styles.navLink}>
+                  Explainer
+                </Link>
               </ControlPanel>
             </aside>
             <Routes>
               <Route path="/FAQ" element={<FAQ />} />
               <Route path="/" element={liveData} />
-              <Route path="/explainer" element={<Explainer/>}/>
+              <Route path="/explainer" element={<Explainer/>}/>            
             </Routes>
             {overlay}
           </div>
