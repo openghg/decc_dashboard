@@ -344,7 +344,6 @@ class Dashboard extends React.Component {
               </ControlPanel>
             </aside>
             <Routes>
-              <Route path="/explainer" element={<Explainer></Explainer>}/>
               <Route path="/FAQ" element={<FAQ />} />
               <Route path="/" element={liveData} />
               <Route path="/explainer" element={<Explainer/>}/>
