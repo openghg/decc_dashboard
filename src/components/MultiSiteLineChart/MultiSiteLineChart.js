@@ -225,7 +225,7 @@ class MultiSiteLineChart extends React.Component {
         color="success"
         startIcon={<FileDownloadOutlinedIcon />}
         onClick={()=>this.handleDownloadPDF(species,sites)}
-        style={{ width: '20px',
+        style={{ width: '10px',
           height: '20px'}}>
           PDF
           </Button>

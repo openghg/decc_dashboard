@@ -12,6 +12,7 @@
   flex-direction: column;
   align-items: stretch;
   position: relative; 
+  padding-left: 2.5%;
 }
 
 .chartContainer {
