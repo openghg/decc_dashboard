@@ -6,6 +6,7 @@ import OverlayContainer from "./components/OverlayContainer/OverlayContainer";
 
 import Overlay from "./components/Overlay/Overlay";
 import FAQ from "./components/FAQ/FAQ";
+import Explainer from "./components/Explainer/Explainer"
 import LiveData from "./components/LiveData/LiveData";
 
 import { importSiteImages } from "./util/helpers";
@@ -341,6 +342,8 @@ class Dashboard extends React.Component {
             <Routes>
               <Route path="/FAQ" element={<FAQ />} />
               <Route path="/" element={liveData} />
+              <Route path="/explainer" element={<Explainer/>}/>
+
             </Routes>
             {overlay}
           </div>
