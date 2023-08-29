@@ -56,7 +56,6 @@ class Explainer extends React.Component {
     and compare this to real atmospheric measurements. We can then run simulations to make 
     repeated small changes to the possible emissions to better match the measurements made at each site.
     The animation below illustrates this process, using the UK DECC network site in Tacolneston, Norfolk.
-    the UK DECC network as an example.`;
     return <ExplanationBox header={header} intro={body} />;
   }
 
