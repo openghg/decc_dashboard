@@ -6,7 +6,7 @@ import textData from "../../data/overlayText.json";
 
 import OpenGHGLogo from "../../images/OpenGHG_Logo_Portrait.svg";
 import Overlay from "../Overlay/Overlay";
-import TextButton from "../TextButton/TextButton";
+import { CancelOutlined } from "@mui/icons-material";
 
 class ControlPanel extends React.Component {
   constructor(props) {
@@ -32,9 +32,7 @@ class ControlPanel extends React.Component {
     return (
       <div className={styles.container}>
         <div className={styles.closeButton}>
-          <TextButton styling="light" extraStyling={{ fontSize: "2em" }} onClick={this.props.closePanel}>
-            x
-          </TextButton>
+            <CancelOutlined onClick={this.props.closePanel}></CancelOutlined>
         </div>
         <div className={styles.header}>
           <div className={styles.headerText}>DECC Network Dashboard</div>

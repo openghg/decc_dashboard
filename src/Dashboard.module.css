@@ -30,6 +30,8 @@ body {
   z-index: 1;
   cursor: pointer;
   padding: 12px;
+  background-color:#33769f;
+  height: 5px;
 }
 
 .header {
