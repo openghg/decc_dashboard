@@ -52,7 +52,7 @@ class Explainer extends React.Component {
 
   createComparisonExplainer() {
     const header = "Comparing models with observations";
-    const body = `To start with we can use our inventory emissions as our initial “best guess”
+    const body = `To start with we can use inventory emissions as our initial “best guess”
     and compare this to real atmospheric measurements. We can then run simulations to make 
     small changes to the possible emissions and continuously improve to better match the measurements made at each site.
     The animation below illustrates this process, using a site in Tacolneston, Norfolk which is part of
