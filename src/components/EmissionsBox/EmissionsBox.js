@@ -1,8 +1,9 @@
 import PropTypes from "prop-types";
 import React from "react";
 
+import TextButton from "../TextButton/TextButton";
 import LeafletMap from "../LeafletMap/LeafletMap";
-import { Button } from "@mui/material";
+
 import styles from "./EmissionsBox.module.css";
 
 import comb_ch4 from "../../images/emissionsPNGs/ch4/uk_raw/ch4_ukghg_map_combustion_20170101T00.png";
@@ -80,7 +81,7 @@ class EmissionsBox extends React.Component {
     const selectedImages = this.state.images[selectedSpecies];
 
     let sectorButtons = [];
-    const extraStyling = { fontSize: "1.5em" };
+    const extraStyling = { fontSize: "1.2em" };
 
     for (const key of Object.keys(selectedImages)) {
       if (key === "colorbars") continue;
@@ -91,9 +92,9 @@ class EmissionsBox extends React.Component {
       }
 
       const button = (
-        <Button variant="outlined" key={key} onClickParam={key} extraStyling={extraStyling} styling={styling} onClick={this.setImage}>
+        <TextButton key={key} onClickParam={key} extraStyling={extraStyling} styling={styling} onClick={this.setImage}>
           {key}
-        </Button>
+        </TextButton>
       );
 
       sectorButtons.push(button);
@@ -124,8 +125,7 @@ class EmissionsBox extends React.Component {
       }
 
       const button = (
-        <Button
-          variant="outlined" 
+        <TextButton
           key={key}
           styling={styling}
           onClickParam={key}
@@ -133,7 +133,7 @@ class EmissionsBox extends React.Component {
           onClick={this.setSpecies}
         >
           {label}
-        </Button>
+        </TextButton>
       );
 
       speciesButtons.push(button);
