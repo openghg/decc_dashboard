@@ -48,7 +48,7 @@ class LeafletMap extends React.Component {
             const button = (
               <TextButton
                 styling="dark"
-                extraStyling={buttonStyling}
+                extrastyling={buttonStyling}
                 onClickParam={sourceKey}
                 onClick={this.handleClick}
               >

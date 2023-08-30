@@ -81,7 +81,7 @@ class EmissionsBox extends React.Component {
     const selectedImages = this.state.images[selectedSpecies];
 
     let sectorButtons = [];
-    const extraStyling = { fontSize: "1.2em" };
+    const extrastyling = { fontSize: "1.2em" };
 
     for (const key of Object.keys(selectedImages)) {
       if (key === "colorbars") continue;
@@ -92,7 +92,7 @@ class EmissionsBox extends React.Component {
       }
 
       const button = (
-        <TextButton key={key} onClickParam={key} extraStyling={extraStyling} styling={styling} onClick={this.setImage}>
+        <TextButton key={key} onClickParam={key} extrastyling={extrastyling} styling={styling} onClick={this.setImage}>
           {key}
         </TextButton>
       );
@@ -129,7 +129,7 @@ class EmissionsBox extends React.Component {
           key={key}
           styling={styling}
           onClickParam={key}
-          extraStyling={extraStyling}
+          extrastyling={extrastyling}
           onClick={this.setSpecies}
         >
           {label}
