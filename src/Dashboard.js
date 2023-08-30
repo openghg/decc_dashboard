@@ -1,6 +1,6 @@
 import React from "react";
 import { Routes, Route, Link, HashRouter } from "react-router-dom";
-import { cloneDeep, has, set} from "lodash";
+import { cloneDeep, has, set } from "lodash";
 
 import ControlPanel from "./components/ControlPanel/ControlPanel";
 import OverlayContainer from "./components/OverlayContainer/OverlayContainer";
@@ -17,7 +17,7 @@ import styles from "./Dashboard.module.css";
 import siteInfoJSON from "./data/siteInfo.json";
 import deccMeasData from "./data/decc_example.json";
 import { Button } from "@mui/material";
-import LaunchIcon from '@mui/icons-material/Launch';
+import LaunchIcon from "@mui/icons-material/Launch";
 
 class Dashboard extends React.Component {
   constructor(props) {
@@ -27,18 +27,17 @@ class Dashboard extends React.Component {
       error: null,
       isLoaded: false,
       showSidebar: false,
-      selectedDate: 0,
       processedData: {},
       dataKeys: {},
       selectedKeys: {},
-      footprintView: true,
       emptySelection: true,
       overlayOpen: false,
       overlay: null,
-      plotType: "footprint",
       layoutMode: "dashboard",
       colours: {},
     };
+
+    this.dataRepoURL = "https://github.com/openghg/decc_dashboard_data/main/raw/";
 
     // Build the site info for the overlays
     this.buildSiteInfo();
@@ -75,6 +74,11 @@ class Dashboard extends React.Component {
     /* eslint-enable react/no-direct-mutation-state */
   }
 
+  /**
+   * Selects a data source - a specific species at a site at an inlet
+   *
+   * @param {string} selection - Key for a data source
+   */
   sourceSelector(selection) {
     let selectedSourcesSet = new Set();
 
@@ -98,10 +102,19 @@ class Dashboard extends React.Component {
     this.setState({ selectedSources: selectedSources });
   }
 
+  /**
+   * Clear the currently selected data sources
+   */
   clearSources() {
     this.setState({ selectedSources: new Set() });
   }
 
+
+  /**
+   * Selects a species
+   *
+   * @param {string} species - Species name
+   */
   speciesSelector(species) {
     const speciesLower = species.toLowerCase();
 
@@ -146,7 +159,120 @@ class Dashboard extends React.Component {
     this.setState({ showSidebar: !this.state.showSidebar });
   }
 
-  processData(rawData) {
+  /**
+   * Convert the data to a format recognised by Plotly
+   *
+   * @param {object} data - JSON data from pandas
+   *
+   * @returns {object}
+   *
+   */
+  to_plotly(data) {
+    const x_timestamps = Object.keys(data);
+    const x_values = x_timestamps.map((d) => new Date(parseInt(d)));
+    const y_values = Object.values(data);
+
+    const graphData = {
+      x_values: x_values,
+      y_values: y_values,
+    };
+
+    return graphData;
+  }
+
+  /**
+   * Retrieves data from the given URL and processes it into a format
+   * plotly can read
+   *
+   * @param {string} url - URl of JSON file (could be gzipped)
+   * @param {boolean} compressed - is the file compressed
+   *
+   */
+  retrieveData(url, compressed = false) {}
+
+  /**
+   * Create the data structure for the retrieval of the separated
+   * out data
+   *
+   * @param {object} metadata - metadata object holding filenames for each chunk
+   *
+   */
+  createDataStructure(metadata) {
+    // Create the datastructure from the file metadata object and populate it
+    // with the data for the default site, species, inlet
+    let dataKeys = {};
+    let processedData = {};
+    let siteStructure = {};
+
+    let defaultSpecies = null;
+    let defaultSourceKey = null;
+    let defaultInlet = null;
+
+    let retrievedDefault = false;
+
+    try {
+      for (const [species, networkData] of Object.entries(metadata)) {
+        if (!defaultSpecies) {
+          defaultSpecies = species;
+        }
+        for (const [network, siteData] of Object.entries(networkData)) {
+          for (const [site, inletData] of Object.entries(siteData)) {
+            for (const [inlet, instrumentData] of Object.entries(inletData)) {
+              if (!defaultInlet) {
+                defaultInlet = inlet;
+              }
+              for (const [instrument, fileInfo] of Object.entries(instrumentData)) {
+                // Data key
+                // TODO - why use underscores here?
+                const sourceKey = `${network}_${site}_${inlet}_${instrument}`;
+                // This is for the data dictionary that by default is only populated with one dataset
+                const dataKey = `${species}.${network}.${site}.${inlet}.${instrument}`;
+                // This uses the site info JSON so we can dynamically create the interface
+                // const sourceKey = `${network}.${site}.${inlet}.${instrument}`
+
+                // This is the default plot we'll show when the site loads?
+                if (!defaultSourceKey) {
+                  defaultSourceKey = sourceKey;
+                }
+
+                // We create a nested object for easy automated creation of the interface
+                set(siteStructure, dataKey, sourceKey);
+
+                // Let's retrieve the default data if we haven't already
+                if (!retrievedDefault) {
+                  this.defaultDataKey = dataKey;
+                  // Retrieve the default data
+                  const url = this.dataRepoURL + fileInfo["filename"];
+                  const retrievedData = this.retrieveData(url);
+                  set(processedData, dataKey, retrievedData);
+                  retrievedDefault = true;
+                } else {
+                  set(processedData, dataKey, null);
+                }
+              }
+            }
+          }
+        }
+      }
+    } catch (error) {
+      console.error(`Error processing raw data - ${error}`);
+    }
+
+    // Disabled the no direct mutation rule here as this only gets called from the constructor
+    /* eslint-disable react/no-direct-mutation-state */
+    // Give each site a colour
+    this.state.defaultSpecies = defaultSpecies;
+    this.state.defaultSourceKey = defaultSourceKey;
+    this.state.selectedSources = new Set([defaultSourceKey]);
+    this.state.selectedSpecies = defaultSpecies;
+    this.state.processedData = processedData;
+    this.state.selectedKeys = dataKeys;
+    this.state.isLoaded = true;
+    this.state.siteStructure = siteStructure;
+    /* eslint-enable react/no-direct-mutation-state */
+  }
+
+  processRawData(rawData) {
     // Process the data and create the correct Javascript time objects
     // expected by plotly
 
@@ -196,17 +322,14 @@ class Dashboard extends React.Component {
                   y_values: y_values,
                 };
 
+                const combinedData = { data: graphData, metadata: metadata };
+
                 const dataKey = `${species}.${sourceKey}`;
-
-
-                const combinedData = { data: graphData, metadata: metadata};
-
+                // use lodash set
                 set(processedData, dataKey, combinedData);
-;
               }
             }
           }
-
         }
       }
     } catch (error) {
@@ -233,14 +356,16 @@ class Dashboard extends React.Component {
   }
 
   componentDidMount() {
-    this.processData(deccMeasData);
+    this.processRawData(deccMeasData);
+    // Retrieve the default data - we can just save the key for the default data so we don't have to loop
+    // through the whole structure to find it
     this.setState({ isLoaded: true });
     // const apiURL = "https://raw.githubusercontent.com/openghg/dashboard_data/main/combined_data.json";
     // fetch(apiURL)
     //   .then((res) => res.json())
     //   .then(
     //     (result) => {
-    //       this.processData(result);
+    //       this.processRawData(result);
     //       this.setState({
     //         isLoaded: true,
     //       });
@@ -324,7 +449,15 @@ class Dashboard extends React.Component {
         <HashRouter>
           <div className={styles.gridContainer}>
             <div className={styles.header}>
-            <Button variant="text" href="https://catalogue.ceda.ac.uk/uuid/f5b38d1654d84b03ba79060746541e4f" target="_blank" startIcon={<LaunchIcon/>} style={{color:"#97FEED"}}>Visit DECC Public Data</Button> 
+              <Button
+                variant="text"
+                href="https://catalogue.ceda.ac.uk/uuid/f5b38d1654d84b03ba79060746541e4f"
+                target="_blank"
+                startIcon={<LaunchIcon />}
+                style={{ color: "#97FEED" }}
+              >
+                Visit DECC Public Data
+              </Button>
               <div className={styles.menuIcon}>
                 <TextButton styling="light" extraStyling={{ fontSize: "1.6em" }} onClick={this.toggleSidebar}>
                   &#9776;

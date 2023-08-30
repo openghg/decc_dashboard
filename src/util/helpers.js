@@ -90,7 +90,6 @@ export function importSiteImages() {
     }
 
     for (const path of paths) {
-      // Here we need to read the filename and convert it to a UNIX timestamp
       const filename = String(path).split("./")[1];
       const sansExtension = String(filename).split(".")[0].toUpperCase();
 
