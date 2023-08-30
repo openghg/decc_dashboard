@@ -72,8 +72,8 @@ class MultiSiteLineChart extends React.Component {
     let minY = Infinity;
 
     const data = this.props.data;
-    var species = null;
-    var units = null;
+    let species = null;
+    let units = null;
 
     for (const sourceData of Object.values(data)) {
       const metadata = sourceData["metadata"];
