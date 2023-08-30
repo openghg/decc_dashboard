@@ -108,6 +108,16 @@ class MultiSiteLineChart extends React.Component {
       units = metadata["units"];
       species = metadata["species"]
       
+      if (units === undefined) {
+        if (species === 'ch4' || species === 'co') {
+          units = 'ppb';
+        } else if (species === 'co2') {
+          units = 'ppm';
+        } else {
+          units = metadata["units"];
+        }
+      }
+      
       const trace = {
         x: xValues,
         y: yValues,
