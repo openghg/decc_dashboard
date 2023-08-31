@@ -19,6 +19,11 @@ import completeMetadata from "./deccoutput/metadata_complete.json";
 import { Button } from "@mui/material";
 import LaunchIcon from "@mui/icons-material/Launch";
 
+async function fetchData(url) {
+  const res = await fetch(url);
+  return await res.json();
+}
+
 class Dashboard extends React.Component {
   constructor(props) {
     super(props);
@@ -27,7 +32,6 @@ class Dashboard extends React.Component {
       error: null,
       isLoaded: false,
       showSidebar: false,
-      dataKeys: {},
       selectedKeys: {},
       emptySelection: true,
       overlayOpen: false,
@@ -37,26 +41,28 @@ class Dashboard extends React.Component {
       dataStore: {},
     };
 
-    this.dataRepoURL = "https://github.com/openghg/decc_dashboard_data/main/raw/";
+    this.dataRepoURL = "https://raw.githubusercontent.com/openghg/decc_dashaboard_data/main";
 
-    // Build the site info for the overlays
-    this.buildSiteInfo();
-
-    // Select the data
-    this.dataSelector = this.dataSelector.bind(this);
-    // Selects the dates
     this.sourceSelector = this.sourceSelector.bind(this);
     this.toggleOverlay = this.toggleOverlay.bind(this);
     this.setOverlay = this.setOverlay.bind(this);
     this.speciesSelector = this.speciesSelector.bind(this);
     this.clearSources = this.clearSources.bind(this);
     this.toggleSidebar = this.toggleSidebar.bind(this);
-    this.setSiteOverlay = this.setSiteOverlay.bind(this);
+    // this.setSiteOverlay = this.setSiteOverlay.bind(this);
   }
 
   // These handle the initial setup of the app
 
-   /**
+  storeData(species, sourceKey, data) {
+    this.setState(prevState => {
+      let previous = Object.assign({}, prevState[species]);
+      previous[sourceKey] = data;                 
+      return { previous };
+    })
+  }
+
+  /**
    * Retrieves data from the given URL and processes it into a format
    * plotly can read
    *
@@ -66,7 +72,7 @@ class Dashboard extends React.Component {
    * @param {boolean} compressed - is the file compressed
    *
    */
-   retrieveData(filename, species, sourceKey, compressed = false) {
+  retrieveData(filename, species, sourceKey, compressed = false) {
     const key = `${species}.${sourceKey}`;
     const currentVal = get(this.state.dataStore, key);
     if (currentVal !== null) {
@@ -77,12 +83,10 @@ class Dashboard extends React.Component {
     // Base URLs:
     const url = new URL(filename, this.dataRepoURL).href;
 
-    async function retrieveData(url) {
-      const res = await fetch(url);
-      return await res.json();
-    }
+    // Fetch the data and store it
+    const data = fetchData(url).then((result) => {
 
-    const data = retrieveData(url);
+    });
 
     const x_timestamps = Object.keys(data);
     const x_values = x_timestamps.map((d) => new Date(parseInt(d)));
@@ -167,12 +171,45 @@ class Dashboard extends React.Component {
     this.state.defaultSpecies = defaultSpecies;
     this.state.selectedSources = new Set([defaultSourceKey]);
     this.state.selectedSpecies = defaultSpecies;
-    this.state.selectedKeys = dataKeys;
     this.state.isLoaded = true;
     /* eslint-enable react/no-direct-mutation-state */
   }
 
+  componentDidMount() {
+    // Retrieve the metadata
+
+    const metadataURL = new URL("fileMetadata.json", this.dataRepoURL).href
+
+    // const
+
+      // this// Retrieve the default data - we can just save the key for the default data so we don't have to loop
+      // // through the whole structure to find it
+      // .this
+      //   .setState({ isLoaded: true });
+    // const apiURL = "https://raw.githubusercontent.com/openghg/dashboard_data/main/combined_data.json";
+    // fetch(apiURL)
+    //   .then((res) => res.json())
+    //   .then(
+    //     (result) => {
+    //       this.processRawData(result);
+    //       this.setState({
+    //         isLoaded: true,
+    //       });
+    //     },
+    //     (error) => {
+    //       this.setState({
+    //         isLoaded: true,
+    //         error,
+    //       });
+    //     }
+    //   );
+  }
+
+  /**
+   * @deprecated Deprecated in the DECC Dashboard
+   */
   buildSiteInfo() {
+    console.warn("This function may be removed as it unused in this version of the dashboard.");
     const siteImages = importSiteImages();
 
     let siteData = {};
@@ -246,9 +283,14 @@ class Dashboard extends React.Component {
     this.setState({ selectedSpecies: speciesLower });
   }
 
+  /**
+   * Selects a species
+   *
+   * @param {string} species - Species name
+   * @param {Set<string>} oldSelectedSources - Set of previously selected sources
+   */
   sourceSpeciesChange(species, oldSelectedSources) {
-    const dataStore = this.state.dataStore;
-    const speciesData = dataStore[species];
+    const speciesData = this.state.dataStore[species];
 
     let newSources = new Set();
 
@@ -278,49 +320,7 @@ class Dashboard extends React.Component {
     this.setState({ showSidebar: !this.state.showSidebar });
   }
 
- 
-
-  dataSelector(dataKeys) {
-    this.setState({ selectedKeys: dataKeys });
-  }
-
-  componentDidMount() {
-    // Retrieve the metadata
-    const metadataURL = this.
-
-    // Retrieve the default data - we can just save the key for the default data so we don't have to loop
-    // through the whole structure to find it
-    this.setState({ isLoaded: true });
-    // const apiURL = "https://raw.githubusercontent.com/openghg/dashboard_data/main/combined_data.json";
-    // fetch(apiURL)
-    //   .then((res) => res.json())
-    //   .then(
-    //     (result) => {
-    //       this.processRawData(result);
-    //       this.setState({
-    //         isLoaded: true,
-    //       });
-    //     },
-    //     (error) => {
-    //       this.setState({
-    //         isLoaded: true,
-    //         error,
-    //       });
-    //     }
-    //   );
-  }
-
-  anySelected() {
-    for (const subdict of Object.values(this.state.selectedKeys)) {
-      for (const value of Object.values(subdict)) {
-        if (value === true) {
-          return true;
-        }
-      }
-    }
-
-    return false;
-  }
+  
 
   setSiteOverlay(e) {
     const siteCode = String(e.target.dataset.onclickparam).toUpperCase();

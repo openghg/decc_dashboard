@@ -43,7 +43,7 @@ class LiveData extends React.Component {
             centre={mapCentre}
             zoom={5}
             dataStore={this.props.dataStore}
-            siteInfoOverlay={this.props.setSiteOverlay}
+            // siteInfoOverlay={this.props.setSiteOverlay}
             siteStructure={this.props.siteStructure}
           />
         </div>
