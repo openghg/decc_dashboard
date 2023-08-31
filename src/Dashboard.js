@@ -1,6 +1,6 @@
 import React from "react";
 import { Routes, Route, Link, HashRouter } from "react-router-dom";
-import { cloneDeep, has, set } from "lodash";
+import { cloneDeep, has, set, get } from "lodash";
 
 import ControlPanel from "./components/ControlPanel/ControlPanel";
 import OverlayContainer from "./components/OverlayContainer/OverlayContainer";
@@ -27,7 +27,6 @@ class Dashboard extends React.Component {
       error: null,
       isLoaded: false,
       showSidebar: false,
-      processedData: {},
       dataKeys: {},
       selectedKeys: {},
       emptySelection: true,
@@ -35,6 +34,7 @@ class Dashboard extends React.Component {
       overlay: null,
       layoutMode: "dashboard",
       colours: {},
+      dataStore: {},
     };
 
     this.dataRepoURL = "https://github.com/openghg/decc_dashboard_data/main/raw/";
@@ -127,8 +127,8 @@ class Dashboard extends React.Component {
   }
 
   sourceSpeciesChange(species, oldSelectedSources) {
-    const processedData = this.state.processedData;
-    const speciesData = processedData[species];
+    const dataStore = this.state.dataStore;
+    const speciesData = dataStore[species];
 
     let newSources = new Set();
 
@@ -159,14 +159,33 @@ class Dashboard extends React.Component {
   }
 
   /**
-   * Convert the data to a format recognised by Plotly
+   * Retrieves data from the given URL and processes it into a format
+   * plotly can read
    *
-   * @param {object} data - JSON data from pandas
-   *
-   * @returns {object}
+   * @param {string} filename - Name of file to be retrieved from data store
+   * @param {string} species - Species
+   * @param {string} sourceKey - Source key
+   * @param {boolean} compressed - is the file compressed
    *
    */
-  to_plotly(data) {
+  retrieveData(filename, species, sourceKey, compressed = false) {
+    const key = `${species}.${sourceKey}`;
+    const currentVal = get(this.state.dataStore, key);
+    if (currentVal !== null) {
+      console.log(`We already have data for ${species}.${sourceKey}`);
+      return;
+    }
+    // TODO - add quick check to see if we have the correct filename?
+    // Base URLs:
+    const url = new URL(filename, this.dataRepoURL).href;
+
+    async function retrieveData(url) {
+      const res = await fetch(url);
+      return await res.json();
+    }
+
+    const data = retrieveData(url);
+
     const x_timestamps = Object.keys(data);
     const x_values = x_timestamps.map((d) => new Date(parseInt(d)));
     const y_values = Object.values(data);
@@ -176,19 +195,8 @@ class Dashboard extends React.Component {
       y_values: y_values,
     };
 
-    return graphData;
-  }
-
-  /**
-   * Retrieves data from the given URL and processes it into a format
-   * plotly can read
-   *
-   * @param {string} url - URl of JSON file (could be gzipped)
-   * @param {boolean} compressed - is the file compressed
-   *
-   */
-  retrieveData(url, compressed = false) {
-    
+    // Add the data to the dataStore object
+    set(this.state.dataStore, key, graphData);
   }
 
   /**
@@ -198,20 +206,15 @@ class Dashboard extends React.Component {
     // Loop over the metadata dictionary
     // Create the
     // This should aleady be in the right shape
-    this.completeMetadata = completeMetadata;
+    this.state.completeMetadata = completeMetadata;
     let defaultSpecies = null;
     let defaultSite = null;
     let defaultInlet = null;
     // Not sure if we need default instrument but
     let defaultInstrument = null;
     let defaultNetwork = null;
+    let defaultSourceKey = null;
     // We just need to pull out the initial data
-    // Key format: metadata_complete[species][network][site][inlet][instrument]
-    // const defaultSpecies = Object.keys(completeMetadata)[0];
-    // const defaultNetwork = Object.keys(completeMetadata[defaultSpecies])[0];
-    // const defaultSite = Object.keys(completeMetadata[defaultSpecies][defaultNetwork])[0];
-    // const defaultInlet = Object.keys(completeMetadata[defaultSpecies][defaultNetwork][defaultSite])[0];
-    // const defaultInstrument = Object.keys(completeMetadata[defaultSpecies][defaultNetwork][defaultSite][defaultInlet])[0];
 
     // This will hold the data itself
     // It's structure is
@@ -227,19 +230,25 @@ class Dashboard extends React.Component {
 
     try {
       for (const [species, networkData] of Object.entries(completeMetadata)) {
-        if (!defaultSpecies) defaultSpecies = species;
+        if (defaultSpecies === null) defaultSpecies = species;
         for (const [network, siteData] of Object.entries(networkData)) {
-          if (!defaultNetwork) defaultNetwork = network;
+          if (defaultNetwork === null) defaultNetwork = network;
           for (const [site, inletData] of Object.entries(siteData)) {
-            if (!defaultSite) defaultSite = site;
+            if (defaultSite === null) defaultSite = site;
             for (const [inlet, instrumentData] of Object.entries(inletData)) {
-              if (!defaultInlet) defaultInlet = inlet;
+              if (defaultInlet === null) defaultInlet = inlet;
               for (const [instrument, fileMetadata] of Object.entries(instrumentData)) {
                 const sourceKey = `${species}.${network}_${site}_${inlet}_${instrument}`;
+
+                if (defaultSourceKey === null) defaultSourceKey = sourceKey;
+
                 let measurementData = null;
+
                 if (!defaultInstrument) {
                   defaultInstrument = instrument;
-                  // const measurementData = retrieve_data
+
+                  const filename = fileMetadata["filename"];
+                  this.retrieveData(filename, species, sourceKey);
                 }
 
                 set(dataStore, sourceKey, measurementData);
@@ -251,166 +260,18 @@ class Dashboard extends React.Component {
     } catch (error) {
       console.error(`Error processing raw data - ${error}`);
     }
-  }
 
-  /**
-   * Create the data structure for the retrieval of the separated
-   * out data
-   *
-   * @param {object} metadata - metadata object holding filenames for each chunk
-   *
-   */
-  createDataStructure(metadata) {
-    // Create the datastructure from the file metadata object and populate it
-    // with the data for the default site, species, inlet
-    let dataKeys = {};
-    let processedData = {};
-    let siteStructure = {};
-
-    let defaultSpecies = null;
-    let defaultSourceKey = null;
-    let defaultInlet = null;
-
-    let retrievedDefault = false;
-
-    try {
-      for (const [species, networkData] of Object.entries(metadata)) {
-        if (!defaultSpecies) {
-          defaultSpecies = species;
-        }
-        for (const [network, siteData] of Object.entries(networkData)) {
-          for (const [site, inletData] of Object.entries(siteData)) {
-            for (const [inlet, instrumentData] of Object.entries(inletData)) {
-              if (!defaultInlet) {
-                defaultInlet = inlet;
-              }
-              for (const [instrument, fileInfo] of Object.entries(instrumentData)) {
-                // Data key
-                // TODO - why use underscores here?
-                const sourceKey = `${network}_${site}_${inlet}_${instrument}`;
-                // This is for the data dictionary that by default is only populated with one dataset
-                const dataKey = `${species}.${network}.${site}.${inlet}.${instrument}`;
-                // This uses the site info JSON so we can dynamically create the interface
-                // const sourceKey = `${network}.${site}.${inlet}.${instrument}`
-
-                // This is the default plot we'll show when the site loads?
-                if (!defaultSourceKey) {
-                  defaultSourceKey = sourceKey;
-                }
-
-                // We create a nested object for easy automated creation of the interface
-                set(siteStructure, dataKey, sourceKey);
-
-                // Let's retrieve the default data if we haven't already
-                if (!retrievedDefault) {
-                  this.defaultDataKey = dataKey;
-                  // Retrieve the default data
-                  const url = this.dataRepoURL + fileInfo["filename"];
-                  const retrievedData = this.retrieveData(url);
-                  set(processedData, dataKey, retrievedData);
-                  retrievedDefault = true;
-                } else {
-                  set(processedData, dataKey, null);
-                }
-              }
-            }
-          }
-        }
-      }
-    } catch (error) {
-      console.error(`Error processing raw data - ${error}`);
-    }
-
+    // Should we use setState here? Does that work properly now?
     // Disabled the no direct mutation rule here as this only gets called from the constructor
     /* eslint-disable react/no-direct-mutation-state */
     // Give each site a colour
+    this.state.dataStore = dataStore;
     this.state.defaultSpecies = defaultSpecies;
     this.state.defaultSourceKey = defaultSourceKey;
     this.state.selectedSources = new Set([defaultSourceKey]);
     this.state.selectedSpecies = defaultSpecies;
-    this.state.processedData = processedData;
     this.state.selectedKeys = dataKeys;
     this.state.isLoaded = true;
-    this.state.siteStructure = siteStructure;
-    /* eslint-enable react/no-direct-mutation-state */
-  }
-
-  processRawData(rawData) {
-    // Process the data and create the correct Javascript time objects
-    // expected by plotly
-
-    // NOTE - I use data source here, please don't confuse with an OpenGHG Datasource,
-    let dataKeys = {};
-    let processedData = {};
-    let siteStructure = {};
-
-    let defaultSpecies = null;
-    let defaultSourceKey = null;
-    let defaultNetwork = null;
-
-    try {
-      for (const [species, networkData] of Object.entries(rawData)) {
-        if (!defaultSpecies) {
-          defaultSpecies = species;
-        }
-        for (const [network, siteData] of Object.entries(networkData)) {
-          if (!defaultNetwork) {
-            defaultNetwork = network;
-          }
-          for (const [site, inletData] of Object.entries(siteData)) {
-            for (const [inlet, instrumentData] of Object.entries(inletData)) {
-              for (const [instrument, measurementData] of Object.entries(instrumentData)) {
-                // Data key
-                const sourceKey = `${network}_${site}_${inlet}_${instrument}`;
-                const nestedPath = `${species}.${network}.${site}.${inlet}.${instrument}`;
-
-                if (!defaultSourceKey) {
-                  defaultSourceKey = sourceKey;
-                }
-
-                // We create a nested object for easy automated creation of the interface
-                set(siteStructure, nestedPath, sourceKey);
-
-                // Create the data structures expected by plotly
-                const timeseriesData = measurementData["data"];
-                const metadata = measurementData["metadata"];
-                const rawData = timeseriesData[species];
-
-                const x_timestamps = Object.keys(rawData);
-                const x_values = x_timestamps.map((d) => new Date(parseInt(d)));
-                const y_values = Object.values(rawData);
-
-                const graphData = {
-                  x_values: x_values,
-                  y_values: y_values,
-                };
-
-                const combinedData = { data: graphData, metadata: metadata };
-
-                const dataKey = `${species}.${sourceKey}`;
-                // use lodash set
-                set(processedData, dataKey, combinedData);
-              }
-            }
-          }
-        }
-      }
-    } catch (error) {
-      console.error(`Error processing raw data - ${error}`);
-    }
-
-    // Disabled the no direct mutation rule here as this only gets called from the constructor
-    /* eslint-disable react/no-direct-mutation-state */
-    // Give each site a colour
-    this.state.defaultSpecies = defaultSpecies;
-    this.state.defaultNetwork = defaultNetwork;
-    this.state.defaultSourceKey = defaultSourceKey;
-    this.state.selectedSources = new Set([defaultSourceKey]);
-    this.state.selectedSpecies = defaultSpecies;
-    this.state.processedData = processedData;
-    this.state.selectedKeys = dataKeys;
-    this.state.isLoaded = true;
-    this.state.siteStructure = siteStructure;
     /* eslint-enable react/no-direct-mutation-state */
   }
 
@@ -419,7 +280,9 @@ class Dashboard extends React.Component {
   }
 
   componentDidMount() {
-    this.processRawData(deccMeasData);
+    // Retrieve the metadata
+    const metadataURL = this.
+
     // Retrieve the default data - we can just save the key for the default data so we don't have to loop
     // through the whole structure to find it
     this.setState({ isLoaded: true });
@@ -497,7 +360,7 @@ class Dashboard extends React.Component {
           clearSources={this.clearSources}
           speciesSelector={this.speciesSelector}
           sourceSelector={this.sourceSelector}
-          processedData={this.state.processedData}
+          dataStore={this.state.dataStore}
           selectedSources={this.state.selectedSources}
           selectedKeys={this.state.selectedKeys}
           selectedSpecies={this.state.selectedSpecies}

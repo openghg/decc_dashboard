@@ -11,7 +11,7 @@ import { Button } from "@mui/material";
 
 class ObsBox extends React.Component {
   createEmissionsGraphs() {
-    const processedData = this.props.processedData;
+    const dataStore = this.props.dataStore;
     const selectedSources = this.props.selectedSources;
     const selectedSpecies = this.props.selectedSpecies;
 
@@ -25,7 +25,7 @@ class ObsBox extends React.Component {
     let multiUnits = [];
 
     if (selectedSources) {
-      const speciesData = processedData[selectedSpecies];
+      const speciesData = dataStore[selectedSpecies];
 
       for (const key of selectedSources) {
         dataToPlot[key] = speciesData[key];
@@ -88,7 +88,7 @@ class ObsBox extends React.Component {
       clearButton = <Button variant="contained" size="small" onClick={this.props.clearSources}>Clear</Button>;
     }
 
-    const availableSpecies = Object.keys(this.props.processedData);
+    const availableSpecies = Object.keys(this.props.dataStore);
 
     return (
       <div className={styles.container}>
@@ -108,7 +108,7 @@ class ObsBox extends React.Component {
 
 ObsBox.propTypes = {
   clearSources: PropTypes.func.isRequired,
-  processedData: PropTypes.object.isRequired,
+  dataStore: PropTypes.object.isRequired,
   selectedSources: PropTypes.object.isRequired,
   selectedSpecies: PropTypes.string.isRequired,
   speciesSelector: PropTypes.func.isRequired,

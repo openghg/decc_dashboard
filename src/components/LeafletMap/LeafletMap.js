@@ -22,12 +22,12 @@ class LeafletMap extends React.Component {
   }
 
   createMarkers() {
-    const processedData = this.props.processedData;
+    const dataStore = this.props.dataStore;
     const siteStructure = this.props.siteStructure;
     const selectedSpecies = this.props.selectedSpecies;
 
     const speciesStructure = siteStructure[selectedSpecies];
-    const speciesData = processedData[selectedSpecies];
+    const speciesData = dataStore[selectedSpecies];
 
     let markers = [];
 
