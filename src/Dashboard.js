@@ -54,111 +54,9 @@ class Dashboard extends React.Component {
     this.setSiteOverlay = this.setSiteOverlay.bind(this);
   }
 
-  buildSiteInfo() {
-    const siteImages = importSiteImages();
+  // These handle the initial setup of the app
 
-    let siteData = {};
-    for (const site of Object.keys(siteInfoJSON)) {
-      try {
-        siteData[site] = {};
-        siteData[site]["image"] = siteImages[site];
-        siteData[site]["description"] = siteInfoJSON[site]["description"];
-      } catch (error) {
-        console.error(error);
-      }
-    }
-
-    // Disabled the no direct mutation rule here as this only gets called from the constructor
-    /* eslint-disable react/no-direct-mutation-state */
-    this.state.siteInfo = siteData;
-    /* eslint-enable react/no-direct-mutation-state */
-  }
-
-  /**
-   * Selects a data source - a specific species at a site at an inlet
-   *
-   * @param {string} selection - Key for a data source
-   */
-  sourceSelector(selection) {
-    let selectedSourcesSet = new Set();
-
-    if (selection instanceof Set) {
-      selectedSourcesSet = selection;
-    } else {
-      selectedSourcesSet.add(selection);
-    }
-
-    // Here we change all the sites and select all species / sectors at that site
-    let selectedSources = cloneDeep(this.state.selectedSources);
-
-    for (const source of selectedSourcesSet) {
-      if (selectedSources.has(source)) {
-        selectedSources.delete(source);
-      } else {
-        selectedSources.add(source);
-      }
-    }
-
-    this.setState({ selectedSources: selectedSources });
-  }
-
-  /**
-   * Clear the currently selected data sources
-   */
-  clearSources() {
-    this.setState({ selectedSources: new Set() });
-  }
-
-  /**
-   * Selects a species
-   *
-   * @param {string} species - Species name
-   */
-  speciesSelector(species) {
-    const speciesLower = species.toLowerCase();
-
-    const selectedSourcesClone = cloneDeep(this.state.selectedSources);
-
-    this.setState({ selectedSources: new Set() }, () => {
-      this.sourceSpeciesChange(species, selectedSourcesClone);
-    });
-
-    this.setState({ selectedSpecies: speciesLower });
-  }
-
-  sourceSpeciesChange(species, oldSelectedSources) {
-    const dataStore = this.state.dataStore;
-    const speciesData = dataStore[species];
-
-    let newSources = new Set();
-
-    for (const sourceKey of oldSelectedSources) {
-      if (has(speciesData, sourceKey)) {
-        newSources.add(sourceKey);
-      }
-    }
-
-    if (newSources.size === 0) {
-      const defaultSource = Object.keys(speciesData)[0];
-      newSources.add(defaultSource);
-    }
-
-    this.sourceSelector(newSources);
-  }
-
-  toggleOverlay() {
-    this.setState({ overlayOpen: !this.state.overlayOpen });
-  }
-
-  setOverlay(overlay) {
-    this.setState({ overlayOpen: true, overlay: overlay });
-  }
-
-  toggleSidebar() {
-    this.setState({ showSidebar: !this.state.showSidebar });
-  }
-
-  /**
+   /**
    * Retrieves data from the given URL and processes it into a format
    * plotly can read
    *
@@ -168,7 +66,7 @@ class Dashboard extends React.Component {
    * @param {boolean} compressed - is the file compressed
    *
    */
-  retrieveData(filename, species, sourceKey, compressed = false) {
+   retrieveData(filename, species, sourceKey, compressed = false) {
     const key = `${species}.${sourceKey}`;
     const currentVal = get(this.state.dataStore, key);
     if (currentVal !== null) {
@@ -267,13 +165,120 @@ class Dashboard extends React.Component {
     // Give each site a colour
     this.state.dataStore = dataStore;
     this.state.defaultSpecies = defaultSpecies;
-    this.state.defaultSourceKey = defaultSourceKey;
     this.state.selectedSources = new Set([defaultSourceKey]);
     this.state.selectedSpecies = defaultSpecies;
     this.state.selectedKeys = dataKeys;
     this.state.isLoaded = true;
     /* eslint-enable react/no-direct-mutation-state */
   }
+
+  buildSiteInfo() {
+    const siteImages = importSiteImages();
+
+    let siteData = {};
+    for (const site of Object.keys(siteInfoJSON)) {
+      try {
+        siteData[site] = {};
+        siteData[site]["image"] = siteImages[site];
+        siteData[site]["description"] = siteInfoJSON[site]["description"];
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    // Disabled the no direct mutation rule here as this only gets called from the constructor
+    /* eslint-disable react/no-direct-mutation-state */
+    this.state.siteInfo = siteData;
+    /* eslint-enable react/no-direct-mutation-state */
+  }
+
+  // These handle app control by the components
+
+  /**
+   * Selects a data source - a specific species at a site at an inlet
+   *
+   * @param {string} selection - Key for a data source
+   */
+  sourceSelector(selection) {
+    let selectedSourcesSet = new Set();
+
+    if (selection instanceof Set) {
+      selectedSourcesSet = selection;
+    } else {
+      selectedSourcesSet.add(selection);
+    }
+
+    // Here we change all the sites and select all species / sectors at that site
+    let selectedSources = cloneDeep(this.state.selectedSources);
+
+    for (const source of selectedSourcesSet) {
+      if (selectedSources.has(source)) {
+        selectedSources.delete(source);
+      } else {
+        selectedSources.add(source);
+      }
+    }
+
+    this.setState({ selectedSources: selectedSources });
+  }
+
+  /**
+   * Clear the currently selected data sources
+   */
+  clearSources() {
+    this.setState({ selectedSources: new Set() });
+  }
+
+  /**
+   * Selects a species
+   *
+   * @param {string} species - Species name
+   */
+  speciesSelector(species) {
+    const speciesLower = species.toLowerCase();
+
+    const selectedSourcesClone = cloneDeep(this.state.selectedSources);
+
+    this.setState({ selectedSources: new Set() }, () => {
+      this.sourceSpeciesChange(species, selectedSourcesClone);
+    });
+
+    this.setState({ selectedSpecies: speciesLower });
+  }
+
+  sourceSpeciesChange(species, oldSelectedSources) {
+    const dataStore = this.state.dataStore;
+    const speciesData = dataStore[species];
+
+    let newSources = new Set();
+
+    for (const sourceKey of oldSelectedSources) {
+      if (has(speciesData, sourceKey)) {
+        newSources.add(sourceKey);
+      }
+    }
+
+    if (newSources.size === 0) {
+      const defaultSource = Object.keys(speciesData)[0];
+      newSources.add(defaultSource);
+    }
+
+    this.sourceSelector(newSources);
+  }
+
+  toggleOverlay() {
+    this.setState({ overlayOpen: !this.state.overlayOpen });
+  }
+
+  setOverlay(overlay) {
+    this.setState({ overlayOpen: true, overlay: overlay });
+  }
+
+  toggleSidebar() {
+    this.setState({ showSidebar: !this.state.showSidebar });
+  }
+
+ 
 
   dataSelector(dataKeys) {
     this.setState({ selectedKeys: dataKeys });
