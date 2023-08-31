@@ -15,7 +15,7 @@ import styles from "./Dashboard.module.css";
 
 // Site description information
 import siteInfoJSON from "./data/siteInfo.json";
-import deccMeasData from "./data/decc_example.json";
+import completeMetadata from "./deccoutput/metadata_complete.json";
 import { Button } from "@mui/material";
 import LaunchIcon from "@mui/icons-material/Launch";
 
@@ -109,7 +109,6 @@ class Dashboard extends React.Component {
     this.setState({ selectedSources: new Set() });
   }
 
-
   /**
    * Selects a species
    *
@@ -188,7 +187,71 @@ class Dashboard extends React.Component {
    * @param {boolean} compressed - is the file compressed
    *
    */
-  retrieveData(url, compressed = false) {}
+  retrieveData(url, compressed = false) {
+    
+  }
+
+  /**
+   * Create the data structure used to create the plots Plotly can read
+   */
+  createDataStructure() {
+    // Loop over the metadata dictionary
+    // Create the
+    // This should aleady be in the right shape
+    this.completeMetadata = completeMetadata;
+    let defaultSpecies = null;
+    let defaultSite = null;
+    let defaultInlet = null;
+    // Not sure if we need default instrument but
+    let defaultInstrument = null;
+    let defaultNetwork = null;
+    // We just need to pull out the initial data
+    // Key format: metadata_complete[species][network][site][inlet][instrument]
+    // const defaultSpecies = Object.keys(completeMetadata)[0];
+    // const defaultNetwork = Object.keys(completeMetadata[defaultSpecies])[0];
+    // const defaultSite = Object.keys(completeMetadata[defaultSpecies][defaultNetwork])[0];
+    // const defaultInlet = Object.keys(completeMetadata[defaultSpecies][defaultNetwork][defaultSite])[0];
+    // const defaultInstrument = Object.keys(completeMetadata[defaultSpecies][defaultNetwork][defaultSite][defaultInlet])[0];
+
+    // This will hold the data itself
+    // It's structure is
+    // dataStore = {
+    //   "species": {
+    //     "network_site_inlet_instrument": {"x_values": [1,2,3], "y_values": [1,2,3]}
+    //   }
+    // }
+    // We retrieve only the first dataset and then populate the other data values with nulls
+    // When this data is selected the app will retrieve the data
+
+    let dataStore = {};
+
+    try {
+      for (const [species, networkData] of Object.entries(completeMetadata)) {
+        if (!defaultSpecies) defaultSpecies = species;
+        for (const [network, siteData] of Object.entries(networkData)) {
+          if (!defaultNetwork) defaultNetwork = network;
+          for (const [site, inletData] of Object.entries(siteData)) {
+            if (!defaultSite) defaultSite = site;
+            for (const [inlet, instrumentData] of Object.entries(inletData)) {
+              if (!defaultInlet) defaultInlet = inlet;
+              for (const [instrument, fileMetadata] of Object.entries(instrumentData)) {
+                const sourceKey = `${species}.${network}_${site}_${inlet}_${instrument}`;
+                let measurementData = null;
+                if (!defaultInstrument) {
+                  defaultInstrument = instrument;
+                  // const measurementData = retrieve_data
+                }
+
+                set(dataStore, sourceKey, measurementData);
+              }
+            }
+          }
+        }
+      }
+    } catch (error) {
+      console.error(`Error processing raw data - ${error}`);
+    }
+  }
 
   /**
    * Create the data structure for the retrieval of the separated
@@ -431,7 +494,6 @@ class Dashboard extends React.Component {
     } else {
       const liveData = (
         <LiveData
-          dataSelector={this.dataSelector}
           clearSources={this.clearSources}
           speciesSelector={this.speciesSelector}
           sourceSelector={this.sourceSelector}
