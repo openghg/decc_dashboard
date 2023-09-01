@@ -1,19 +1,79 @@
-import PropTypes from "prop-types";
 import React from "react";
+import PropTypes from "prop-types";
 import Plot from "react-plotly.js";
 import { toTitleCase } from "../../util/helpers";
 import styles from "./MultiSiteLineChart.module.css";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
+import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
+import { Button } from "@mui/material";
 import { createImage } from "../../util/helpers"
 
 import colours from "../../data/colours.json";
 
 class MultiSiteLineChart extends React.Component {
+    /*
+    This method takes care of downloading the Plot 
+    on the website in format of PNG
+    It fetches the html tag for plot and converts to PNG
+    */
+  handleDownloadPNG = (species, sites) => {
+    const chartContainer = document.getElementById("chart-container");
+    let filenames = [species, ...sites].join('_');
+  
+    if (chartContainer) {
+      html2canvas(chartContainer).then((canvas) => {
+        const imgData = canvas.toDataURL("image/png");
+  
+        const link = document.createElement("a");
+        link.href = imgData;
+        link.download = `${filenames}.png`;
+        link.click();
+      });
+    } else {
+      console.error("Chart container not found.");
+    }
+  };
+  
+    /*
+    This method takes care of downloading the Plot 
+    on the website in format of PDF
+    It fetches the html tag for plot and converts to PDF
+    */
+  handleDownloadPDF = (species, sites) => {
+    // Here we fetch the html element of chart-container that needs to be downloaded by id.
+    const chartContainer = document.getElementById("chart-container");
+    let filenames = [species, ...sites].join('_');
+
+    if (chartContainer) {
+      html2canvas(chartContainer).then((canvas) => {
+        const imgData = canvas.toDataURL("image/jpeg");
+
+        const chartWidth = chartContainer.offsetWidth;
+        const chartHeight = chartContainer.offsetHeight;
+  
+        const pdf = new jsPDF({
+          orientation: chartWidth > chartHeight ? "landscape" : "portrait",
+          unit: "mm",
+          format: [chartWidth, chartHeight],
+        });
+  
+        pdf.addImage(imgData, "JPEG", 0, 0, chartWidth, chartHeight);
+  
+        pdf.save(filenames);
+      });
+    } else {
+      console.error("Chart container not found.");
+    }
+  };
   render() {
     let plotData = [];
     let maxY = 0;
     let minY = Infinity;
 
     const data = this.props.data;
+    var species = null;
+    var units = null;
 
     for (const sourceData of Object.values(data)) {
       const metadata = sourceData["metadata"];
@@ -45,8 +105,9 @@ class MultiSiteLineChart extends React.Component {
       }
 
       const colour = colours["pastelColours"];
-      const units = metadata["units"];
-
+      units = metadata["units"];
+      species = metadata["species"]
+      
       const trace = {
         x: xValues,
         y: yValues,
@@ -62,6 +123,13 @@ class MultiSiteLineChart extends React.Component {
 
       plotData.push(trace);
     }
+
+    /*fetching all the site names to pass them as filename
+     using regex to remove <b> </b> and "-" within the name
+     */
+    let sites = [];
+    sites = plotData.map(item => item.name);
+    sites = sites.map(item => item.replace(/<\/?b>/g, '').replace(/\s*-\s*/g, ''));
 
     let dateMarkObject = null;
     const selectedDate = this.props.selectedDate;
@@ -87,7 +155,7 @@ class MultiSiteLineChart extends React.Component {
     const metOffice = require(`../../images/Metoffice.png`);
     const ncas = require(`../../images/ncas.png`);
     const openghg = require(`../../images/OpenGHG_Logo_Landscape.png`);
-
+    
     const layout = {
       title: {
         text: this.props.title ? this.props.title : null,
@@ -115,7 +183,7 @@ class MultiSiteLineChart extends React.Component {
       yaxis: {
         automargin: true,
         title: {
-          text: this.props.yLabel,
+          text: `${species}_${units}`,
           standoff: 10,
           font: {
             size:16,
@@ -145,12 +213,34 @@ class MultiSiteLineChart extends React.Component {
       },
       shapes: [dateMarkObject],
     };
-
     return (
       <div data-testid={"linePlot"} className={styles.container}>
-        <Plot data={plotData} layout={layout} />
+        <div id="chart-container">
+          <Plot data={plotData} layout={layout} />
+        </div>
+        <div className={`${styles.downloadContainer} ${styles.smallButtonPosition}`}>
+        <Button
+        size="small"
+        variant="contained"
+        color="success"
+        startIcon={<FileDownloadOutlinedIcon />}
+        onClick={()=>this.handleDownloadPDF(species,sites)}
+        style={{ width: '10px',
+          height: '20px'}}>
+          PDF
+          </Button>
+          <Button
+          size="small"
+          variant="contained"
+          color="primary"
+          startIcon={<FileDownloadOutlinedIcon />}
+          onClick={() => this.handleDownloadPNG(species, sites)}
+          style={{ width: '20px',
+          height: '20px'}}>
+          PNG
+        </Button>
+        </div>
       </div>
-
     );
   }
 }
