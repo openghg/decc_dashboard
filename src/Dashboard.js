@@ -52,49 +52,57 @@ class Dashboard extends React.Component {
   }
 
   // These handle the initial setup of the app
+
+  /**
+   * Adds data to the data store, converting it to the structure required by Plotly
+   *
+   * @param {string} species - Species
+   * @param {string} sourceKey - Source key
+   * @param {string} data - Data that's been passed through the to_plotly function
+   *
+   */
   addDataToStore(species, sourceKey, data) {
+    const x_timestamps = Object.keys(data);
+    const x_values = x_timestamps.map((d) => new Date(parseInt(d)));
+    const y_values = Object.values(data);
+
+    const forPlotly = {
+      x_values: x_values,
+      y_values: y_values,
+    };
+
     this.setState((prevState) => {
       let previous = Object.assign({}, prevState[species]);
-      previous[sourceKey] = data;
+      previous[sourceKey] = forPlotly;
       return { previous };
     });
   }
+
 
   /**
    * Retrieves data from the given URL and processes it into a format
    * plotly can read
    *
-   * @param {string} filename - Name of file to be retrieved from data store
+   * @param {string} filename - Name of file to be retrieved from remote data store
    * @param {string} species - Species
    * @param {string} sourceKey - Source key
-   * @param {boolean} compressed - is the file compressed
    *
    */
-  retrieveData(filename, species, sourceKey, compressed = false) {
+  retrieveData(filename, species, sourceKey) {
     const key = `${species}.${sourceKey}`;
     const currentVal = get(this.state.dataStore, key);
     if (currentVal !== null) {
       console.log(`We already have data for ${species}.${sourceKey}`);
       return;
     }
+
     // TODO - add quick check to see if we have the correct filename?
     // Base URLs:
     const url = new URL(filename, this.dataRepoURL).href;
 
-    // Fetch the data and store it
-    const data = fetchData(url).then((result) => {});
-
-    const x_timestamps = Object.keys(data);
-    const x_values = x_timestamps.map((d) => new Date(parseInt(d)));
-    const y_values = Object.values(data);
-
-    const graphData = {
-      x_values: x_values,
-      y_values: y_values,
-    };
-
-    // Add the data to the dataStore object
-    set(this.state.dataStore, key, graphData);
+    retrieveJSON(url).then((result) => {
+      
+    })
   }
 
   /**
@@ -146,10 +154,10 @@ class Dashboard extends React.Component {
                   defaultInstrument = instrument;
 
                   const filename = fileMetadata["filename"];
-                  const url = new URL(filename, this.dataRepoURL)
+                  const url = new URL(filename, this.dataRepoURL);
                   retrieveJSON(url).then((result) => {
-                    this.addDataToStore(species, sourceKey, result)
-                  })
+                    this.addDataToStore(species, sourceKey, result);
+                  });
                 }
 
                 set(dataStore, sourceKey, measurementData);
