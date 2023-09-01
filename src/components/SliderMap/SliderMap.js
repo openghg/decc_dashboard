@@ -35,9 +35,9 @@ class SliderMap extends React.Component {
 
     for (const [site, siteData] of Object.entries(sites)) {
       const siteName = String(site).toUpperCase();
-      const lat = siteData["station_latitude"];
-      const long = siteData["station_longitude"];
-      const longName = siteData["station_long_name"];
+      const lat = siteData["latitude"];
+      const long = siteData["longitude"];
+      const longName = siteData["long_name"];
       const locationStr = `${siteName}, ${lat}, ${long}`;
 
       let marker;

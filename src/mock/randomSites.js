@@ -40,8 +40,8 @@ export function createSites() {
 
   for (let i = 0; i < n_sites; i++) {
     const location = {
-      station_latitude: getRandomLatitude(minLat, maxLat),
-      station_longitude: getRandomLongitude(minLong, maxLong),
+      latitude: getRandomLatitude(minLat, maxLat),
+      longitude: getRandomLongitude(minLong, maxLong),
     };
 
     let site_name = getSelection();

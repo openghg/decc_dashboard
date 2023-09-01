@@ -66,12 +66,12 @@ class LeafletMap extends React.Component {
         }
 
         try {
-          const station_latitude = siteMetadata["station_latitude"];
-          const station_longitude = siteMetadata["station_longitude"];
+          const latitude = siteMetadata["latitude"];
+          const longitude = siteMetadata["longitude"];
 
-          const locationStr = `${station_latitude}, ${station_longitude}`;
-          const location = [station_latitude, station_longitude];
-          const siteName = siteMetadata["station_long_name"];
+          const locationStr = `${latitude}, ${longitude}`;
+          const location = [latitude, longitude];
+          const siteName = siteMetadata["long_name"];
 
           marker = (
             <CircleMarker
