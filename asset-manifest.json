@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/decc_dashboard/static/css/main.12fbafe3.css",
-    "main.js": "/decc_dashboard/static/js/main.b8d04ec1.js",
+    "main.css": "/decc_dashboard/static/css/main.b9643dc0.css",
+    "main.js": "/decc_dashboard/static/js/main.6054ab2f.js",
     "static/js/703.8ee8f87f.chunk.js": "/decc_dashboard/static/js/703.8ee8f87f.chunk.js",
     "static/js/258.23a642c4.chunk.js": "/decc_dashboard/static/js/258.23a642c4.chunk.js",
     "static/js/787.9e5b7168.chunk.js": "/decc_dashboard/static/js/787.9e5b7168.chunk.js",
@@ -25,14 +25,14 @@
     "static/media/co2_ukghg_map_production_20170101T00.png": "/decc_dashboard/static/media/co2_ukghg_map_production_20170101T00.6650e5717423c3a62275.png",
     "static/media/UniOfBristolLogo.png": "/decc_dashboard/static/media/UniOfBristolLogo.588437319419ba2c6758.png",
     "index.html": "/decc_dashboard/index.html",
-    "main.12fbafe3.css.map": "/decc_dashboard/static/css/main.12fbafe3.css.map",
-    "main.b8d04ec1.js.map": "/decc_dashboard/static/js/main.b8d04ec1.js.map",
+    "main.b9643dc0.css.map": "/decc_dashboard/static/css/main.b9643dc0.css.map",
+    "main.6054ab2f.js.map": "/decc_dashboard/static/js/main.6054ab2f.js.map",
     "703.8ee8f87f.chunk.js.map": "/decc_dashboard/static/js/703.8ee8f87f.chunk.js.map",
     "258.23a642c4.chunk.js.map": "/decc_dashboard/static/js/258.23a642c4.chunk.js.map",
     "787.9e5b7168.chunk.js.map": "/decc_dashboard/static/js/787.9e5b7168.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.12fbafe3.css",
-    "static/js/main.b8d04ec1.js"
+    "static/css/main.b9643dc0.css",
+    "static/js/main.6054ab2f.js"
   ]
 }
