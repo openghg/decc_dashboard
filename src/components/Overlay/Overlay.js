@@ -15,7 +15,7 @@ class Overlay extends React.Component {
     return (
       <div className={styles.container}>
         <div className={styles.closeButton}>
-          <TextButton onClick={this.props.toggleOverlay} styling={"dark"} extraStyling={{ fontSize: "1.5vw" }}>
+          <TextButton onClick={this.props.toggleOverlay} styling={"dark"} extrastyling={{ fontSize: "1.5vw" }}>
             x
           </TextButton>
         </div>

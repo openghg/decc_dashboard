@@ -3,9 +3,9 @@
     "bellahoustonacademy": {
       "deployed": "2021-07-15",
       "id": 175,
-      "latitude": 55.848,
-      "long_name": "Bellahouston Academy",
-      "longitude": -4.301,
+      "station_latitude": 55.848,
+      "station_long_name": "Bellahouston Academy",
+      "station_longitude": -4.301,
       "magl": "NA",
       "masl": "NA",
       "node_folder_id": 932
@@ -13,9 +13,9 @@
     "glasgows12002": {
       "deployed": "2021-01-20",
       "id": 157,
-      "latitude": 55.826,
-      "long_name": "GlasgowS12002",
-      "longitude": -4.226,
+      "station_latitude": 55.826,
+      "station_long_name": "GlasgowS12002",
+      "station_longitude": -4.226,
       "magl": "NA",
       "masl": "NA",
       "node_folder_id": 872
@@ -23,9 +23,9 @@
     "hillparksecondaryschool": {
       "deployed": "2021-07-28",
       "id": 174,
-      "latitude": 55.815,
-      "long_name": "Hillpark Secondary School",
-      "longitude": -4.299,
+      "station_latitude": 55.815,
+      "station_long_name": "Hillpark Secondary School",
+      "station_longitude": -4.299,
       "magl": "NA",
       "masl": "NA",
       "node_folder_id": 931
@@ -33,9 +33,9 @@
     "johnpaulacademy": {
       "deployed": "2021-07-15",
       "id": 179,
-      "latitude": 55.904,
-      "long_name": "John Paul Academy",
-      "longitude": -4.295,
+      "station_latitude": 55.904,
+      "station_long_name": "John Paul Academy",
+      "station_longitude": -4.295,
       "magl": "NA",
       "masl": "NA",
       "node_folder_id": 936
@@ -43,9 +43,9 @@
     "killearnstirlingshireglasgows22002": {
       "deployed": "2020-03-26",
       "id": 156,
-      "latitude": 56.043,
-      "long_name": "Killearn Stirlingshire GlasgowS22002",
-      "longitude": -4.381,
+      "station_latitude": 56.043,
+      "station_long_name": "Killearn Stirlingshire GlasgowS22002",
+      "station_longitude": -4.381,
       "magl": "NA",
       "masl": "NA",
       "node_folder_id": 873
@@ -53,9 +53,9 @@
     "knightswoodsecondary": {
       "deployed": "2021-07-12",
       "id": 193,
-      "latitude": 55.891,
-      "long_name": "Knightswood Secondary",
-      "longitude": -4.339,
+      "station_latitude": 55.891,
+      "station_long_name": "Knightswood Secondary",
+      "station_longitude": -4.339,
       "magl": "NA",
       "masl": "NA",
       "node_folder_id": 913
@@ -63,9 +63,9 @@
     "notredamehighschool": {
       "deployed": "2021-07-12",
       "id": 197,
-      "latitude": 55.878,
-      "long_name": "Notre Dame High School",
-      "longitude": -4.299,
+      "station_latitude": 55.878,
+      "station_long_name": "Notre Dame High School",
+      "station_longitude": -4.299,
       "magl": "NA",
       "masl": "NA",
       "node_folder_id": 918
@@ -73,9 +73,9 @@
     "stpaulshighschool": {
       "deployed": "2021-07-28",
       "id": 172,
-      "latitude": 55.824,
-      "long_name": "St Pauls High School",
-      "longitude": -4.338,
+      "station_latitude": 55.824,
+      "station_long_name": "St Pauls High School",
+      "station_longitude": -4.338,
       "magl": "NA",
       "masl": "NA",
       "node_folder_id": 929
@@ -83,9 +83,9 @@
     "stthomasaquinasrcsecondaryschool": {
       "deployed": "2021-07-28",
       "id": 178,
-      "latitude": 55.881,
-      "long_name": "St Thomas Aquinas R C Secondary School",
-      "longitude": -4.336,
+      "station_latitude": 55.881,
+      "station_long_name": "St Thomas Aquinas R C Secondary School",
+      "station_longitude": -4.336,
       "magl": "NA",
       "masl": "NA",
       "node_folder_id": 935
@@ -93,9 +93,9 @@
     "universityofstrathclyde": {
       "deployed": "2021-01-01",
       "id": 171,
-      "latitude": 55.861,
-      "long_name": "University of Strathclyde",
-      "longitude": -4.247,
+      "station_latitude": 55.861,
+      "station_long_name": "University of Strathclyde",
+      "station_longitude": -4.247,
       "magl": "NA",
       "masl": "NA",
       "node_folder_id": 928

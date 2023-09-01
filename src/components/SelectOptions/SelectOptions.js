@@ -13,19 +13,25 @@ class SelectOptions extends React.Component {
 
   render() {
     return (
-      <FormControl variant="standard">
-        <InputLabel>Select Species </InputLabel>
-        <MuiSelect value={this.props.selected} onChange={this.onChangeValue} label="Species">
-          {this.props.options.map((option) => {
-            const label = option.toUpperCase()
-            return (
-              <MenuItem key={option} value={option}>
-                {label}
-              </MenuItem>
-            );
-          })}
-        </MuiSelect>
-      </FormControl>
+<FormControl variant="standard" style={{ width: '50%' }}>
+  <InputLabel style={{ fontWeight: 'bold', color: 'black', fontSize: '20px' }}>Select Species</InputLabel>
+  <MuiSelect
+    value={this.props.selected}
+    onChange={this.onChangeValue}
+    label="Species"
+    style={{ width: '100%' }}
+  >
+    {this.props.options.map((option) => {
+      const label = option.toUpperCase();
+      return (
+        <MenuItem key={option} value={option}>
+          {label}
+        </MenuItem>
+      );
+    })}
+  </MuiSelect>
+</FormControl>
+
     );
   }
 }

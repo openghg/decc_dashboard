@@ -8,6 +8,7 @@ import Overlay from "./components/Overlay/Overlay";
 import FAQ from "./components/FAQ/FAQ";
 import Explainer from "./components/Explainer/Explainer"
 import LiveData from "./components/LiveData/LiveData";
+import Explainer from "./components/Explainer/Explainer";
 
 import { importSiteImages } from "./util/helpers";
 import styles from "./Dashboard.module.css";
