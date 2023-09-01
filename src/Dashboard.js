@@ -61,7 +61,7 @@ class Dashboard extends React.Component {
    * @param {string} data - Data that's been passed through the to_plotly function
    *
    */
-  addDataToStore(species, sourceKey, data) {
+  addDataToStore(sourceKey, data) {
     const x_timestamps = Object.keys(data);
     const x_values = x_timestamps.map((d) => new Date(parseInt(d)));
     const y_values = Object.values(data);
@@ -71,9 +71,11 @@ class Dashboard extends React.Component {
       y_values: y_values,
     };
 
+    // TODO - can we do this better so we don't end up copying all the data each time?
+    // Will this work?
     this.setState((prevState) => {
-      let previous = Object.assign({}, prevState[species]);
-      previous[sourceKey] = forPlotly;
+      let previous = {...prevState.dataSource.sourceKey}
+      previous = forPlotly
       return { previous };
     });
   }
@@ -87,28 +89,37 @@ class Dashboard extends React.Component {
    * @param {string} sourceKey - Source key
    *
    */
-  retrieveData(filename, species, sourceKey) {
-    const key = `${species}.${sourceKey}`;
-    const currentVal = get(this.state.dataStore, key);
+  retrieveData(filename, sourceKey) {
+    const currentVal = get(this.state.dataStore, sourceKey);
     if (currentVal !== null) {
-      console.log(`We already have data for ${species}.${sourceKey}`);
+      console.log(`We already have data for ${sourceKey}`);
       return;
     }
 
     const url = new URL(filename, this.dataRepoURL).href;
 
     retrieveJSON(url).then((result) => {
-      this.addDataToStore(species, sourceKey, result);
+      this.addDataToStore(sourceKey, result);
     });
   }
 
   /**
    * Create the data structure used to create the plots Plotly can read
+   * We create the dataStore object which has the following structure
+   *
+   *  dataStore = {
+   *   "species": {
+   *     "network_site_inlet_instrument": {"x_values": [1,2,3], "y_values": [1,2,3]}
+   *   }
+   * }
+   *
    */
   populateAndRetrieve(metadata) {
     // Loop over the metadata dictionary
     // Create the
-    // This should aleady be in the right shape
+    // This should aleady be in the right shape, we use the nested aspect of
+    // the dictionary to make it easy to populate the interface, creating
+    // some lookup tables for filenames etc below
     this.state.completeMetadata = metadata;
     let defaultSpecies = null;
     let defaultSite = null;
@@ -121,15 +132,12 @@ class Dashboard extends React.Component {
 
     // This will hold the data itself
     // It's structure is
-    // dataStore = {
-    //   "species": {
-    //     "network_site_inlet_instrument": {"x_values": [1,2,3], "y_values": [1,2,3]}
-    //   }
-    // }
+
     // We retrieve only the first dataset and then populate the other data values with nulls
     // When this data is selected the app will retrieve the data
 
     let dataStore = {};
+    let filenameLookup = {};
 
     try {
       for (const [species, networkData] of Object.entries(completeMetadata)) {
@@ -141,23 +149,24 @@ class Dashboard extends React.Component {
             for (const [inlet, instrumentData] of Object.entries(inletData)) {
               if (defaultInlet === null) defaultInlet = inlet;
               for (const [instrument, fileMetadata] of Object.entries(instrumentData)) {
-                const sourceKey = `${species}.${network}_${site}_${inlet}_${instrument}`;
+                // The complete source key should always have the species
+                const completeSourceKey = `${species}.${network}_${site}_${inlet}_${instrument}`;
 
-                if (defaultSourceKey === null) defaultSourceKey = sourceKey;
-
+                if (defaultSourceKey === null) defaultSourceKey = completeSourceKey;
                 let measurementData = null;
+                const filename = fileMetadata["filename"];
 
                 if (!defaultInstrument) {
                   defaultInstrument = instrument;
 
-                  const filename = fileMetadata["filename"];
                   const url = new URL(filename, this.dataRepoURL);
                   retrieveJSON(url).then((result) => {
-                    this.addDataToStore(species, sourceKey, result);
+                    this.addDataToStore(species, completeSourceKey, result);
                   });
                 }
 
-                set(dataStore, sourceKey, measurementData);
+                set(dataStore, completeSourceKey, measurementData);
+                set(filenameLookup, completeSourceKey, filename);
               }
             }
           }
@@ -251,6 +260,14 @@ class Dashboard extends React.Component {
       } else {
         selectedSources.add(source);
       }
+    }
+
+    // Now let's make sure we have all the data for these new selections
+    // the source will be the key in the
+    for (const source of selectedSources) {
+      const key = `${this.state.selectedSpecies}.${source}`;
+      const filename = this.state.filenameLookup[key]
+      this.retrieveData();
     }
 
     this.setState({ selectedSources: selectedSources });
