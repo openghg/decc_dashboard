@@ -32,7 +32,7 @@ class ControlPanel extends React.Component {
     return (
       <div className={styles.container}>
         <div className={styles.closeButton}>
-          <TextButton styling="light" extraStyling={{ fontSize: "2em" }} onClick={this.props.closePanel}>
+          <TextButton styling="light" extrastyling={{ fontSize: "2em" }} onClick={this.props.closePanel}>
             x
           </TextButton>
         </div>

@@ -9,6 +9,7 @@ import TextButton from "./components/TextButton/TextButton";
 import Overlay from "./components/Overlay/Overlay";
 import FAQ from "./components/FAQ/FAQ";
 import LiveData from "./components/LiveData/LiveData";
+import Explainer from "./components/Explainer/Explainer";
 
 import { importSiteImages } from "./util/helpers";
 import styles from "./Dashboard.module.css";
@@ -326,7 +327,7 @@ class Dashboard extends React.Component {
             <div className={styles.header}>
             <Button variant="text" href="https://catalogue.ceda.ac.uk/uuid/f5b38d1654d84b03ba79060746541e4f" target="_blank" startIcon={<LaunchIcon/>} style={{color:"#97FEED"}}>Visit DECC Public Data</Button> 
               <div className={styles.menuIcon}>
-                <TextButton styling="light" extraStyling={{ fontSize: "1.6em" }} onClick={this.toggleSidebar}>
+                <TextButton styling="light" extrastyling={{ fontSize: "1.6em" }} onClick={this.toggleSidebar}>
                   &#9776;
                 </TextButton>
               </div>
@@ -344,11 +345,15 @@ class Dashboard extends React.Component {
                 <Link to="/FAQ" className={styles.navLink}>
                   FAQ
                 </Link>
+                <Link to="/explainer" className={styles.navLink}>
+                  Explainer
+                </Link>
               </ControlPanel>
             </aside>
             <Routes>
               <Route path="/FAQ" element={<FAQ />} />
               <Route path="/" element={liveData} />
+              <Route path="/explainer" element={<Explainer/>}/>            
             </Routes>
             {overlay}
           </div>
