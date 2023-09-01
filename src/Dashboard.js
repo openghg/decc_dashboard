@@ -78,7 +78,6 @@ class Dashboard extends React.Component {
     });
   }
 
-
   /**
    * Retrieves data from the given URL and processes it into a format
    * plotly can read
@@ -96,13 +95,11 @@ class Dashboard extends React.Component {
       return;
     }
 
-    // TODO - add quick check to see if we have the correct filename?
-    // Base URLs:
     const url = new URL(filename, this.dataRepoURL).href;
 
     retrieveJSON(url).then((result) => {
-      
-    })
+      this.addDataToStore(species, sourceKey, result);
+    });
   }
 
   /**
