@@ -19,7 +19,7 @@ class MultiSiteLineChart extends React.Component {
     */
   handleDownloadPNG = (species, sites) => {
     const chartContainer = document.getElementById("chart-container");
-    var filenames = [species, ...sites].join('_');
+    let filenames = [species, ...sites].join('_');
   
     if (chartContainer) {
       html2canvas(chartContainer).then((canvas) => {
@@ -43,7 +43,7 @@ class MultiSiteLineChart extends React.Component {
   handleDownloadPDF = (species, sites) => {
     // Here we fetch the html element of chart-container that needs to be downloaded by id.
     const chartContainer = document.getElementById("chart-container");
-    var filenames = [species, ...sites].join('_');
+    let filenames = [species, ...sites].join('_');
 
     if (chartContainer) {
       html2canvas(chartContainer).then((canvas) => {
@@ -96,7 +96,7 @@ class MultiSiteLineChart extends React.Component {
       // Set the name for the legend
       let name = null;
       try {
-        const siteName = metadata["long_name"];
+        const siteName = metadata["station_long_name"];
         const inlet = metadata["inlet"];
 
         name = `${toTitleCase(siteName)} - ${inlet}`;

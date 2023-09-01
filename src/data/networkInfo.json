@@ -1,18 +1,18 @@
 {
   "beaco2n": {
     "url": "http://beacon.berkeley.edu/",
-    "long_name": "BEACO2N"
+    "station_long_name": "BEACO2N"
   },
   "aqmesh_glasgow": {
     "url": "https://www.ch.cam.ac.uk/group/atm/",
-    "long_name": "AQMesh"
+    "station_long_name": "AQMesh"
   },
   "npl_picarro": {
     "url": "https://www.npl.co.uk/emissions-atmospheric-metrology",
-    "long_name": "National Physical Laboratory"
+    "station_long_name": "National Physical Laboratory"
   },
   "cop26": {
     "url": "https://www.bristol.ac.uk/chemistry/research/acrg/current/decc.html",
-    "long_name": "University of Bristol"
+    "station_long_name": "University of Bristol"
   }
 }

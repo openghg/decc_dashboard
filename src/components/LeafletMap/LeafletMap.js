@@ -22,14 +22,16 @@ class LeafletMap extends React.Component {
   }
 
   createMarkers() {
+
     const processedData = this.props.processedData;
     const siteStructure = this.props.siteStructure;
     const selectedSpecies = this.props.selectedSpecies;
-
-    const speciesStructure = siteStructure[selectedSpecies];
+    let markers = [];
+    if(siteStructure !== undefined && processedData !== undefined){
+      const speciesStructure = siteStructure[selectedSpecies];
     const speciesData = processedData[selectedSpecies];
 
-    let markers = [];
+    
 
     // We want a marker for each site, with selection buttons within the popup
     for (const siteData of Object.values(speciesStructure)) {
@@ -46,7 +48,7 @@ class LeafletMap extends React.Component {
             const button = (
               <TextButton
                 styling="dark"
-                extraStyling={buttonStyling}
+                extrastyling={buttonStyling}
                 onClickParam={sourceKey}
                 onClick={this.handleClick}
               >
@@ -64,12 +66,12 @@ class LeafletMap extends React.Component {
         }
 
         try {
-          const latitude = siteMetadata["latitude"];
-          const longitude = siteMetadata["longitude"];
+          const station_latitude = siteMetadata["station_latitude"];
+          const station_longitude = siteMetadata["station_longitude"];
 
-          const locationStr = `${latitude}, ${longitude}`;
-          const location = [latitude, longitude];
-          const siteName = siteMetadata["long_name"];
+          const locationStr = `${station_latitude}, ${station_longitude}`;
+          const location = [station_latitude, station_longitude];
+          const siteName = siteMetadata["station_long_name"];
 
           marker = (
             <CircleMarker
@@ -109,6 +111,8 @@ class LeafletMap extends React.Component {
         }
       }
     }
+    
+    }
 
     return markers;
   }
@@ -134,7 +138,7 @@ class LeafletMap extends React.Component {
     const markers = this.createMarkers();
     const zoom = this.props.zoom ? this.props.zoom : 5;
 
-    const style = { width: "90%" };
+    const style = { width: "90%"};
 
     return (
       <div className={styles.container}>
