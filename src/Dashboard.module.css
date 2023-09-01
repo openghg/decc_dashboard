@@ -38,7 +38,7 @@ body {
   align-items: center;
   justify-content: flex-end;
   padding: 0 16px;
-  background-color: #47677b;
+  background: #2d5d7b;
   z-index: 5;
   color: white;
 }
@@ -76,7 +76,6 @@ body {
 
 .intro {
   width: 80%;
-  padding-bottom: 3vh;
 }
 
 .timeseries {
@@ -84,7 +83,6 @@ body {
   display: flex;
   justify-content: space-between;
   width: 100%;
-  padding-top: 20px;
 }
 
 .mapExplainer {
@@ -94,6 +92,7 @@ body {
 .siteMap {
   grid-area: siteMap;
   padding-bottom: 2vh;
+  padding-right: 6%;
 }
 
 .mobileMap {
