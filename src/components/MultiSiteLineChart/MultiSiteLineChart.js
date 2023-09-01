@@ -72,8 +72,8 @@ class MultiSiteLineChart extends React.Component {
     let minY = Infinity;
 
     const data = this.props.data;
-    var species = null;
-    var units = null;
+    let species = null;
+    let units = null;
 
     for (const sourceData of Object.values(data)) {
       const metadata = sourceData["metadata"];
@@ -107,6 +107,16 @@ class MultiSiteLineChart extends React.Component {
       const colour = colours["pastelColours"];
       units = metadata["units"];
       species = metadata["species"]
+      
+      if (units === undefined) {
+        if (species === 'ch4' || species === 'co' || species === 'no2') {
+          units = 'ppb';
+        } else if (species === 'co2') {
+          units = 'ppm';
+        } else {
+          units = metadata["units"];
+        }
+      }
       
       const trace = {
         x: xValues,
@@ -183,7 +193,7 @@ class MultiSiteLineChart extends React.Component {
       yaxis: {
         automargin: true,
         title: {
-          text: `${species}_${units}`,
+          text: `${species.toUpperCase()}  (${units})`,
           standoff: 10,
           font: {
             size:16,
