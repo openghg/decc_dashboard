@@ -19,9 +19,8 @@ import completeMetadata from "./deccoutput/metadata_complete.json";
 import { Button } from "@mui/material";
 import LaunchIcon from "@mui/icons-material/Launch";
 
-async function fetchData(url) {
-  const res = await fetch(url);
-  return await res.json();
+async function retrieveJSON(url) {
+  return await (await fetch(url)).json();
 }
 
 class Dashboard extends React.Component {
@@ -53,13 +52,12 @@ class Dashboard extends React.Component {
   }
 
   // These handle the initial setup of the app
-
-  storeData(species, sourceKey, data) {
-    this.setState(prevState => {
+  addDataToStore(species, sourceKey, data) {
+    this.setState((prevState) => {
       let previous = Object.assign({}, prevState[species]);
-      previous[sourceKey] = data;                 
+      previous[sourceKey] = data;
       return { previous };
-    })
+    });
   }
 
   /**
@@ -84,9 +82,7 @@ class Dashboard extends React.Component {
     const url = new URL(filename, this.dataRepoURL).href;
 
     // Fetch the data and store it
-    const data = fetchData(url).then((result) => {
-
-    });
+    const data = fetchData(url).then((result) => {});
 
     const x_timestamps = Object.keys(data);
     const x_values = x_timestamps.map((d) => new Date(parseInt(d)));
@@ -104,11 +100,11 @@ class Dashboard extends React.Component {
   /**
    * Create the data structure used to create the plots Plotly can read
    */
-  createDataStructure() {
+  populateAndRetrieve(metadata) {
     // Loop over the metadata dictionary
     // Create the
     // This should aleady be in the right shape
-    this.state.completeMetadata = completeMetadata;
+    this.state.completeMetadata = metadata;
     let defaultSpecies = null;
     let defaultSite = null;
     let defaultInlet = null;
@@ -150,7 +146,10 @@ class Dashboard extends React.Component {
                   defaultInstrument = instrument;
 
                   const filename = fileMetadata["filename"];
-                  this.retrieveData(filename, species, sourceKey);
+                  const url = new URL(filename, this.dataRepoURL)
+                  retrieveJSON(url).then((result) => {
+                    this.addDataToStore(species, sourceKey, result)
+                  })
                 }
 
                 set(dataStore, sourceKey, measurementData);
@@ -177,32 +176,25 @@ class Dashboard extends React.Component {
 
   componentDidMount() {
     // Retrieve the metadata
+    // const metadataURL = new URL("fileMetadata.json", this.dataRepoURL).href
 
-    const metadataURL = new URL("fileMetadata.json", this.dataRepoURL).href
+    const metadataURL =
+      "https://gist.githubusercontent.com/gareth-j/328fa8a1b5d61ed3a543710b10de4ddc/raw/6f616b8046b6bc266b82c3bdfc0ceaa198f0bbb5/metadata_complete.json";
 
-    // const
-
-      // this// Retrieve the default data - we can just save the key for the default data so we don't have to loop
-      // // through the whole structure to find it
-      // .this
-      //   .setState({ isLoaded: true });
-    // const apiURL = "https://raw.githubusercontent.com/openghg/dashboard_data/main/combined_data.json";
-    // fetch(apiURL)
-    //   .then((res) => res.json())
-    //   .then(
-    //     (result) => {
-    //       this.processRawData(result);
-    //       this.setState({
-    //         isLoaded: true,
-    //       });
-    //     },
-    //     (error) => {
-    //       this.setState({
-    //         isLoaded: true,
-    //         error,
-    //       });
-    //     }
-    //   );
+    retrieveJSON(metadataURL).then(
+      (result) => {
+        this.populateAndRetrieve(result);
+        this.setState({
+          isLoaded: true,
+        });
+      },
+      (error) => {
+        this.setState({
+          isLoaded: true,
+          error,
+        });
+      }
+    );
   }
 
   /**
@@ -319,8 +311,6 @@ class Dashboard extends React.Component {
   toggleSidebar() {
     this.setState({ showSidebar: !this.state.showSidebar });
   }
-
-  
 
   setSiteOverlay(e) {
     const siteCode = String(e.target.dataset.onclickparam).toUpperCase();
