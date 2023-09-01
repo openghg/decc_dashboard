@@ -64,7 +64,7 @@ class FAQ extends React.Component {
 
     return (
       <div>
-      <div className={styles.faqHeader}>
+      <div style={{padding:'5%'}}>
         <Typography variant="h3">Frequently Asked Questions</Typography>
       </div>
         <div className={styles.faqContent}>
