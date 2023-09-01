@@ -193,7 +193,7 @@ class MultiSiteLineChart extends React.Component {
       yaxis: {
         automargin: true,
         title: {
-          text: `${species.toUpperCase()}_${units.toUpperCase()}`,
+          text: `${species.toUpperCase()}  (${units})`,
           standoff: 10,
           font: {
             size:16,
