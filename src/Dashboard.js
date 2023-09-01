@@ -5,7 +5,6 @@ import { cloneDeep, has, set} from "lodash";
 import ControlPanel from "./components/ControlPanel/ControlPanel";
 import OverlayContainer from "./components/OverlayContainer/OverlayContainer";
 
-import TextButton from "./components/TextButton/TextButton";
 import Overlay from "./components/Overlay/Overlay";
 import FAQ from "./components/FAQ/FAQ";
 import LiveData from "./components/LiveData/LiveData";
