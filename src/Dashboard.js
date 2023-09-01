@@ -345,7 +345,7 @@ class Dashboard extends React.Component {
                   FAQ
                 </Link>
                 <Link to="/explainer" className={styles.navLink}>
-                  Explainer
+                  Background
                 </Link>
               </ControlPanel>
             </aside>
