@@ -92,6 +92,7 @@ class ObsBox extends React.Component {
 
     return (
       <div className={styles.container}>
+        <div className={styles.plot}>{this.createEmissionsGraphs()}</div>
         <div className={styles.select}>
           <div className={styles.clearButton}>{clearButton}</div>
               <SelectOptions
@@ -100,7 +101,6 @@ class ObsBox extends React.Component {
                 selected={this.props.selectedSpecies}
               />
         </div>
-        <div className={styles.plot}>{this.createEmissionsGraphs()}</div>
       </div>
     );
   }
