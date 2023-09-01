@@ -85,7 +85,7 @@ class ObsBox extends React.Component {
 
     let clearButton = null;
     if (siteSelected) {
-      clearButton = <Button variant="contained" size="medium" onClick={this.props.clearSources}>Clear</Button>;
+      clearButton = <Button variant="contained" size="small" onClick={this.props.clearSources}>Clear</Button>;
     }
 
     const availableSpecies = Object.keys(this.props.processedData);

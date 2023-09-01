@@ -9,7 +9,7 @@ class ObsExplainer extends React.Component {
 
     return (
       <div className={style}>
-        <div className={styles.header} style={{paddingRight: "10px"}}>Atmospheric Monitoring & Verification of the UK’s GHG Inventory</div>
+        <div className={styles.header}>Atmospheric Monitoring & Verification of the UK’s GHG Inventory</div>
         <div className={styles.explain}>
           <li>
             The UK DECC (Deriving Emissions linked to Climate Change) Network consists of four sites in the UK and
