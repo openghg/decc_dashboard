@@ -84,7 +84,7 @@ class LeafletMap extends React.Component {
               <Popup>
                 <div className={styles.marker}>
                   <div className={styles.markerBody}>
-                    <div className={styles.markerTitle}>{toTitleCase(siteName)}</div>
+                    <div className={styles.markerTitle}>{siteName.toUpperCase()}</div>
                     <div className={styles.markerButtons}>
                     Select inlet:
                     {sourceButtons}</div>
