@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/decc_dashboard/static/css/main.4f9c296b.css",
-    "main.js": "/decc_dashboard/static/js/main.4fb599a1.js",
+    "main.js": "/decc_dashboard/static/js/main.26c3e2fc.js",
     "static/js/703.8ee8f87f.chunk.js": "/decc_dashboard/static/js/703.8ee8f87f.chunk.js",
     "static/js/258.23a642c4.chunk.js": "/decc_dashboard/static/js/258.23a642c4.chunk.js",
     "static/js/787.9e5b7168.chunk.js": "/decc_dashboard/static/js/787.9e5b7168.chunk.js",
@@ -26,13 +26,13 @@
     "static/media/UniOfBristolLogo.png": "/decc_dashboard/static/media/UniOfBristolLogo.588437319419ba2c6758.png",
     "index.html": "/decc_dashboard/index.html",
     "main.4f9c296b.css.map": "/decc_dashboard/static/css/main.4f9c296b.css.map",
-    "main.4fb599a1.js.map": "/decc_dashboard/static/js/main.4fb599a1.js.map",
+    "main.26c3e2fc.js.map": "/decc_dashboard/static/js/main.26c3e2fc.js.map",
     "703.8ee8f87f.chunk.js.map": "/decc_dashboard/static/js/703.8ee8f87f.chunk.js.map",
     "258.23a642c4.chunk.js.map": "/decc_dashboard/static/js/258.23a642c4.chunk.js.map",
     "787.9e5b7168.chunk.js.map": "/decc_dashboard/static/js/787.9e5b7168.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.4f9c296b.css",
-    "static/js/main.4fb599a1.js"
+    "static/js/main.26c3e2fc.js"
   ]
 }
