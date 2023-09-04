@@ -156,7 +156,7 @@ class Dashboard extends React.Component {
     let siteStructure = {};
 
     let defaultSpecies = null;
-    let defaultSourceKey = 'decc_tac_54m_picarro';
+    let defaultSourceKey = null;
     let defaultNetwork = null;
 
     try {
