@@ -15,7 +15,7 @@ import styles from "./Dashboard.module.css";
 
 // Site description information
 import siteInfoJSON from "./data/siteInfo.json";
-import deccMeasData from "./data/decc_example.json";
+import deccMeasData from "./data/dash_data_test_200_complete.json";
 import { Button, MenuItem } from "@mui/material";
 import LaunchIcon from '@mui/icons-material/Launch';
 
