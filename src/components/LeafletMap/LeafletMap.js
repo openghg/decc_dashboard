@@ -4,7 +4,6 @@ import { LayerGroup, MapContainer, ImageOverlay, TileLayer, CircleMarker, Popup 
 // import TextButton from "../TextButton/TextButton";
 // import "./LeafletMapResponsive.css";
 
-import { toTitleCase } from "../../util/helpers";
 import TextButton from "../TextButton/TextButton";
 
 import styles from "./LeafletMap.module.css";
