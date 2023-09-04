@@ -37,7 +37,7 @@
 }
 
 .markerButtons {
-  display: flex;
+  display: inline-block;
   flex-direction: row;
   padding-top: 2vh;
   gap: 1vw;
