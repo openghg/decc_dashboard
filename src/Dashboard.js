@@ -5,7 +5,6 @@ import { cloneDeep, has, set} from "lodash";
 import ControlPanel from "./components/ControlPanel/ControlPanel";
 import OverlayContainer from "./components/OverlayContainer/OverlayContainer";
 
-import TextButton from "./components/TextButton/TextButton";
 import Overlay from "./components/Overlay/Overlay";
 import FAQ from "./components/FAQ/FAQ";
 import LiveData from "./components/LiveData/LiveData";
@@ -17,7 +16,7 @@ import styles from "./Dashboard.module.css";
 // Site description information
 import siteInfoJSON from "./data/siteInfo.json";
 import deccMeasData from "./data/decc_example.json";
-import { Button } from "@mui/material";
+import { Button, MenuItem } from "@mui/material";
 import LaunchIcon from '@mui/icons-material/Launch';
 
 class Dashboard extends React.Component {
@@ -327,9 +326,9 @@ class Dashboard extends React.Component {
             <div className={styles.header}>
             <Button variant="text" href="https://catalogue.ceda.ac.uk/uuid/f5b38d1654d84b03ba79060746541e4f" target="_blank" startIcon={<LaunchIcon/>} style={{color:"#97FEED"}}>Visit DECC Public Data</Button> 
               <div className={styles.menuIcon}>
-                <TextButton styling="light" extrastyling={{ fontSize: "1.6em" }} onClick={this.toggleSidebar}>
+                <MenuItem styling="light" extrastyling={{ fontSize: "1.6em" }} onClick={this.toggleSidebar}>
                   &#9776;
-                </TextButton>
+                </MenuItem>
               </div>
             </div>
             <aside className={styles.sidebar} style={extraSidebarStyle}>
@@ -346,7 +345,7 @@ class Dashboard extends React.Component {
                   FAQ
                 </Link>
                 <Link to="/explainer" className={styles.navLink}>
-                  Explainer
+                  Background
                 </Link>
               </ControlPanel>
             </aside>
