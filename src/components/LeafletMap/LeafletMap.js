@@ -40,7 +40,7 @@ class LeafletMap extends React.Component {
         // The site metadata we require will be the same for each inlet / instrument
         let siteMetadata = null;
 
-        const buttonStyling = { fontSize: "1.0em" };
+        const buttonStyling = { fontSize: "0.8em", width:"0.8em" };
 
         for (const [inlet, instrumentData] of Object.entries(inletData)) {
           for (const sourceKey of Object.values(instrumentData)) {

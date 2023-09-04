@@ -109,7 +109,7 @@ class MultiSiteLineChart extends React.Component {
       species = metadata["species"]
       
       if (units === undefined) {
-        if (species === 'ch4' || species === 'co' || species === 'no2') {
+        if (species === 'ch4' || species === 'co' || species === 'n2o') {
           units = 'ppb';
         } else if (species === 'co2') {
           units = 'ppm';
