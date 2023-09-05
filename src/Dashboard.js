@@ -54,6 +54,13 @@ class Dashboard extends React.Component {
   // These handle the initial setup of the app
 
   /**
+   * Read the config file to setup the default site, species etc
+   */
+  setupDefaults() {
+    // this.state...
+  }
+
+  /**
    * Adds data to the data store, converting it to the structure required by Plotly
    *
    * @param {string} species - Species
@@ -74,8 +81,8 @@ class Dashboard extends React.Component {
     // TODO - can we do this better so we don't end up copying all the data each time?
     // Will this work?
     this.setState((prevState) => {
-      let previous = {...prevState.dataSource.sourceKey}
-      previous = forPlotly
+      let previous = { ...prevState.dataSource.sourceKey };
+      previous = forPlotly;
       return { previous };
     });
   }
@@ -129,10 +136,6 @@ class Dashboard extends React.Component {
     let defaultNetwork = null;
     let defaultSourceKey = null;
     // We just need to pull out the initial data
-
-    // This will hold the data itself
-    // It's structure is
-
     // We retrieve only the first dataset and then populate the other data values with nulls
     // When this data is selected the app will retrieve the data
 
@@ -266,7 +269,7 @@ class Dashboard extends React.Component {
     // the source will be the key in the
     for (const source of selectedSources) {
       const key = `${this.state.selectedSpecies}.${source}`;
-      const filename = this.state.filenameLookup[key]
+      const filename = this.state.filenameLookup[key];
       this.retrieveData();
     }
 
