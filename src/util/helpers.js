@@ -19,16 +19,17 @@ export function isEmpty(obj) {
 export function createImage(source, x, opacity = 0.6) {
   return {
     source: source,
-    xref: 'paper',
-    yref: 'paper',
+    xref: "paper",
+    yref: "paper",
     x: x,
     y: 0.89,
     sizex: 0.09,
     sizey: 0.09,
     opacity: opacity,
-    xanchor: 'center',
-    yanchor: 'middle',
-  }};
+    xanchor: "center",
+    yanchor: "middle",
+  };
+}
 
 // export function importSVGs() {
 //   let footprints = {};
@@ -110,4 +111,21 @@ export function toTitleCase(str) {
   return str.replace(/\w\S*/g, function (txt) {
     return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
   });
+}
+
+/**
+ * Creates an instrument key to be used in the lookup tables
+ * for data and filenames
+ *
+ * @param {string} species - Species
+ * @param {string} network- Network code
+ * @param {string} site - Site code
+ * @param {string} inlet - Inlet height
+ * @param {string} instrument - Instrument name
+ 
+ * @param {string} sourceKey - Source key
+ *
+ */
+export function createSourceKey(species, network, site, inlet, instrument) {
+  return `${species}.${network}_${site}_${inlet}_${instrument}`;
 }

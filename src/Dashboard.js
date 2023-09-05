@@ -10,7 +10,7 @@ import FAQ from "./components/FAQ/FAQ";
 import LiveData from "./components/LiveData/LiveData";
 import Explainer from "./components/Explainer/Explainer";
 
-import { importSiteImages } from "./util/helpers";
+import { importSiteImages, createSourceKey } from "./util/helpers";
 import styles from "./Dashboard.module.css";
 
 // Site description information
@@ -153,7 +153,7 @@ class Dashboard extends React.Component {
               for (const [instrument, fileMetadata] of Object.entries(instrumentData)) {
                 // The complete source key should always have the species at the start
                 // Then we use the lodash set, get etc commands to easily access the objects
-                const completeSourceKey = `${species}.${network}_${site}_${inlet}_${instrument}`;
+                const completeSourceKey = createSourceKey(species, network, site, inlet, instrument)
 
                 if (defaultSourceKey === null) defaultSourceKey = completeSourceKey;
                 const filepath = fileMetadata["filepath"];
@@ -394,7 +394,7 @@ class Dashboard extends React.Component {
           selectedSpecies={this.state.selectedSpecies}
           defaultSpecies={this.state.defaultSpecies}
           setSiteOverlay={this.state.setSiteOverlay}
-          siteStructure={this.state.siteStructure}
+          siteMetadata={this.state.completeMetadata}
         />
       );
 
