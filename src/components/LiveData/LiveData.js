@@ -24,7 +24,7 @@ class LiveData extends React.Component {
       <div className={styles.content}>
         <div className={styles.intro}>{this.createIntro()}</div>
         <div className={styles.timeseries} id="graphContent">
-          {/* <ObsBox
+          <ObsBox
             clearSources={this.props.clearSources}
             speciesSelector={this.props.speciesSelector}
             selectedSources={this.props.selectedSources}
@@ -33,7 +33,7 @@ class LiveData extends React.Component {
             siteStructure={this.props.siteStructure}
             selectedSpecies={this.props.selectedSpecies}
             defaultSpecies={this.props.defaultSpecies}
-          /> */}
+          />
         </div>
         <div className={styles.mapExplainer}>
           <ObsExplainer />

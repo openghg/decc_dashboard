@@ -10,6 +10,7 @@ import { Button } from "@mui/material";
 import { createImage } from "../../util/helpers";
 
 import colours from "../../data/colours.json";
+import { get } from "lodash";
 
 class MultiSiteLineChart extends React.Component {
   /*
@@ -72,19 +73,23 @@ class MultiSiteLineChart extends React.Component {
     let maxY = 0;
     let minY = Infinity;
 
-    const data = this.props.data;
+    const measurementData = this.props.measurementData;
+    const metaStore = this.props.metaStore;
+
     let species = null;
     let units = null;
+    let sites = [];
 
-    for (const sourceData of Object.values(data)) {
-      const metadata = sourceData["metadata"];
-      const measurementData = sourceData["data"];
+    for (const [sourceKey, data] of Object.entries(measurementData)) {
+      const metadata = get(metaStore, sourceKey);
 
-      const xValues = measurementData["x_values"];
-      const yValues = measurementData["y_values"];
+      const xValues = data["x_values"];
+      const yValues = data["y_values"];
 
-      const max = Math.max(...yValues);
-      const min = Math.min(...yValues);
+      // const max = Math.max(...yValues);
+      // const min = Math.min(...yValues);
+
+      return <p>That's all folks.</p>;
 
       if (max > maxY) {
         maxY = max;
@@ -98,6 +103,8 @@ class MultiSiteLineChart extends React.Component {
       let name = null;
       try {
         const siteName = metadata["station_long_name"];
+        // We'll save these in case we want to write to file
+        sites.push(metadata["site"]);
         const inlet = metadata["inlet"];
 
         name = `${toTitleCase(siteName)} - ${inlet}`;
@@ -114,8 +121,6 @@ class MultiSiteLineChart extends React.Component {
           units = "ppb";
         } else if (species === "co2") {
           units = "ppm";
-        } else {
-          units = metadata["units"];
         }
       }
 
@@ -138,9 +143,9 @@ class MultiSiteLineChart extends React.Component {
     /*fetching all the site names to pass them as filename
      using regex to remove <b> </b> and "-" within the name
      */
-    let sites = [];
-    sites = plotData.map((item) => item.name);
-    sites = sites.map((item) => item.replace(/<\/?b>/g, "").replace(/\s*-\s*/g, ""));
+    // let sites = [];
+    // sites = plotData.map((item) => item.name);
+    // sites = sites.map((item) => item.replace(/<\/?b>/g, "").replace(/\s*-\s*/g, ""));
 
     let dateMarkObject = null;
     const selectedDate = this.props.selectedDate;

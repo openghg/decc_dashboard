@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import React from "react";
 import { LayerGroup, MapContainer, ImageOverlay, TileLayer, CircleMarker, Popup } from "react-leaflet";
 import { createSourceKey } from "../../util/helpers";
-import { get } from "lodash"
+import { get } from "lodash";
 // import TextButton from "../TextButton/TextButton";
 // import "./LeafletMapResponsive.css";
 
@@ -26,15 +26,18 @@ class LeafletMap extends React.Component {
     const dataStore = this.props.dataStore;
     const selectedSpecies = this.props.selectedSpecies;
     const metaStore = this.props.metaStore;
-    const siteStructure = this.props.siteStructure;
+    // The only site structure we want here are sites that have provided data
+    // for the species we're interested in
+    const siteStructure = this.props.siteStructure[selectedSpecies];
 
+    // We'll make a marker for each site
     let markers = [];
 
     // TODO - Are props always defined? Are we making the right comparison here?
     if (metaStore !== undefined && dataStore !== undefined) {
       // We want a marker for each site, with selection buttons within the popup
-      for (const [network, siteData] of Object.entries(siteStructure)) {
-        for (const [site, inletData] of Object.entries(siteData)) {
+      for (const siteData of Object.values(siteStructure)) {
+        for (const inletData of Object.values(siteData)) {
           let marker = null;
           let sourceButtons = [];
           // The site metadata we require will be the same for each inlet / instrument
@@ -43,25 +46,21 @@ class LeafletMap extends React.Component {
           const buttonStyling = { fontSize: "0.8em", width: "0.8em" };
 
           for (const [inlet, instrumentData] of Object.entries(inletData)) {
-            let inletDone = false;
             for (const sourceKey of Object.values(instrumentData)) {
               // TODO - do we want separate buttons for the different instruments?
-              if (!inletDone) {
-                siteSpecificMetadata = get(metaStore, sourceKey)
-                const button = (
-                  <TextButton
-                    styling="dark"
-                    extrastyling={buttonStyling}
-                    onClickParam={sourceKey}
-                    onClick={this.handleClick}
-                  >
-                    {inlet}
-                  </TextButton>
-                );
+              siteSpecificMetadata = get(metaStore, sourceKey);
+              const button = (
+                <TextButton
+                  styling="dark"
+                  extrastyling={buttonStyling}
+                  onClickParam={sourceKey}
+                  onClick={this.handleClick}
+                >
+                  {inlet}
+                </TextButton>
+              );
 
-                sourceButtons.push(button);
-                inletDone = true;
-              } 
+              sourceButtons.push(button);
             }
           }
 

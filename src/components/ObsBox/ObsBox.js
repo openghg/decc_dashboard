@@ -6,12 +6,14 @@ import MultiSiteLineChart from "../MultiSiteLineChart/MultiSiteLineChart";
 import { isEmpty, getVisID } from "../../util/helpers";
 
 import styles from "./ObsBox.module.css";
-import SelectOptions from "../SelectOptions/SelectOptions"
+import SelectOptions from "../SelectOptions/SelectOptions";
 import { Button } from "@mui/material";
+import { get, set } from "lodash";
 
 class ObsBox extends React.Component {
   createEmissionsGraphs() {
     const dataStore = this.props.dataStore;
+    const metaStore = this.props.metaStore;
     const selectedSources = this.props.selectedSources;
     const selectedSpecies = this.props.selectedSpecies;
 
@@ -25,16 +27,13 @@ class ObsBox extends React.Component {
     let multiUnits = [];
 
     if (selectedSources) {
-      const speciesData = dataStore[selectedSpecies];
-
       for (const key of selectedSources) {
-        dataToPlot[key] = speciesData[key];
-
-        try {
-          const units = speciesData[key]["metadata"]["units"];
+        set(dataToPlot, key, get(dataStore, key));
+        const units = get(metaStore, key);
+        if (units) {
           multiUnits.push(units);
-        } catch (error) {
-          console.error(`Error reading units - ${error}`);
+        } else {
+          console.error(`Error reading units from ${key}.`);
         }
       }
 
@@ -62,7 +61,8 @@ class ObsBox extends React.Component {
             <MultiSiteLineChart
               title={title}
               divID={getVisID()}
-              data={dataToPlot}
+              measurementData={dataToPlot}
+              metaStore={this.props.metaStore}
               xLabel={xLabel}
               yLabel={yLabel}
               key={key}
@@ -85,7 +85,11 @@ class ObsBox extends React.Component {
 
     let clearButton = null;
     if (siteSelected) {
-      clearButton = <Button variant="contained" size="medium" onClick={this.props.clearSources}>Clear</Button>;
+      clearButton = (
+        <Button variant="contained" size="medium" onClick={this.props.clearSources}>
+          Clear
+        </Button>
+      );
     }
 
     const availableSpecies = Object.keys(this.props.dataStore);
@@ -95,11 +99,11 @@ class ObsBox extends React.Component {
         <div className={styles.plot}>{this.createEmissionsGraphs()}</div>
         <div className={styles.select}>
           <div className={styles.clearButton}>{clearButton}</div>
-              <SelectOptions
-                onChange={this.props.speciesSelector}
-                options={availableSpecies}
-                selected={this.props.selectedSpecies}
-              />
+          <SelectOptions
+            onChange={this.props.speciesSelector}
+            options={availableSpecies}
+            selected={this.props.selectedSpecies}
+          />
         </div>
       </div>
     );
