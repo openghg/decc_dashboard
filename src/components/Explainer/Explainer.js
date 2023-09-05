@@ -3,7 +3,7 @@ import React from "react";
 import ExplanationBox from "../ExplanationBox/ExplanationBox";
 import EstimatesExplainer from "../EstimatesExplainer/EstimatesExplainer";
 import EmissionsBox from "../EmissionsBox/EmissionsBox";
-import EmissionsExplainer from "../EmissionsExplainer/EmissionsExplainer"
+import EmissionsExplainer from "../EmissionsExplainer/EmissionsExplainer";
 
 import styles from "../../Dashboard.module.css";
 
@@ -17,13 +17,7 @@ class Explainer extends React.Component {
   createEmissionsBox() {
     const emissionsHeader = "Emissions";
     const emissionsText = `Emissions from the National Atmospheric Emissions Inventory (NAEI).`;
-    return (
-      <EmissionsBox
-        altText={"Example emissions"}
-        headerText={emissionsHeader}
-        bodyText={emissionsText}
-      />
-    );
+    return <EmissionsBox altText={"Example emissions"} headerText={emissionsHeader} bodyText={emissionsText} />;
   }
 
   // createEmissionsExplainer() {
@@ -55,7 +49,7 @@ class Explainer extends React.Component {
     const body = `To start with we can use inventory emissions as our initial “best guess”
     and compare this to real atmospheric measurements. We can then run simulations to make 
     repeated small changes to the possible emissions to better match the measurements made at each site.
-    The animation below illustrates this process, using the UK DECC network site in Tacolneston, Norfolk.`
+    The animation below illustrates this process, using the UK DECC network site in Tacolneston, Norfolk.`;
     return <ExplanationBox header={header} intro={body} />;
   }
 
@@ -91,7 +85,7 @@ class Explainer extends React.Component {
             , BEIS, 2019
           </div>
         </div>
-        </div>
+      </div>
     );
   }
 }

@@ -6,19 +6,14 @@ class SidePanel extends React.Component {
   render() {
     return (
       <div>
-        <CSSTransition
-          in={this.props.isOpen}
-          timeout={300}
-          classNames={"panel-transition"}
-          unmountOnExit
-        >
+        <CSSTransition in={this.props.isOpen} timeout={300} classNames={"panel-transition"} unmountOnExit>
           <div className="panel-container">
             <div className="panel-header">
               <div onClick={this.props.togglePanel} className="panel-nav-icon">
                 <div></div>
               </div>
             </div>
-  
+
             <div className="panel-links">
               <li className="panel-list-item">
                 <button className="panel-button">About</button>
@@ -28,17 +23,16 @@ class SidePanel extends React.Component {
               </li>
               <li className="panel-list-item">
                 <button
-                  onClick={() => {window.open('https://github.com/openghg/dashboard', "_blank")}}
+                  onClick={() => {
+                    window.open("https://github.com/openghg/dashboard", "_blank");
+                  }}
                   className="panel-button"
                 >
                   Source
                 </button>
               </li>
               <li className="panel-list-item">
-                <button
-                  onClick={this.props.togglePanel}
-                  className="panel-button"
-                >
+                <button onClick={this.props.togglePanel} className="panel-button">
                   Close
                 </button>
               </li>

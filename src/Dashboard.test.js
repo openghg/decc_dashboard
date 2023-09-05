@@ -6,7 +6,7 @@ import Dashboard from "./Dashboard";
 
 jest.mock("./util/helpers", () => ({
   importSVGs: () => {
-    return { "1609459200000": "siteName-2021-01-01T00:00:00.svg" };
+    return { 1609459200000: "siteName-2021-01-01T00:00:00.svg" };
   },
   isEmpty: () => false,
   getVisID: () => "123",
@@ -19,16 +19,15 @@ describe("Test Dashboard", () => {
     expect(screen.getByText("A new system for estimating London's emissions")).toBeInTheDocument();
     expect(screen.getByText("Select visualisation type:")).toBeInTheDocument();
     expect(screen.getByText("Footprint Analysis")).toBeInTheDocument();
-    expect(screen.getByTestId("select-form")).toBeInTheDocument()
-    
+    expect(screen.getByTestId("select-form")).toBeInTheDocument();
   });
 
   test("Ensure select button selects", () => {
     render(<Dashboard />);
 
     expect(screen.getByText("Select visualisation type:")).toBeInTheDocument();
-    expect(screen.getByTestId("select-form")).toBeInTheDocument()
-    
+    expect(screen.getByTestId("select-form")).toBeInTheDocument();
+
     userEvent.selectOptions(screen.getByTestId("select-form"), ["footprint"]);
     expect(screen.getByTestId("sel-footprint").selected).toBe(true);
     expect(screen.getByTestId("sel-timeseries").selected).toBe(false);
@@ -37,11 +36,9 @@ describe("Test Dashboard", () => {
     userEvent.selectOptions(screen.getByTestId("select-form"), ["timeseries"]);
     expect(screen.getByTestId("sel-footprint").selected).toBe(false);
     expect(screen.getByTestId("sel-timeseries").selected).toBe(true);
-    
   });
 
   test("Ensure timeseries plotting panel rendered", () => {
-
     render(<Dashboard />);
 
     userEvent.selectOptions(screen.getByTestId("select-form"), ["timeseries"]);
@@ -89,7 +86,6 @@ describe("Test Dashboard", () => {
   });
 
   test("Ensure footprint analysis rendered", () => {
-
     render(<Dashboard />);
 
     userEvent.selectOptions(screen.getByTestId("select-form"), ["footprint"]);
@@ -99,8 +95,6 @@ describe("Test Dashboard", () => {
     expect(screen.getByTestId("vis-unit-footprint-plot-CO2-fp-TMB")).toBeInTheDocument();
     expect(screen.getByTestId("vis-unit-footprint-plot-CH4-fp-TMB")).toBeInTheDocument();
 
-    expect(screen.getByText("Footprint Analysis")).toBeInTheDocument()
-
+    expect(screen.getByText("Footprint Analysis")).toBeInTheDocument();
   });
-
 });

@@ -2,8 +2,7 @@ import PropTypes from "prop-types";
 import React from "react";
 import Plot from "react-plotly.js";
 import styles from "./LineChart.module.css";
-import { createImage } from "../../util/helpers"
-
+import { createImage } from "../../util/helpers";
 
 class LineChart extends React.Component {
   render() {
@@ -75,7 +74,7 @@ class LineChart extends React.Component {
     const metOffice = require(`../../images/Metoffice.png`);
     const ncas = require(`../../images/ncas.png`);
     const openghg = require(`../../images/OpenGHG_Logo_Landscape.png`);
-    
+
     const layout = {
       title: {
         text: this.props.title ? this.props.title : null,

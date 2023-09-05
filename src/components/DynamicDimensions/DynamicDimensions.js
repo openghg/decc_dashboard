@@ -50,7 +50,7 @@ DynamicDimensions.propTypes = {
   children: PropTypes.node.isRequired,
   divID: PropTypes.string.isRequired,
   heightScale: PropTypes.string,
-  widthScale: PropTypes.string
-}
+  widthScale: PropTypes.string,
+};
 
 export default DynamicDimensions;

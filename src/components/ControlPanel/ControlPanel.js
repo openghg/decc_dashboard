@@ -32,8 +32,11 @@ class ControlPanel extends React.Component {
     return (
       <div className={styles.container}>
         <div className={styles.closeButton}>
-          <CancelOutlined styling="light" extrastyling={{ fontSize: "2em" }} onClick={this.props.closePanel}>
-          </CancelOutlined>
+          <CancelOutlined
+            styling="light"
+            extrastyling={{ fontSize: "2em" }}
+            onClick={this.props.closePanel}
+          ></CancelOutlined>
         </div>
         <div className={styles.header}>
           <div className={styles.headerText}>DECC Network Dashboard</div>

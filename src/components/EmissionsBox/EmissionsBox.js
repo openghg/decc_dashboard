@@ -147,41 +147,39 @@ class EmissionsBox extends React.Component {
       [61.908634740966804, 4.908553108520451],
     ];
 
-    const midpointLat = overlayBounds[0][0] + (overlayBounds[1][0] - overlayBounds[0][0]) / 2
-    const midpointLon = overlayBounds[0][1] + (overlayBounds[1][1] - overlayBounds[0][1]) / 2
-    const overlayMidpoint = [midpointLat, midpointLon]
-    const mapstyle = `proton`
+    const midpointLat = overlayBounds[0][0] + (overlayBounds[1][0] - overlayBounds[0][0]) / 2;
+    const midpointLon = overlayBounds[0][1] + (overlayBounds[1][1] - overlayBounds[0][1]) / 2;
+    const overlayMidpoint = [midpointLat, midpointLon];
+    const mapstyle = `proton`;
 
     // const emissionsText = `Emission locations from the National Atmospheric Emissions Inventory (NAEI). Maps generated using ukghg model.`;
 
     return (
       <div className={styles.container}>
         <div className={styles.caption}>
-            Emission locations from the&nbsp;
-            <a
-              href="https://naei.beis.gov.uk/about/"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+          Emission locations from the&nbsp;
+          <a href="https://naei.beis.gov.uk/about/" target="_blank" rel="noopener noreferrer">
             National Atmospheric Emissions Inventory (NAEI)
-            </a>
+          </a>
           . Maps generated using&nbsp;
-          <a
-              href="https://github.com/NERC-CEH/ukghg"
-              target="_blank"
-              rel="noopener noreferrer"
-            >          
-            ukghg model</a>
+          <a href="https://github.com/NERC-CEH/ukghg" target="_blank" rel="noopener noreferrer">
+            ukghg model
+          </a>
           .
         </div>
         <div className={styles.plot}>
-          <LeafletMap centre={overlayMidpoint} zoom={5} overlayBounds={overlayBounds} overlayImg={emissionsImage} mapstyle={mapstyle}/>
+          <LeafletMap
+            centre={overlayMidpoint}
+            zoom={5}
+            overlayBounds={overlayBounds}
+            overlayImg={emissionsImage}
+            mapstyle={mapstyle}
+          />
         </div>
-        <div className={styles.buttons} style={{padding:'25px'}}>
+        <div className={styles.buttons} style={{ padding: "25px" }}>
           <div className={styles.speciesButtons}>{speciesButtons}</div>
-          </div>
-          <div className={styles.buttons} style={{padding:'0.1%'}}>
-
+        </div>
+        <div className={styles.buttons} style={{ padding: "0.1%" }}>
           <div className={styles.sectorButtons}>{sectorButtons}</div>
         </div>
       </div>

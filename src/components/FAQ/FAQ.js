@@ -1,7 +1,7 @@
 import React from "react";
 
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
 import { Typography } from "@mui/material";
 
 class FAQ extends React.Component {
@@ -65,60 +65,61 @@ class FAQ extends React.Component {
 
     return (
       <div>
-        <Typography variant="h3" style={{padding:'1.5%'}} gutterBottom>
+        <Typography variant="h3" style={{ padding: "1.5%" }} gutterBottom>
           Frequently Asked Questions
         </Typography>
-  
+
         <Card>
           <CardContent>
             <Typography variant="h4">Q1: {Q1}</Typography>
             <Typography>{A1}</Typography>
           </CardContent>
-          </Card>
-          <Card>
+        </Card>
+        <Card>
           <CardContent>
             <Typography variant="h4">Q2: {Q2}</Typography>
             <Typography>{A2}</Typography>
           </CardContent>
-          </Card>
-          <Card>
+        </Card>
+        <Card>
           <CardContent>
             <Typography variant="h4">Q3: {Q3}</Typography>
             <Typography>{A3}</Typography>
           </CardContent>
-          </Card>
-          <Card>
+        </Card>
+        <Card>
           <CardContent>
             <Typography variant="h4">Q4: {Q4}</Typography>
             <Typography>{A4}</Typography>
-          </CardContent> 
-          </Card>
-          <Card>
+          </CardContent>
+        </Card>
+        <Card>
           <CardContent>
             <Typography variant="h4">Q5: {Q5}</Typography>
             <Typography>{A5}</Typography>
-          </CardContent>    
-          </Card>
-          <Card>      
+          </CardContent>
+        </Card>
+        <Card>
           <CardContent>
             <Typography variant="h4">Q6: {Q6}</Typography>
             <Typography>{A6}</Typography>
           </CardContent>
-          </Card>       
-          <Card>   
+        </Card>
+        <Card>
           <CardContent>
             <Typography variant="h4">Q7: {Q7}</Typography>
             <Typography>{A7}</Typography>
           </CardContent>
-          </Card>
-          <Card>
+        </Card>
+        <Card>
           <CardContent>
             <Typography variant="h4">Q8: {Q8}</Typography>
             <Typography>{A8}</Typography>
           </CardContent>
         </Card>
-        </div>
+      </div>
     );
-  };}
+  }
+}
 
 export default FAQ;

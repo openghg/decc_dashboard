@@ -63,9 +63,8 @@
 //     userEvent.selectOptions(screen.getByTestId("select-form"), ["footprint"]);
 //     expect(screen.getByTestId("sel-footprint").selected).toBe(true);
 //     expect(screen.getByTestId("sel-timeseries").selected).toBe(false);
-    
+
 //     expect(sel_fn).toHaveBeenCalledTimes(1);
 //   });
-
 
 // });

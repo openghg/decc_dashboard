@@ -6,16 +6,13 @@ class Checkbox extends React.Component {
   render() {
     return (
       <div className={styles.main}>
-        <div className={styles.label}>
-            {this.props.label}
-        </div>
+        <div className={styles.label}>{this.props.label}</div>
         <div className={styles.box}>
           <input
             name={this.props.name}
             data-testid={this.props.name}
             site={this.props.site}
             species={this.props.species}
-            
             type="checkbox"
             checked={this.props.checked}
             onChange={this.props.onChange}
@@ -33,7 +30,7 @@ Checkbox.propTypes = {
   name: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
   site: PropTypes.string.isRequired,
-  species: PropTypes.string.isRequired
-}
+  species: PropTypes.string.isRequired,
+};
 
 export default Checkbox;
