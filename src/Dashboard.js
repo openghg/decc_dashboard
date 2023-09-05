@@ -17,7 +17,6 @@ import styles from "./Dashboard.module.css";
 import siteInfoJSON from "./data/siteInfo.json";
 import { Button, MenuItem } from "@mui/material";
 
-import completeMetadata from "./deccoutput/metadata_complete.json";
 import LaunchIcon from "@mui/icons-material/Launch";
 
 async function retrieveJSON(url) {
@@ -40,8 +39,8 @@ class Dashboard extends React.Component {
       colours: {},
       dataStore: {},
     };
-
-    this.dataRepoURL = "https://raw.githubusercontent.com/openghg/decc_dashaboard_data/main";
+    
+    this.dataRepoURL = "https://raw.githubusercontent.com/openghg/temp_data_dashboard/main/"
 
     this.sourceSelector = this.sourceSelector.bind(this);
     this.toggleOverlay = this.toggleOverlay.bind(this);
@@ -58,6 +57,7 @@ class Dashboard extends React.Component {
    * Read the config file to setup the default site, species etc
    */
   setupDefaults() {
+    throw new Error("Not implemented.");
     // this.state...
   }
 
@@ -79,12 +79,10 @@ class Dashboard extends React.Component {
       y_values: y_values,
     };
 
-    // TODO - can we do this better so we don't end up copying all the data each time?
-    // Will this work?
+    // Now update the current dataStore with the new data
     this.setState((prevState) => {
-      let previous = { ...prevState.dataSource.sourceKey };
-      previous = forPlotly;
-      return { previous };
+      set(prevState.dataStore, sourceKey, forPlotly);
+      return prevState;
     });
   }
 
@@ -144,7 +142,7 @@ class Dashboard extends React.Component {
     let filenameLookup = {};
 
     try {
-      for (const [species, networkData] of Object.entries(completeMetadata)) {
+      for (const [species, networkData] of Object.entries(metadata)) {
         if (defaultSpecies === null) defaultSpecies = species;
         for (const [network, siteData] of Object.entries(networkData)) {
           if (defaultNetwork === null) defaultNetwork = network;
@@ -153,24 +151,28 @@ class Dashboard extends React.Component {
             for (const [inlet, instrumentData] of Object.entries(inletData)) {
               if (defaultInlet === null) defaultInlet = inlet;
               for (const [instrument, fileMetadata] of Object.entries(instrumentData)) {
-                // The complete source key should always have the species
+                // The complete source key should always have the species at the start
+                // Then we use the lodash set, get etc commands to easily access the objects
                 const completeSourceKey = `${species}.${network}_${site}_${inlet}_${instrument}`;
 
                 if (defaultSourceKey === null) defaultSourceKey = completeSourceKey;
-                let measurementData = null;
-                const filename = fileMetadata["filename"];
-
+                const filepath = fileMetadata["filepath"];
+                  
+                // We retrieve the data for the default source
+                // and store a null in all the sources we don't retrieve
                 if (!defaultInstrument) {
                   defaultInstrument = instrument;
 
-                  const url = new URL(filename, this.dataRepoURL);
+                  const url = new URL(filepath, this.dataRepoURL).href;
                   retrieveJSON(url).then((result) => {
-                    this.addDataToStore(species, completeSourceKey, result);
+                    this.addDataToStore(completeSourceKey, result);
                   });
+                } else {
+                  set(dataStore, completeSourceKey, null);
                 }
-
-                set(dataStore, completeSourceKey, measurementData);
-                set(filenameLookup, completeSourceKey, filename);
+                
+                // Save the filepath in the data repository for each lookup using the source key
+                set(filenameLookup, completeSourceKey, filepath);
               }
             }
           }
@@ -194,14 +196,12 @@ class Dashboard extends React.Component {
 
   componentDidMount() {
     // Retrieve the metadata
-    // const metadataURL = new URL("fileMetadata.json", this.dataRepoURL).href
-
-    const metadataURL =
-      "https://gist.githubusercontent.com/gareth-j/328fa8a1b5d61ed3a543710b10de4ddc/raw/6f616b8046b6bc266b82c3bdfc0ceaa198f0bbb5/metadata_complete.json";
+    const metadata_filename = "metadata_complete.json";
+    const metadataURL = new URL(metadata_filename, this.dataRepoURL);
 
     retrieveJSON(metadataURL).then(
-      (result) => {
-        this.populateAndRetrieve(result);
+      (metadata) => {
+        this.populateAndRetrieve(metadata);
         this.setState({
           isLoaded: true,
         });
@@ -376,6 +376,13 @@ class Dashboard extends React.Component {
         </div>
       );
     } else {
+      // return (
+      //   <div>
+      //     <p>{Object.keys(this.state.dataStore)}</p>
+      //   </div>
+      // );
+    // }
+    // Remove the brack above and uncomment
       const liveData = (
         <LiveData
           clearSources={this.clearSources}
@@ -431,7 +438,7 @@ class Dashboard extends React.Component {
             <Routes>
               <Route path="/FAQ" element={<FAQ />} />
               <Route path="/" element={liveData} />
-              <Route path="/explainer" element={<Explainer/>}/>            
+              <Route path="/explainer" element={<Explainer />} />
             </Routes>
             {overlay}
           </div>
