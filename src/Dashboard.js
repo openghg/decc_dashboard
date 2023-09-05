@@ -39,8 +39,8 @@ class Dashboard extends React.Component {
       colours: {},
       dataStore: {},
     };
-    
-    this.dataRepoURL = "https://raw.githubusercontent.com/openghg/temp_data_dashboard/main/"
+
+    this.dataRepoURL = "https://raw.githubusercontent.com/openghg/temp_data_dashboard/main/";
 
     this.sourceSelector = this.sourceSelector.bind(this);
     this.toggleOverlay = this.toggleOverlay.bind(this);
@@ -126,7 +126,7 @@ class Dashboard extends React.Component {
     // This should aleady be in the right shape, we use the nested aspect of
     // the dictionary to make it easy to populate the interface, creating
     // some lookup tables for filenames etc below
-    this.state.completeMetadata = metadata;
+    // this.state.completeMetadata = metadata;
     let defaultSpecies = null;
     let defaultSite = null;
     let defaultInlet = null;
@@ -138,7 +138,13 @@ class Dashboard extends React.Component {
     // We retrieve only the first dataset and then populate the other data values with nulls
     // When this data is selected the app will retrieve the data
 
+    // Store the data itself
     let dataStore = {};
+    // Store the metadata for each source
+    let metaStore = {};
+    // Store the structure to allow easy building of the interface dynamically
+    let siteStructure = {};
+    // Do we need filename lookup?
     let filenameLookup = {};
 
     try {
@@ -153,11 +159,13 @@ class Dashboard extends React.Component {
               for (const [instrument, fileMetadata] of Object.entries(instrumentData)) {
                 // The complete source key should always have the species at the start
                 // Then we use the lodash set, get etc commands to easily access the objects
-                const completeSourceKey = createSourceKey(species, network, site, inlet, instrument)
+                const completeSourceKey = createSourceKey(species, network, site, inlet, instrument);
+                // We'll use this to create a lightweight structure for the creation of the interface
+                const nestedSourceKey = `${species}.${network}.${site}.${inlet}.${instrument}`;
 
                 if (defaultSourceKey === null) defaultSourceKey = completeSourceKey;
                 const filepath = fileMetadata["filepath"];
-                  
+
                 // We retrieve the data for the default source
                 // and store a null in all the sources we don't retrieve
                 if (!defaultInstrument) {
@@ -170,9 +178,13 @@ class Dashboard extends React.Component {
                 } else {
                   set(dataStore, completeSourceKey, null);
                 }
-                
+
                 // Save the filepath in the data repository for each lookup using the source key
                 set(filenameLookup, completeSourceKey, filepath);
+
+                const sourceMetadata = fileMetadata["metadata"];
+                set(metaStore, completeSourceKey, sourceMetadata);
+                set(siteStructure, nestedSourceKey, completeSourceKey);
               }
             }
           }
@@ -187,6 +199,8 @@ class Dashboard extends React.Component {
     /* eslint-disable react/no-direct-mutation-state */
     // Give each site a colour
     this.state.dataStore = dataStore;
+    this.state.metaStore = metaStore;
+    this.state.siteStructure = siteStructure;
     this.state.defaultSpecies = defaultSpecies;
     this.state.selectedSources = new Set([defaultSourceKey]);
     this.state.selectedSpecies = defaultSpecies;
@@ -381,20 +395,21 @@ class Dashboard extends React.Component {
       //     <p>{Object.keys(this.state.dataStore)}</p>
       //   </div>
       // );
-    // }
-    // Remove the brack above and uncomment
+      // }
+      // Remove the brack above and uncomment
       const liveData = (
         <LiveData
           clearSources={this.clearSources}
           speciesSelector={this.speciesSelector}
           sourceSelector={this.sourceSelector}
           dataStore={this.state.dataStore}
+          metaStore={this.state.metaStore}
+          siteStructure={this.state.siteStructure}
           selectedSources={this.state.selectedSources}
           selectedKeys={this.state.selectedKeys}
           selectedSpecies={this.state.selectedSpecies}
           defaultSpecies={this.state.defaultSpecies}
           setSiteOverlay={this.state.setSiteOverlay}
-          siteMetadata={this.state.completeMetadata}
         />
       );
 

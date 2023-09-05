@@ -2,6 +2,7 @@ import PropTypes from "prop-types";
 import React from "react";
 import { LayerGroup, MapContainer, ImageOverlay, TileLayer, CircleMarker, Popup } from "react-leaflet";
 import { createSourceKey } from "../../util/helpers";
+import { get } from "lodash"
 // import TextButton from "../TextButton/TextButton";
 // import "./LeafletMapResponsive.css";
 
@@ -24,15 +25,15 @@ class LeafletMap extends React.Component {
   createMarkers() {
     const dataStore = this.props.dataStore;
     const selectedSpecies = this.props.selectedSpecies;
-    const siteMetadata = this.props.siteMetadata[selectedSpecies];
+    const metaStore = this.props.metaStore;
+    const siteStructure = this.props.siteStructure;
 
     let markers = [];
 
-    if (siteMetadata !== undefined && dataStore !== undefined) {
-      const speciesData = dataStore[selectedSpecies];
-
+    // TODO - Are props always defined? Are we making the right comparison here?
+    if (metaStore !== undefined && dataStore !== undefined) {
       // We want a marker for each site, with selection buttons within the popup
-      for (const [network, siteData] of Object.entries(siteMetadata)) {
+      for (const [network, siteData] of Object.entries(siteStructure)) {
         for (const [site, inletData] of Object.entries(siteData)) {
           let marker = null;
           let sourceButtons = [];
@@ -43,11 +44,10 @@ class LeafletMap extends React.Component {
 
           for (const [inlet, instrumentData] of Object.entries(inletData)) {
             let inletDone = false;
-            for (const [instrument, inletSpecificMetadata] of Object.entries(instrumentData)) {
+            for (const sourceKey of Object.values(instrumentData)) {
               // TODO - do we want separate buttons for the different instruments?
               if (!inletDone) {
-                siteSpecificMetadata = inletSpecificMetadata["metadata"]
-                const sourceKey = createSourceKey(selectedSpecies, network, site, inlet, instrument);
+                siteSpecificMetadata = get(metaStore, sourceKey)
                 const button = (
                   <TextButton
                     styling="dark"
@@ -60,9 +60,8 @@ class LeafletMap extends React.Component {
                 );
 
                 sourceButtons.push(button);
-                inletDone = true;;
-              }
-              
+                inletDone = true;
+              } 
             }
           }
 

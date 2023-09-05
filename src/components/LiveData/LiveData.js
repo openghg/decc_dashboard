@@ -24,14 +24,16 @@ class LiveData extends React.Component {
       <div className={styles.content}>
         <div className={styles.intro}>{this.createIntro()}</div>
         <div className={styles.timeseries} id="graphContent">
-          <ObsBox
+          {/* <ObsBox
             clearSources={this.props.clearSources}
             speciesSelector={this.props.speciesSelector}
             selectedSources={this.props.selectedSources}
             dataStore={this.props.dataStore}
+            metaStore={this.props.metaStore}
+            siteStructure={this.props.siteStructure}
             selectedSpecies={this.props.selectedSpecies}
             defaultSpecies={this.props.defaultSpecies}
-          />
+          /> */}
         </div>
         <div className={styles.mapExplainer}>
           <ObsExplainer />
@@ -43,7 +45,8 @@ class LiveData extends React.Component {
             centre={mapCentre}
             zoom={5}
             dataStore={this.props.dataStore}
-            siteMetadata={this.props.siteMetadata}
+            metaStore={this.props.metaStore}
+            siteStructure={this.props.siteStructure}
           />
         </div>
       </div>
