@@ -28,7 +28,7 @@ class LiveData extends React.Component {
             clearSources={this.props.clearSources}
             speciesSelector={this.props.speciesSelector}
             selectedSources={this.props.selectedSources}
-            processedData={this.props.processedData}
+            dataStore={this.props.dataStore}
             selectedSpecies={this.props.selectedSpecies}
             defaultSpecies={this.props.defaultSpecies}
           />
@@ -42,8 +42,8 @@ class LiveData extends React.Component {
             selectedSpecies={this.props.selectedSpecies}
             centre={mapCentre}
             zoom={5}
-            processedData={this.props.processedData}
-            siteInfoOverlay={this.props.setSiteOverlay}
+            dataStore={this.props.dataStore}
+            // siteInfoOverlay={this.props.setSiteOverlay}
             siteStructure={this.props.siteStructure}
           />
         </div>
@@ -55,7 +55,7 @@ class LiveData extends React.Component {
 LiveData.propTypes = {
   clearSources: PropTypes.func.isRequired,
   defaultSpecies: PropTypes.string.isRequired,
-  processedData: PropTypes.object.isRequired,
+  dataStore: PropTypes.object.isRequired,
   selectedSources: PropTypes.object.isRequired,
   selectedSpecies: PropTypes.string.isRequired,
   setSiteOverlay: PropTypes.func.isRequired,

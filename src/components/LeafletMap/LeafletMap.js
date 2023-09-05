@@ -21,16 +21,14 @@ class LeafletMap extends React.Component {
   }
 
   createMarkers() {
-
-    const processedData = this.props.processedData;
+    const dataStore = this.props.dataStore;
     const siteStructure = this.props.siteStructure;
     const selectedSpecies = this.props.selectedSpecies;
-    let markers = [];
-    if(siteStructure !== undefined && processedData !== undefined){
-      const speciesStructure = siteStructure[selectedSpecies];
-    const speciesData = processedData[selectedSpecies];
 
-    
+    let markers = [];
+    if(siteStructure !== undefined && dataStore !== undefined){
+      const speciesStructure = siteStructure[selectedSpecies];
+    const speciesData = dataStore[selectedSpecies];
 
     // We want a marker for each site, with selection buttons within the popup
     for (const siteData of Object.values(speciesStructure)) {
