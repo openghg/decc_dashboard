@@ -81,10 +81,10 @@ class MultiSiteLineChart extends React.Component {
       const metadata = get(this.props.metaStore, sourceKey);
 
       const timeseriesData = get(this.props.dataStore, sourceKey, null);
-      // TODO - how to handle this error cleanly?
+      // // TODO - how to handle this error cleanly?
       if (timeseriesData === null) {
-        console.error(`No data available for ${sourceKey}`);
-        break;
+        console.log("No timeseries data available for this source.")
+        continue;
       }
 
       const xValues = timeseriesData["x_values"];
@@ -214,8 +214,7 @@ class MultiSiteLineChart extends React.Component {
     };
 
     if (plotData.length === 0) {
-      const keys = this.props.selectedSources;
-      return <div>No data for {keys}</div>;
+      return <div>Retrieving data...</div>;
     } else {
       return (
         <div data-testid={"linePlot"} className={styles.container}>
@@ -223,26 +222,26 @@ class MultiSiteLineChart extends React.Component {
             <Plot data={plotData} layout={layout} />
           </div>
           <div className={`${styles.downloadContainer} ${styles.smallButtonPosition}`}>
-            {/* <Button
-            size="small"
-            variant="contained"
-            color="success"
-            startIcon={<FileDownloadOutlinedIcon />}
-            onClick={() => this.handleDownloadPDF(species, sites)}
-            style={{ width: "10px", height: "20px" }}
-          >
-            PDF
-          </Button>
-          <Button
-            size="small"
-            variant="contained"
-            color="primary"
-            startIcon={<FileDownloadOutlinedIcon />}
-            onClick={() => this.handleDownloadPNG(species, sites)}
-            style={{ width: "20px", height: "20px" }}
-          >
-            PNG
-          </Button> */}
+            <Button
+              size="small"
+              variant="contained"
+              color="success"
+              startIcon={<FileDownloadOutlinedIcon />}
+              onClick={() => this.handleDownloadPDF(species, sites)}
+              style={{ width: "10px", height: "20px" }}
+            >
+              PDF
+            </Button>
+            <Button
+              size="small"
+              variant="contained"
+              color="primary"
+              startIcon={<FileDownloadOutlinedIcon />}
+              onClick={() => this.handleDownloadPNG(species, sites)}
+              style={{ width: "20px", height: "20px" }}
+            >
+              PNG
+            </Button>
           </div>
         </div>
       );

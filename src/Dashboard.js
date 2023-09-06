@@ -175,7 +175,6 @@ class Dashboard extends React.Component {
                 const completeSourceKey = createSourceKey(species, network, site, inlet, instrument);
                 // We'll use this to create a lightweight structure for the creation of the interface
                 const nestedSourceKey = `${species}.${network}.${site}.${inlet}.${instrument}`;
-
                 const filepath = fileMetadata["filepath"];
 
                 // We retrieve the data for the default source
@@ -185,7 +184,7 @@ class Dashboard extends React.Component {
                   const url = new URL(filepath, this.dataRepoURL).href;
                   // Here we add the data directly as this is on first load
                   retrieveJSON(url).then((result) => {
-                    console.log(`Retrieving data from ${url}`);
+                    console.log(`Retrieving data from ${url} for initial setup.`);
                     const forPlotly = this.toPlotly(result);
                     set(dataStore, completeSourceKey, forPlotly);
                   });
