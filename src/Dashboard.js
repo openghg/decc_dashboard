@@ -48,7 +48,6 @@ class Dashboard extends React.Component {
     this.speciesSelector = this.speciesSelector.bind(this);
     this.clearSources = this.clearSources.bind(this);
     this.toggleSidebar = this.toggleSidebar.bind(this);
-    // this.setSiteOverlay = this.setSiteOverlay.bind(this);
   }
 
   // These handle the initial setup of the app
@@ -62,6 +61,23 @@ class Dashboard extends React.Component {
   }
 
   /**
+   * Converts data to the format required by Plotly
+   *
+   * @param {object} data - Data object
+   *
+   */
+  toPlotly(data) {
+    const x_timestamps = Object.keys(data);
+    const x_values = x_timestamps.map((d) => new Date(parseInt(d)));
+    const y_values = Object.values(data);
+
+    return {
+      x_values: x_values,
+      y_values: y_values,
+    };
+  }
+
+  /**
    * Adds data to the data store, converting it to the structure required by Plotly
    *
    * @param {string} species - Species
@@ -70,15 +86,7 @@ class Dashboard extends React.Component {
    *
    */
   addDataToStore(sourceKey, data) {
-    const x_timestamps = Object.keys(data);
-    const x_values = x_timestamps.map((d) => new Date(parseInt(d)));
-    const y_values = Object.values(data);
-
-    const forPlotly = {
-      x_values: x_values,
-      y_values: y_values,
-    };
-
+    const forPlotly = this.toPlotly(data);
     // Now update the current dataStore with the new data
     this.setState((prevState) => {
       set(prevState.dataStore, sourceKey, forPlotly);
@@ -90,12 +98,16 @@ class Dashboard extends React.Component {
    * Retrieves data from the given URL and processes it into a format
    * plotly can read
    *
-   * @param {string} filename - Name of file to be retrieved from remote data store
-   * @param {string} species - Species
    * @param {string} sourceKey - Source key
    *
    */
-  retrieveData(filename, sourceKey) {
+  retrieveData(sourceKey) {
+    const filename = get(this.state.filenameLookup, sourceKey, null);
+    if (filename === null) {
+      console.error(`No filename available for ${sourceKey}`);
+      return;
+    }
+
     const currentVal = get(this.state.dataStore, sourceKey);
     if (currentVal !== null) {
       console.log(`We already have data for ${sourceKey}`);
@@ -104,6 +116,7 @@ class Dashboard extends React.Component {
 
     const url = new URL(filename, this.dataRepoURL).href;
 
+    console.log(`Retrieving data from ${url}`);
     retrieveJSON(url).then((result) => {
       this.addDataToStore(sourceKey, result);
     });
@@ -131,7 +144,7 @@ class Dashboard extends React.Component {
     let defaultSite = null;
     let defaultInlet = null;
     // Not sure if we need default instrument but
-    let defaultInstrument = null;
+    // let defaultInstrument = null;
     let defaultNetwork = null;
     let defaultSourceKey = null;
     // We just need to pull out the initial data
@@ -163,28 +176,28 @@ class Dashboard extends React.Component {
                 // We'll use this to create a lightweight structure for the creation of the interface
                 const nestedSourceKey = `${species}.${network}.${site}.${inlet}.${instrument}`;
 
-                if (defaultSourceKey === null) defaultSourceKey = completeSourceKey;
                 const filepath = fileMetadata["filepath"];
 
                 // We retrieve the data for the default source
                 // and store a null in all the sources we don't retrieve
-                if (!defaultInstrument) {
-                  defaultInstrument = instrument;
-
+                if (defaultSourceKey === null) {
+                  defaultSourceKey = completeSourceKey;
                   const url = new URL(filepath, this.dataRepoURL).href;
+                  // Here we add the data directly as this is on first load
                   retrieveJSON(url).then((result) => {
-                    this.addDataToStore(completeSourceKey, result);
+                    console.log(`Retrieving data from ${url}`);
+                    const forPlotly = this.toPlotly(result);
+                    set(dataStore, completeSourceKey, forPlotly);
                   });
                 } else {
                   set(dataStore, completeSourceKey, null);
                 }
 
-                // Save the filepath in the data repository for each lookup using the source key
-                set(filenameLookup, completeSourceKey, filepath);
-
                 const sourceMetadata = fileMetadata["metadata"];
                 set(metaStore, completeSourceKey, sourceMetadata);
                 set(siteStructure, nestedSourceKey, completeSourceKey);
+                // Save the filepath in the data repository for each lookup using the source key
+                set(filenameLookup, completeSourceKey, filepath);
               }
             }
           }
@@ -201,6 +214,7 @@ class Dashboard extends React.Component {
     this.state.dataStore = dataStore;
     this.state.metaStore = metaStore;
     this.state.siteStructure = siteStructure;
+    this.state.filenameLookup = filenameLookup;
     this.state.defaultSpecies = defaultSpecies;
     this.state.selectedSources = new Set([defaultSourceKey]);
     this.state.selectedSpecies = defaultSpecies;
@@ -256,11 +270,12 @@ class Dashboard extends React.Component {
   // These handle app control by the components
 
   /**
-   * Selects a data source - a specific species at a site at an inlet
+   * Selects a data source using a selected sourceKey
    *
    * @param {string} selection - Key for a data source
    */
   sourceSelector(selection) {
+    console.log(selection);
     let selectedSourcesSet = new Set();
 
     if (selection instanceof Set) {
@@ -272,20 +287,18 @@ class Dashboard extends React.Component {
     // Here we change all the sites and select all species / sectors at that site
     let selectedSources = cloneDeep(this.state.selectedSources);
 
-    for (const source of selectedSourcesSet) {
-      if (selectedSources.has(source)) {
-        selectedSources.delete(source);
+    for (const sourceKey of selectedSourcesSet) {
+      if (selectedSources.has(sourceKey)) {
+        selectedSources.delete(sourceKey);
       } else {
-        selectedSources.add(source);
+        selectedSources.add(sourceKey);
       }
     }
 
     // Now let's make sure we have all the data for these new selections
     // the source will be the key in the
-    for (const source of selectedSources) {
-      const key = `${this.state.selectedSpecies}.${source}`;
-      const filename = this.state.filenameLookup[key];
-      this.retrieveData();
+    for (const sourceKey of selectedSources) {
+      this.retrieveData(sourceKey);
     }
 
     this.setState({ selectedSources: selectedSources });
@@ -332,9 +345,13 @@ class Dashboard extends React.Component {
       }
     }
 
+    // Here we want the default key of another species
     if (newSources.size === 0) {
       const defaultSource = Object.keys(speciesData)[0];
-      newSources.add(defaultSource);
+      // This just gives us a partial key, we need to add in the species to get
+      // a complete sourceKey
+      const sourceKey = `${species}.${defaultSource}`
+      newSources.add(sourceKey);
     }
 
     this.sourceSelector(newSources);
@@ -348,11 +365,17 @@ class Dashboard extends React.Component {
     this.setState({ overlayOpen: true, overlay: overlay });
   }
 
+  /** Toggles the sidebar */
   toggleSidebar() {
     this.setState({ showSidebar: !this.state.showSidebar });
   }
 
+  /** Was used to set an overlay of the site and show an image, currently unused
+   * @deprecated
+   *
+   */
   setSiteOverlay(e) {
+    console.warn("Deprecated function. May be removed.");
     const siteCode = String(e.target.dataset.onclickparam).toUpperCase();
     const siteInfo = this.state.siteInfo[siteCode];
 
@@ -390,13 +413,6 @@ class Dashboard extends React.Component {
         </div>
       );
     } else {
-      // return (
-      //   <div>
-      //     <p>{Object.keys(this.state.dataStore)}</p>
-      //   </div>
-      // );
-      // }
-      // Remove the brack above and uncomment
       const liveData = (
         <LiveData
           clearSources={this.clearSources}
@@ -409,7 +425,6 @@ class Dashboard extends React.Component {
           selectedKeys={this.state.selectedKeys}
           selectedSpecies={this.state.selectedSpecies}
           defaultSpecies={this.state.defaultSpecies}
-          setSiteOverlay={this.state.setSiteOverlay}
         />
       );
 

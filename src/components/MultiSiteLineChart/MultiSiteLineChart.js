@@ -73,39 +73,36 @@ class MultiSiteLineChart extends React.Component {
     let maxY = 0;
     let minY = Infinity;
 
-    const measurementData = this.props.measurementData;
-    const metaStore = this.props.metaStore;
-
     let species = null;
     let units = null;
     let sites = [];
 
-    for (const [sourceKey, data] of Object.entries(measurementData)) {
-      const metadata = get(metaStore, sourceKey);
+    for (const sourceKey of this.props.selectedSources) {
+      const metadata = get(this.props.metaStore, sourceKey);
 
-      const xValues = data["x_values"];
-      const yValues = data["y_values"];
-
-      // const max = Math.max(...yValues);
-      // const min = Math.min(...yValues);
-
-      return <p>That's all folks.</p>;
-
-      if (max > maxY) {
-        maxY = max;
+      const timeseriesData = get(this.props.dataStore, sourceKey, null);
+      // TODO - how to handle this error cleanly?
+      if (timeseriesData === null) {
+        console.error(`No data available for ${sourceKey}`);
+        break;
       }
 
-      if (min < minY) {
-        minY = min;
-      }
+      const xValues = timeseriesData["x_values"];
+      const yValues = timeseriesData["y_values"];
+
+      const max = Math.max(...yValues);
+      const min = Math.min(...yValues);
+
+      if (max > maxY) maxY = max;
+      if (min < minY) minY = min;
 
       // Set the name for the legend
       let name = null;
       try {
         const siteName = metadata["station_long_name"];
+        const inlet = metadata["inlet"];
         // We'll save these in case we want to write to file
         sites.push(metadata["site"]);
-        const inlet = metadata["inlet"];
 
         name = `${toTitleCase(siteName)} - ${inlet}`;
       } catch (error) {
@@ -147,30 +144,18 @@ class MultiSiteLineChart extends React.Component {
     // sites = plotData.map((item) => item.name);
     // sites = sites.map((item) => item.replace(/<\/?b>/g, "").replace(/\s*-\s*/g, ""));
 
-    let dateMarkObject = null;
-    const selectedDate = this.props.selectedDate;
-
-    if (selectedDate) {
-      const date = new Date(parseInt(selectedDate));
-
-      dateMarkObject = {
-        type: "line",
-        x0: date,
-        y0: minY,
-        x1: date,
-        y1: maxY,
-        line: {
-          color: "black",
-          width: 1,
-        },
-      };
-    }
-
     const widthScaleFactor = 0.925;
     const uniOfBristol = require(`../../images/UniOfBristolLogo.png`);
     const metOffice = require(`../../images/Metoffice.png`);
     const ncas = require(`../../images/ncas.png`);
     const openghg = require(`../../images/OpenGHG_Logo_Landscape.png`);
+
+    let yLabel = null;
+    if (species !== null) {
+      yLabel = `${species.toUpperCase()}  (${units})`;
+    } else {
+      console.error(`species is null`);
+    }
 
     const layout = {
       title: {
@@ -198,7 +183,7 @@ class MultiSiteLineChart extends React.Component {
       yaxis: {
         automargin: true,
         title: {
-          text: `${species.toUpperCase()}  (${units})`,
+          text: yLabel,
           standoff: 10,
           font: {
             size: 16,
@@ -226,15 +211,19 @@ class MultiSiteLineChart extends React.Component {
         t: 20,
         pad: 5,
       },
-      shapes: [dateMarkObject],
     };
-    return (
-      <div data-testid={"linePlot"} className={styles.container}>
-        <div id="chart-container">
-          <Plot data={plotData} layout={layout} />
-        </div>
-        <div className={`${styles.downloadContainer} ${styles.smallButtonPosition}`}>
-          <Button
+
+    if (plotData.length === 0) {
+      const keys = this.props.selectedSources;
+      return <div>No data for {keys}</div>;
+    } else {
+      return (
+        <div data-testid={"linePlot"} className={styles.container}>
+          <div id="chart-container">
+            <Plot data={plotData} layout={layout} />
+          </div>
+          <div className={`${styles.downloadContainer} ${styles.smallButtonPosition}`}>
+            {/* <Button
             size="small"
             variant="contained"
             color="success"
@@ -253,10 +242,11 @@ class MultiSiteLineChart extends React.Component {
             style={{ width: "20px", height: "20px" }}
           >
             PNG
-          </Button>
+          </Button> */}
+          </div>
         </div>
-      </div>
-    );
+      );
+    }
   }
 }
 
