@@ -1,11 +1,7 @@
 import PropTypes from "prop-types";
 import React from "react";
 import { LayerGroup, MapContainer, ImageOverlay, TileLayer, CircleMarker, Popup } from "react-leaflet";
-import { createSourceKey } from "../../util/helpers";
 import { get } from "lodash";
-// import TextButton from "../TextButton/TextButton";
-// import "./LeafletMapResponsive.css";
-
 import TextButton from "../TextButton/TextButton";
 
 import styles from "./LeafletMap.module.css";

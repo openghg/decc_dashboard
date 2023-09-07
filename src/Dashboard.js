@@ -1,23 +1,17 @@
 import React from "react";
 import { Routes, Route, Link, HashRouter } from "react-router-dom";
 import { cloneDeep, has, set, get } from "lodash";
+import { Button, MenuItem } from "@mui/material";
+import LaunchIcon from "@mui/icons-material/Launch";
 
 import ControlPanel from "./components/ControlPanel/ControlPanel";
-import OverlayContainer from "./components/OverlayContainer/OverlayContainer";
-
-import Overlay from "./components/Overlay/Overlay";
 import FAQ from "./components/FAQ/FAQ";
 import LiveData from "./components/LiveData/LiveData";
 import Explainer from "./components/Explainer/Explainer";
-
-import { importSiteImages, createSourceKey } from "./util/helpers";
+import { createSourceKey } from "./util/helpers";
 import styles from "./Dashboard.module.css";
 
-// Site description information
-import siteInfoJSON from "./data/siteInfo.json";
-import { Button, MenuItem } from "@mui/material";
-
-import LaunchIcon from "@mui/icons-material/Launch";
+import siteDefaults from "./data/defaults.json";
 
 async function retrieveJSON(url) {
   return await (await fetch(url)).json();
@@ -26,6 +20,24 @@ async function retrieveJSON(url) {
 class Dashboard extends React.Component {
   constructor(props) {
     super(props);
+
+    let defaultSite = null;
+    let defaultSpecies = null;
+    let defaultInlet = null;
+    let defaultInstrument = null;
+    let defaultNetwork = null;
+    let defaultSourceKey = null;
+
+    try {
+      defaultSite = siteDefaults["site"];
+      defaultSpecies = siteDefaults["species"];
+      defaultInlet = siteDefaults["inlet"];
+      defaultInstrument = siteDefaults["instrument"];
+      defaultNetwork = siteDefaults["network"];
+      defaultSourceKey = createSourceKey(defaultSpecies, defaultNetwork, defaultSite, defaultInlet, defaultInstrument);
+    } catch (error) {
+      console.error("Unable to set defaults.");
+    }
 
     this.state = {
       error: null,
@@ -38,6 +50,12 @@ class Dashboard extends React.Component {
       layoutMode: "dashboard",
       colours: {},
       dataStore: {},
+      defaultSite: defaultSite,
+      defaultSpecies: defaultSpecies,
+      defaultInlet: defaultInlet,
+      defaultInstrument: defaultInstrument,
+      defaultNetwork: defaultNetwork,
+      defaultSourceKey: defaultSourceKey,
     };
 
     this.dataRepoURL = "https://raw.githubusercontent.com/openghg/temp_data_dashboard/main/";
@@ -53,20 +71,13 @@ class Dashboard extends React.Component {
   // These handle the initial setup of the app
 
   /**
-   * Read the config file to setup the default site, species etc
-   */
-  setupDefaults() {
-    throw new Error("Not implemented.");
-    // this.state...
-  }
-
-  /**
    * Converts data to the format required by Plotly
    *
    * @param {object} data - Data object
    *
    */
   toPlotly(data) {
+    console.log("Processing datas for plotly");
     const x_timestamps = Object.keys(data);
     const x_values = x_timestamps.map((d) => new Date(parseInt(d)));
     const y_values = Object.values(data);
@@ -131,25 +142,17 @@ class Dashboard extends React.Component {
    *     "network_site_inlet_instrument": {"x_values": [1,2,3], "y_values": [1,2,3]}
    *   }
    * }
-   *
+   * Only the default source's data will be retrieved, all others will be assigned a null
    */
   populateAndRetrieve(metadata) {
-    // Loop over the metadata dictionary
-    // Create the
-    // This should aleady be in the right shape, we use the nested aspect of
-    // the dictionary to make it easy to populate the interface, creating
-    // some lookup tables for filenames etc below
-    // this.state.completeMetadata = metadata;
     let defaultSpecies = null;
     let defaultSite = null;
     let defaultInlet = null;
     // Not sure if we need default instrument but
-    // let defaultInstrument = null;
     let defaultNetwork = null;
-    let defaultSourceKey = null;
-    // We just need to pull out the initial data
-    // We retrieve only the first dataset and then populate the other data values with nulls
-    // When this data is selected the app will retrieve the data
+    // Don't change this, it's handled in the constructor by reading defaults.json
+    // otherwise a default is selected from the first
+    let defaultSourceKey = this.state.defaultSourceKey;
 
     // Store the data itself
     let dataStore = {};
@@ -157,7 +160,7 @@ class Dashboard extends React.Component {
     let metaStore = {};
     // Store the structure to allow easy building of the interface dynamically
     let siteStructure = {};
-    // Do we need filename lookup?
+    // Filename lookup for dynamic retrieval
     let filenameLookup = {};
 
     try {
@@ -176,23 +179,16 @@ class Dashboard extends React.Component {
                 // We'll use this to create a lightweight structure for the creation of the interface
                 const nestedSourceKey = `${species}.${network}.${site}.${inlet}.${instrument}`;
                 const filepath = fileMetadata["filepath"];
+                const sourceMetadata = fileMetadata["metadata"];
 
-                // We retrieve the data for the default source
-                // and store a null in all the sources we don't retrieve
+                // We don't setState here as we need to use defaultSourceKey below
+                // and setState runs asynchronously so may not update the state value by the time
+                // we get to where we need it
                 if (defaultSourceKey === null) {
                   defaultSourceKey = completeSourceKey;
-                  const url = new URL(filepath, this.dataRepoURL).href;
-                  // Here we add the data directly as this is on first load
-                  retrieveJSON(url).then((result) => {
-                    console.log(`Retrieving data from ${url} for initial setup.`);
-                    const forPlotly = this.toPlotly(result);
-                    set(dataStore, completeSourceKey, forPlotly);
-                  });
-                } else {
-                  set(dataStore, completeSourceKey, null);
                 }
 
-                const sourceMetadata = fileMetadata["metadata"];
+                set(dataStore, completeSourceKey, null);
                 set(metaStore, completeSourceKey, sourceMetadata);
                 set(siteStructure, nestedSourceKey, completeSourceKey);
                 // Save the filepath in the data repository for each lookup using the source key
@@ -206,19 +202,30 @@ class Dashboard extends React.Component {
       console.error(`Error processing raw data - ${error}`);
     }
 
-    // Should we use setState here? Does that work properly now?
-    // Disabled the no direct mutation rule here as this only gets called from the constructor
-    /* eslint-disable react/no-direct-mutation-state */
-    // Give each site a colour
-    this.state.dataStore = dataStore;
-    this.state.metaStore = metaStore;
-    this.state.siteStructure = siteStructure;
-    this.state.filenameLookup = filenameLookup;
-    this.state.defaultSpecies = defaultSpecies;
-    this.state.selectedSources = new Set([defaultSourceKey]);
-    this.state.selectedSpecies = defaultSpecies;
-    this.state.isLoaded = true;
-    /* eslint-enable react/no-direct-mutation-state */
+    // Here we add the data directly as this is on first load
+    // We retrieve the data for the default source
+    const filepath = get(filenameLookup, defaultSourceKey);
+    const url = new URL(filepath, this.dataRepoURL).href;
+    console.log("Retrieving default source data from ", url);
+    retrieveJSON(url)
+      .then((result) => {
+        const forPlotly = this.toPlotly(result);
+        set(dataStore, defaultSourceKey, forPlotly);
+      })
+      .then(() => {
+        this.setState({ isLoaded: true });
+      });
+
+    this.setState({
+      dataStore: dataStore,
+      metaStore: metaStore,
+      siteStructure: siteStructure,
+      filenameLookup: filenameLookup,
+      defaultSpecies: defaultSpecies,
+      selectedSources: new Set([defaultSourceKey]),
+      selectedSpecies: defaultSpecies,
+      defaultSourceKey: defaultSourceKey,
+    });
   }
 
   componentDidMount() {
@@ -229,9 +236,6 @@ class Dashboard extends React.Component {
     retrieveJSON(metadataURL).then(
       (metadata) => {
         this.populateAndRetrieve(metadata);
-        this.setState({
-          isLoaded: true,
-        });
       },
       (error) => {
         this.setState({
@@ -240,30 +244,6 @@ class Dashboard extends React.Component {
         });
       }
     );
-  }
-
-  /**
-   * @deprecated Deprecated in the DECC Dashboard
-   */
-  buildSiteInfo() {
-    console.warn("This function may be removed as it unused in this version of the dashboard.");
-    const siteImages = importSiteImages();
-
-    let siteData = {};
-    for (const site of Object.keys(siteInfoJSON)) {
-      try {
-        siteData[site] = {};
-        siteData[site]["image"] = siteImages[site];
-        siteData[site]["description"] = siteInfoJSON[site]["description"];
-      } catch (error) {
-        console.error(error);
-      }
-    }
-
-    // Disabled the no direct mutation rule here as this only gets called from the constructor
-    /* eslint-disable react/no-direct-mutation-state */
-    this.state.siteInfo = siteData;
-    /* eslint-enable react/no-direct-mutation-state */
   }
 
   // These handle app control by the components
@@ -349,7 +329,7 @@ class Dashboard extends React.Component {
       const defaultSource = Object.keys(speciesData)[0];
       // This just gives us a partial key, we need to add in the species to get
       // a complete sourceKey
-      const sourceKey = `${species}.${defaultSource}`
+      const sourceKey = `${species}.${defaultSource}`;
       newSources.add(sourceKey);
     }
 
@@ -369,34 +349,8 @@ class Dashboard extends React.Component {
     this.setState({ showSidebar: !this.state.showSidebar });
   }
 
-  /** Was used to set an overlay of the site and show an image, currently unused
-   * @deprecated
-   *
-   */
-  setSiteOverlay(e) {
-    console.warn("Deprecated function. May be removed.");
-    const siteCode = String(e.target.dataset.onclickparam).toUpperCase();
-    const siteInfo = this.state.siteInfo[siteCode];
-
-    const siteText = siteInfo["description"];
-    const image = siteInfo["image"];
-    const alt = `Image of ${siteCode}`;
-
-    const overlay = (
-      <Overlay header={siteCode} text={siteText} alt={alt} image={image} toggleOverlay={this.toggleOverlay} />
-    );
-
-    this.toggleOverlay();
-    this.setOverlay(overlay);
-  }
-
   render() {
     let { error, isLoaded } = this.state;
-
-    let overlay = null;
-    if (this.state.overlayOpen) {
-      overlay = <OverlayContainer toggleOverlay={this.toggleOverlay}>{this.state.overlay}</OverlayContainer>;
-    }
 
     let extraSidebarStyle = {};
     if (this.state.showSidebar) {
@@ -469,7 +423,6 @@ class Dashboard extends React.Component {
               <Route path="/" element={liveData} />
               <Route path="/explainer" element={<Explainer />} />
             </Routes>
-            {overlay}
           </div>
         </HashRouter>
       );
