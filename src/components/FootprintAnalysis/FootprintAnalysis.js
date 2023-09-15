@@ -141,7 +141,7 @@ FootprintAnalysis.propTypes = {
   measurementData: PropTypes.object,
   siteData: PropTypes.object,
   width: PropTypes.string,
-  zoom: PropTypes.number.isRequired
-}
+  zoom: PropTypes.number.isRequired,
+};
 
 export default FootprintAnalysis;

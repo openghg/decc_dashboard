@@ -4,9 +4,8 @@ import Plot from "react-plotly.js";
 import styles from "./ScatterMap.module.css";
 
 import ch4MobileGlasgow from "../../data/ch4_mobile_glasgow.json";
-import { createImage } from "../../util/helpers"
-import openghg from "../../images/OpenGHG_Logo_Landscape.png"
-
+import { createImage } from "../../util/helpers";
+import openghg from "../../images/OpenGHG_Logo_Landscape.png";
 
 class ScatterMap extends React.Component {
   constructor(props) {
@@ -69,7 +68,7 @@ class ScatterMap extends React.Component {
     const uniOfBristol = require(`../../images/UniOfBristolLogo.png`);
     const metOffice = require(`../../images/Metoffice.png`);
     const ncas = require(`../../images/ncas.png`);
-    
+
     const layout = {
       mapbox: { center: { lon: -4.212836, lat: 55.843658 }, style: "open-street-map", zoom: 10 },
       coloraxis: {

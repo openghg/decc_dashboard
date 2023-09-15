@@ -92,11 +92,7 @@ const draw = (props) => {
     );
 
   // Add the x-axis to the svg
-  svg
-    .append("g")
-    .attr("class", "x-axis")
-    .attr("transform", `translate(0, ${height})`)
-    .call(d3.axisBottom(x));
+  svg.append("g").attr("class", "x-axis").attr("transform", `translate(0, ${height})`).call(d3.axisBottom(x));
 
   // Add the y-axis
   svg.append("g").attr("class", "y-axis").call(d3.axisLeft(y).ticks(4));

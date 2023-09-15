@@ -1,6 +1,6 @@
 import React from "react";
 import { Routes, Route, Link, HashRouter } from "react-router-dom";
-import { cloneDeep, has, set} from "lodash";
+import { cloneDeep, has, set } from "lodash";
 
 import ControlPanel from "./components/ControlPanel/ControlPanel";
 import OverlayContainer from "./components/OverlayContainer/OverlayContainer";
@@ -17,7 +17,7 @@ import styles from "./Dashboard.module.css";
 import siteInfoJSON from "./data/siteInfo.json";
 import deccMeasData from "./data/dash_data_test_200_complete.json";
 import { Button, MenuItem } from "@mui/material";
-import LaunchIcon from '@mui/icons-material/Launch';
+import LaunchIcon from "@mui/icons-material/Launch";
 
 class Dashboard extends React.Component {
   constructor(props) {
@@ -156,7 +156,7 @@ class Dashboard extends React.Component {
     let siteStructure = {};
 
     let defaultSpecies = null;
-    let defaultSourceKey = 'decc_tac_54m_picarro';;
+    let defaultSourceKey = "decc_tac_54m_picarro";
     let defaultNetwork = null;
 
     try {
@@ -198,15 +198,12 @@ class Dashboard extends React.Component {
 
                 const dataKey = `${species}.${sourceKey}`;
 
-
-                const combinedData = { data: graphData, metadata: metadata};
+                const combinedData = { data: graphData, metadata: metadata };
 
                 set(processedData, dataKey, combinedData);
-;
               }
             }
           }
-
         }
       }
     } catch (error) {
@@ -324,7 +321,15 @@ class Dashboard extends React.Component {
         <HashRouter>
           <div className={styles.gridContainer}>
             <div className={styles.header}>
-            <Button variant="text" href="https://catalogue.ceda.ac.uk/uuid/f5b38d1654d84b03ba79060746541e4f" target="_blank" startIcon={<LaunchIcon/>} style={{color:"#97FEED"}}>Visit DECC Public Data</Button> 
+              <Button
+                variant="text"
+                href="https://catalogue.ceda.ac.uk/uuid/f5b38d1654d84b03ba79060746541e4f"
+                target="_blank"
+                startIcon={<LaunchIcon />}
+                style={{ color: "#97FEED" }}
+              >
+                Visit DECC Public Data
+              </Button>
               <div className={styles.menuIcon}>
                 <MenuItem styling="light" extrastyling={{ fontSize: "1.6em" }} onClick={this.toggleSidebar}>
                   &#9776;
@@ -352,7 +357,7 @@ class Dashboard extends React.Component {
             <Routes>
               <Route path="/FAQ" element={<FAQ />} />
               <Route path="/" element={liveData} />
-              <Route path="/explainer" element={<Explainer/>}/>            
+              <Route path="/explainer" element={<Explainer />} />
             </Routes>
             {overlay}
           </div>

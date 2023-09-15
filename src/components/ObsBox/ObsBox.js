@@ -6,7 +6,7 @@ import MultiSiteLineChart from "../MultiSiteLineChart/MultiSiteLineChart";
 import { isEmpty, getVisID } from "../../util/helpers";
 
 import styles from "./ObsBox.module.css";
-import SelectOptions from "../SelectOptions/SelectOptions"
+import SelectOptions from "../SelectOptions/SelectOptions";
 import { Button } from "@mui/material";
 
 class ObsBox extends React.Component {
@@ -85,7 +85,11 @@ class ObsBox extends React.Component {
 
     let clearButton = null;
     if (siteSelected) {
-      clearButton = <Button variant="contained" size="medium" onClick={this.props.clearSources}>Clear</Button>;
+      clearButton = (
+        <Button variant="contained" size="medium" onClick={this.props.clearSources}>
+          Clear
+        </Button>
+      );
     }
 
     const availableSpecies = Object.keys(this.props.processedData);
@@ -95,11 +99,11 @@ class ObsBox extends React.Component {
         <div className={styles.plot}>{this.createEmissionsGraphs()}</div>
         <div className={styles.select}>
           <div className={styles.clearButton}>{clearButton}</div>
-              <SelectOptions
-                onChange={this.props.speciesSelector}
-                options={availableSpecies}
-                selected={this.props.selectedSpecies}
-              />
+          <SelectOptions
+            onChange={this.props.speciesSelector}
+            options={availableSpecies}
+            selected={this.props.selectedSpecies}
+          />
         </div>
       </div>
     );

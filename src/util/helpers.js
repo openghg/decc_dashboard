@@ -19,16 +19,17 @@ export function isEmpty(obj) {
 export function createImage(source, x, opacity = 0.6) {
   return {
     source: source,
-    xref: 'paper',
-    yref: 'paper',
+    xref: "paper",
+    yref: "paper",
     x: x,
     y: 0.89,
     sizex: 0.09,
     sizey: 0.09,
     opacity: opacity,
-    xanchor: 'center',
-    yanchor: 'middle',
-  }};
+    xanchor: "center",
+    yanchor: "middle",
+  };
+}
 
 // export function importSVGs() {
 //   let footprints = {};

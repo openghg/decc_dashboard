@@ -24,7 +24,7 @@ class TextButton extends React.Component {
 
     return (
       <Button
-        variant = "outlined"
+        variant="outlined"
         type="button"
         data-onclickparam={this.props.onClickParam}
         className={style}
