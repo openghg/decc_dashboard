@@ -11,8 +11,6 @@ import Explainer from "./components/Explainer/Explainer";
 import { createSourceKey } from "./util/helpers";
 import styles from "./Dashboard.module.css";
 
-import siteDefaults from "./data/defaults.json";
-
 async function retrieveJSON(url) {
   return await (await fetch(url)).json();
 }
@@ -28,16 +26,9 @@ class Dashboard extends React.Component {
     let defaultNetwork = null;
     let defaultSourceKey = null;
 
-    try {
-      defaultSite = siteDefaults["site"];
-      defaultSpecies = siteDefaults["species"];
-      defaultInlet = siteDefaults["inlet"];
-      defaultInstrument = siteDefaults["instrument"];
-      defaultNetwork = siteDefaults["network"];
-      defaultSourceKey = createSourceKey(defaultSpecies, defaultNetwork, defaultSite, defaultInlet, defaultInstrument);
-    } catch (error) {
-      console.error("Unable to set defaults.");
-    }
+    // TODO - read in data from dashboard_config.json
+    // These settings will control how the interface is built
+    // so users select data by site or by site inlets
 
     this.state = {
       error: null,
@@ -204,7 +195,15 @@ class Dashboard extends React.Component {
 
     // Here we add the data directly as this is on first load
     // We retrieve the data for the default source
-    const filepath = get(filenameLookup, defaultSourceKey);
+    // TODO - can we show errors to the user in a clean way instead of just console?
+    let filepath = null;
+    try {
+      filepath = get(filenameLookup, defaultSourceKey);
+    } catch (error) {
+      console.error(`Error retrieving filename - ${error}`);
+      return;
+    }
+
     const url = new URL(filepath, this.dataRepoURL).href;
     console.log("Retrieving default source data from ", url);
     retrieveJSON(url)
