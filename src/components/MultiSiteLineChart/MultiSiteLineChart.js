@@ -137,13 +137,6 @@ class MultiSiteLineChart extends React.Component {
       plotData.push(trace);
     }
 
-    /*fetching all the site names to pass them as filename
-     using regex to remove <b> </b> and "-" within the name
-     */
-    // let sites = [];
-    // sites = plotData.map((item) => item.name);
-    // sites = sites.map((item) => item.replace(/<\/?b>/g, "").replace(/\s*-\s*/g, ""));
-
     const widthScaleFactor = 0.925;
     const uniOfBristol = require(`../../images/UniOfBristolLogo.png`);
     const metOffice = require(`../../images/Metoffice.png`);
