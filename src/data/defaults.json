@@ -1,0 +1,7 @@
+{
+  "site": "tac",
+  "network": "decc",
+  "species": "co2",
+  "inlet": "185m",
+  "instrument": "picarro"
+}

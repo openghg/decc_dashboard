@@ -5,26 +5,27 @@ import { toTitleCase } from "../../util/helpers";
 import styles from "./MultiSiteLineChart.module.css";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
-import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
+import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 import { Button } from "@mui/material";
-import { createImage } from "../../util/helpers"
+import { createImage } from "../../util/helpers";
 
 import colours from "../../data/colours.json";
+import { get } from "lodash";
 
 class MultiSiteLineChart extends React.Component {
-    /*
+  /*
     This method takes care of downloading the Plot 
     on the website in format of PNG
     It fetches the html tag for plot and converts to PNG
     */
   handleDownloadPNG = (species, sites) => {
     const chartContainer = document.getElementById("chart-container");
-    let filenames = [species, ...sites].join('_');
-  
+    let filenames = [species, ...sites].join("_");
+
     if (chartContainer) {
       html2canvas(chartContainer).then((canvas) => {
         const imgData = canvas.toDataURL("image/png");
-  
+
         const link = document.createElement("a");
         link.href = imgData;
         link.download = `${filenames}.png`;
@@ -34,8 +35,8 @@ class MultiSiteLineChart extends React.Component {
       console.error("Chart container not found.");
     }
   };
-  
-    /*
+
+  /*
     This method takes care of downloading the Plot 
     on the website in format of PDF
     It fetches the html tag for plot and converts to PDF
@@ -43,7 +44,7 @@ class MultiSiteLineChart extends React.Component {
   handleDownloadPDF = (species, sites) => {
     // Here we fetch the html element of chart-container that needs to be downloaded by id.
     const chartContainer = document.getElementById("chart-container");
-    let filenames = [species, ...sites].join('_');
+    let filenames = [species, ...sites].join("_");
 
     if (chartContainer) {
       html2canvas(chartContainer).then((canvas) => {
@@ -51,53 +52,57 @@ class MultiSiteLineChart extends React.Component {
 
         const chartWidth = chartContainer.offsetWidth;
         const chartHeight = chartContainer.offsetHeight;
-  
+
         const pdf = new jsPDF({
           orientation: chartWidth > chartHeight ? "landscape" : "portrait",
           unit: "mm",
           format: [chartWidth, chartHeight],
         });
-  
+
         pdf.addImage(imgData, "JPEG", 0, 0, chartWidth, chartHeight);
-  
+
         pdf.save(filenames);
       });
     } else {
       console.error("Chart container not found.");
     }
   };
+
   render() {
     let plotData = [];
     let maxY = 0;
     let minY = Infinity;
 
-    const data = this.props.data;
     let species = null;
     let units = null;
+    let sites = [];
 
-    for (const sourceData of Object.values(data)) {
-      const metadata = sourceData["metadata"];
-      const measurementData = sourceData["data"];
+    for (const sourceKey of this.props.selectedSources) {
+      const metadata = get(this.props.metaStore, sourceKey);
 
-      const xValues = measurementData["x_values"];
-      const yValues = measurementData["y_values"];
+      const timeseriesData = get(this.props.dataStore, sourceKey, null);
+      // // TODO - how to handle this error cleanly?
+      if (timeseriesData === null) {
+        console.log("No timeseries data available for this source.")
+        continue;
+      }
+
+      const xValues = timeseriesData["x_values"];
+      const yValues = timeseriesData["y_values"];
 
       const max = Math.max(...yValues);
       const min = Math.min(...yValues);
 
-      if (max > maxY) {
-        maxY = max;
-      }
-
-      if (min < minY) {
-        minY = min;
-      }
+      if (max > maxY) maxY = max;
+      if (min < minY) minY = min;
 
       // Set the name for the legend
       let name = null;
       try {
         const siteName = metadata["station_long_name"];
         const inlet = metadata["inlet"];
+        // We'll save these in case we want to write to file
+        sites.push(metadata["site"]);
 
         name = `${toTitleCase(siteName)} - ${inlet}`;
       } catch (error) {
@@ -106,18 +111,16 @@ class MultiSiteLineChart extends React.Component {
 
       const colour = colours["pastelColours"];
       units = metadata["units"];
-      species = metadata["species"]
-      
+      species = metadata["species"];
+
       if (units === undefined) {
-        if (species === 'ch4' || species === 'co' || species === 'n2o') {
-          units = 'ppb';
-        } else if (species === 'co2') {
-          units = 'ppm';
-        } else {
-          units = metadata["units"];
+        if (species === "ch4" || species === "co" || species === "n2o") {
+          units = "ppb";
+        } else if (species === "co2") {
+          units = "ppm";
         }
       }
-      
+
       const trace = {
         x: xValues,
         y: yValues,
@@ -134,38 +137,19 @@ class MultiSiteLineChart extends React.Component {
       plotData.push(trace);
     }
 
-    /*fetching all the site names to pass them as filename
-     using regex to remove <b> </b> and "-" within the name
-     */
-    let sites = [];
-    sites = plotData.map(item => item.name);
-    sites = sites.map(item => item.replace(/<\/?b>/g, '').replace(/\s*-\s*/g, ''));
-
-    let dateMarkObject = null;
-    const selectedDate = this.props.selectedDate;
-
-    if (selectedDate) {
-      const date = new Date(parseInt(selectedDate));
-
-      dateMarkObject = {
-        type: "line",
-        x0: date,
-        y0: minY,
-        x1: date,
-        y1: maxY,
-        line: {
-          color: "black",
-          width: 1,
-        },
-      };
-    }
-
     const widthScaleFactor = 0.925;
     const uniOfBristol = require(`../../images/UniOfBristolLogo.png`);
     const metOffice = require(`../../images/Metoffice.png`);
     const ncas = require(`../../images/ncas.png`);
     const openghg = require(`../../images/OpenGHG_Logo_Landscape.png`);
-    
+
+    let yLabel = null;
+    if (species !== null) {
+      yLabel = `${species.toUpperCase()}  (${units})`;
+    } else {
+      console.error(`species is null`);
+    }
+
     const layout = {
       title: {
         text: this.props.title ? this.props.title : null,
@@ -188,16 +172,15 @@ class MultiSiteLineChart extends React.Component {
         linecolor: "black",
         autotick: true,
         ticks: "outside",
-
       },
       yaxis: {
         automargin: true,
         title: {
-          text: `${species.toUpperCase()}  (${units})`,
+          text: yLabel,
           standoff: 10,
           font: {
-            size:16,
-          }
+            size: 16,
+          },
         },
         range: this.props.yRange ? this.props.yRange : null,
         showgrid: false,
@@ -221,37 +204,41 @@ class MultiSiteLineChart extends React.Component {
         t: 20,
         pad: 5,
       },
-      shapes: [dateMarkObject],
     };
-    return (
-      <div data-testid={"linePlot"} className={styles.container}>
-        <div id="chart-container">
-          <Plot data={plotData} layout={layout} />
+
+    if (plotData.length === 0) {
+      return <div>Retrieving data...</div>;
+    } else {
+      return (
+        <div data-testid={"linePlot"} className={styles.container}>
+          <div id="chart-container">
+            <Plot data={plotData} layout={layout} />
+          </div>
+          <div className={`${styles.downloadContainer} ${styles.smallButtonPosition}`}>
+            <Button
+              size="small"
+              variant="contained"
+              color="success"
+              startIcon={<FileDownloadOutlinedIcon />}
+              onClick={() => this.handleDownloadPDF(species, sites)}
+              style={{ width: "10px", height: "20px" }}
+            >
+              PDF
+            </Button>
+            <Button
+              size="small"
+              variant="contained"
+              color="primary"
+              startIcon={<FileDownloadOutlinedIcon />}
+              onClick={() => this.handleDownloadPNG(species, sites)}
+              style={{ width: "20px", height: "20px" }}
+            >
+              PNG
+            </Button>
+          </div>
         </div>
-        <div className={`${styles.downloadContainer} ${styles.smallButtonPosition}`}>
-        <Button
-        size="small"
-        variant="contained"
-        color="success"
-        startIcon={<FileDownloadOutlinedIcon />}
-        onClick={()=>this.handleDownloadPDF(species,sites)}
-        style={{ width: '10px',
-          height: '20px'}}>
-          PDF
-          </Button>
-          <Button
-          size="small"
-          variant="contained"
-          color="primary"
-          startIcon={<FileDownloadOutlinedIcon />}
-          onClick={() => this.handleDownloadPNG(species, sites)}
-          style={{ width: '20px',
-          height: '20px'}}>
-          PNG
-        </Button>
-        </div>
-      </div>
-    );
+      );
+    }
   }
 }
 
