@@ -3,7 +3,7 @@ import { Routes, Route, Link, HashRouter } from "react-router-dom";
 import { cloneDeep, has, set, get } from "lodash";
 import { Button, MenuItem } from "@mui/material";
 import LaunchIcon from "@mui/icons-material/Launch";
-
+import ProtectedRoute from "./ProtectedRoute/ProtectedRoute";
 import ControlPanel from "./components/ControlPanel/ControlPanel";
 import FAQ from "./components/FAQ/FAQ";
 import LiveData from "./components/LiveData/LiveData";
@@ -419,7 +419,9 @@ class Dashboard extends React.Component {
             </aside>
             <Routes>
               <Route path="/FAQ" element={<FAQ />} />
+              <ProtectedRoute>
               <Route path="/" element={liveData} />
+              </ProtectedRoute>
               <Route path="/explainer" element={<Explainer />} />
             </Routes>
           </div>
